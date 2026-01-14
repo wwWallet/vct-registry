@@ -19,7 +19,7 @@ export const ehicMetadata = {
 				"svg_templates": [
 					{
 						"uri": config.url + "/images/template-ehic.svg",
-						"uri#integrity": createSRI("./public/images/template-ehic.svg"),
+						"uri#integrity": createSRI("template-ehic.svg"),
 						"properties": {
 							"orientation": "landscape",
 							"color_scheme": "light",

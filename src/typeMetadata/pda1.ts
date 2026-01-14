@@ -15,7 +15,7 @@ export const pda1Metadata = {
 				"svg_templates": [
 					{
 						"uri": config.url + "/images/template-pda1.svg",
-						"uri#integrity": createSRI("./public/images/template-pda1.svg"),
+						"uri#integrity": createSRI("template-pda1.svg"),
 						"properties": {
 							"orientation": "landscape",
 							"color_scheme": "light",

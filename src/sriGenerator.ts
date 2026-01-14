@@ -1,6 +1,7 @@
 // src/sriGenerator.ts
 import * as fs from 'fs';
 import * as crypto from 'crypto';
+import path from 'path';
 
 export type Algorithm = 'sha256' | 'sha384' | 'sha512';
 
@@ -15,13 +16,14 @@ export function createSRI(
 	algorithm: Algorithm = 'sha256'
 ): string {
 	let buffer: Buffer;
-
+	
 	if (typeof input === 'string') {
+		const fullPath = path.join(__dirname, "../public/images/", input);
 		// Treat as file path
-		if (!fs.existsSync(input)) {
-			throw new Error(`File not found: ${input}`);
+		if (!fs.existsSync(fullPath)) {
+			throw new Error(`File not found: ${fullPath}`);
 		}
-		buffer = fs.readFileSync(input);
+		buffer = fs.readFileSync(fullPath);
 	} else if (typeof input === 'object' && input !== null) {
 		// Treat as object
 		const jsonString = JSON.stringify(input);

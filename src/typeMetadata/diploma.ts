@@ -13,7 +13,7 @@ export const diplomaMetadata = {
 				"simple": {
 					"logo": {
 						"uri": config.url + "/images/logo.png",
-						"uri#integrity": createSRI("./public/images/template-diploma.svg"),
+						"uri#integrity": createSRI("template-diploma.svg"),
 						"alt_text": "Diploma Logo"
 					},
 					"background_color": "#4CC3DD",

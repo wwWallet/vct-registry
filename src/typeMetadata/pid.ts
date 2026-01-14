@@ -18,7 +18,7 @@ export const pidMetadata = {
 				"svg_templates": [
 					{
 						"uri": config.url + "/images/template-pid.svg",
-						"uri#integrity": createSRI("./public/images/template-pid.svg"),
+						"uri#integrity": createSRI("template-pid.svg"),
 						"properties": {
 							"orientation": "landscape",
 							"color_scheme": "light",
