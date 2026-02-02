@@ -76,11 +76,15 @@ async function loadVctSelection(value) {
 	const metaBox = document.getElementById('vct-meta');
 	const dataBox = document.getElementById('vct-data');
 	const sourceBox = document.getElementById('vct-source');
+	const editBox = document.getElementById('vct-edit');
+
+	const editValue = document.getElementById('vct-edit-value');
 
 	errorBox.hidden = true;
 	metaBox.innerHTML = '';
 	dataBox.textContent = 'Loading…';
 	sourceBox.textContent = '';
+	editBox.hidden = true;
 
 	try {
 		const origin = window.location.origin; // 👈 dynamic domain
@@ -118,6 +122,9 @@ async function loadVctSelection(value) {
 				: ''
 			}
     `;
+
+		editBox.hidden = false;
+		editValue.value = encoded;
 
 		dataBox.textContent = JSON.stringify(metadata, null, 2);
 	} catch (err) {

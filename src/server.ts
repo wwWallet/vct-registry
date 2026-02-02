@@ -4,6 +4,7 @@ import cors from 'cors';
 import path from 'path';
 import { config } from '../config';
 import { ALL_METADATA } from './registry';
+import { basicAuth } from './middleware/auth';
 
 const app = express();
 const PORT = config.port;
@@ -100,22 +101,26 @@ const publicPath = path.join(__dirname, '../public');
 
 // 30-day immutable cache for images
 app.use(
-  '/images',
-  express.static(path.join(publicPath, 'images'), {
-    maxAge: '30d',
-    immutable: true,
-  })
+	'/images',
+	express.static(path.join(publicPath, 'images'), {
+		maxAge: '30d',
+		immutable: true,
+	})
 );
 
 // No caching for the rest of the UI (HTML, JS, CSS)
 app.use(
-  express.static(publicPath, {
-    maxAge: 0,
-  })
+	express.static(publicPath, {
+		maxAge: 0,
+	})
 );
 
 app.get('/', (_req, res) => {
-  res.sendFile(path.join(publicPath, 'index.html'));
+	res.sendFile(path.join(publicPath, 'index.html'));
+});
+
+app.get('/edit', basicAuth, (_req, res) => {
+	res.sendFile(path.join(publicPath, 'edit.html'));
 });
 
 // ─────────────────────────────────────────────────────────────
