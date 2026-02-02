@@ -13,13 +13,18 @@ export const ehicMetadata = {
 			"description": "European Health Insurance Card (EHIC) SD-JWT VC",
 			"rendering": {
 				"simple": {
-					"background_color": "#1b263b",
-					"text_color": "#FFFFFF"
+					"background_color": "#515c90",
+					"text_color": "#FFFFFF",
+					"logo": {
+						"uri": config.url + "/images/ehic-logo.png",
+						"uri#integrity": createSRI("ehic-logo.png"),
+						"alt_text": "EHIC Logo"
+					},
 				},
 				"svg_templates": [
 					{
-						"uri": config.url + "/images/template-ehic.svg",
-						"uri#integrity": createSRI("template-ehic.svg"),
+						"uri": config.url + "/images/ehic-svg-template.svg",
+						"uri#integrity": createSRI("ehic-svg-template.svg"),
 						"properties": {
 							"orientation": "landscape",
 							"color_scheme": "light",
