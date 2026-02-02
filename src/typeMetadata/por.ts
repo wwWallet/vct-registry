@@ -12,10 +12,14 @@ export const porMetadata = {
 			"name": "POR SD-JWT VC",
 			"description": "Power of Representation (POR) SD-JWT VC",
 			"rendering": {
+				"simple": {
+					"background_color": "#c3b25d",
+					"text_color": "#363531",
+				},
 				"svg_templates": [
 					{
-						"uri": config.url + "/images/template-por.svg",
-						"uri#integrity": createSRI("template-por.svg"),
+						"uri": config.url + "/images/por-svg-template.svg",
+						"uri#integrity": createSRI("por-svg-template.svg"),
 						"properties": {
 							"orientation": "landscape",
 							"color_scheme": "light",
