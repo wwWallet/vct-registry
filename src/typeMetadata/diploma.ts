@@ -8,7 +8,8 @@ export const diplomaMetadata = {
 	"display": [
 		{
 			"locale": "en-US",
-			"name": "Diploma Credential",
+			"name": "Diploma",
+			"description": "Bachelor Diploma SD-JWT VC",
 			"rendering": {
 				"simple": {
 					"logo": {
@@ -16,8 +17,8 @@ export const diplomaMetadata = {
 						"uri#integrity": createSRI("diploma-logo.png"),
 						"alt_text": "Diploma Logo"
 					},
-					"background_color": "#4CC3DD",
-					"text_color": "#FFFFFF"
+					"background_color": "#b1d3ff",
+					"text_color": "#050708"
 				},
 				"svg_templates": [
 					{
