@@ -9,8 +9,8 @@ export const pda1Metadata = {
 	"display": [
 		{
 			"locale": "en-US",
-			"name": "PDA1 SD-JWT VC",
-			"description": "Portable Document A1 (PDA1) SD-JWT VC.",
+			"name": "PDA1",
+			"description": "Portable Document A1 (PDA1) SD-JWT VC",
 			"rendering": {
 				"simple": {
 					"background_color": "#c3e3ab",

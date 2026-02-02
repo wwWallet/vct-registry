@@ -9,7 +9,7 @@ export const porMetadata = {
 	"display": [
 		{
 			"locale": "en-US",
-			"name": "POR SD-JWT VC",
+			"name": "POR",
 			"description": "Power of Representation (POR) SD-JWT VC",
 			"rendering": {
 				"simple": {

@@ -10,6 +10,7 @@ export const pidMetadata = {
 		{
 			"locale": "en-US",
 			"name": "PID",
+			"description": "Person Identification Data (PID) SD-JWT VC",
 			"rendering": {
 				"simple": {
 					"background_color": "#b8e6ff",

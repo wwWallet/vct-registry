@@ -9,7 +9,7 @@ export const ehicMetadata = {
 	"display": [
 		{
 			"locale": "en-US",
-			"name": "EHIC SD-JWT VC",
+			"name": "EHIC",
 			"description": "European Health Insurance Card (EHIC) SD-JWT VC",
 			"rendering": {
 				"simple": {
