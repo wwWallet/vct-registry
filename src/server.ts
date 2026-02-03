@@ -64,21 +64,28 @@ app.get('/api/vct', (_req, res) => {
  * Returns the metadata object whose .vct matches the query.
  */
 app.get('/type-metadata', (req, res) => {
-	const vct = req.query.vct;
+	const rawVct = req.query.vct;
 
-	if (!vct || typeof vct !== 'string') {
+	if (!rawVct || typeof rawVct !== 'string') {
 		return res.status(400).json({
 			error: 'missing_vct',
 			message: 'Query parameter "vct" is required',
 		});
 	}
 
-	const metadata = ALL_METADATA.find((m) => m.vct === vct);
+	let decodedVct: string;
+	try {
+		decodedVct = decodeURIComponent(rawVct);
+	} catch (_decodingError) {
+		// fallback if decode fails
+		decodedVct = rawVct;
+	}
+	const metadata = ALL_METADATA.find((m) => m.vct === decodedVct);
 
 	if (!metadata) {
 		return res.status(404).json({
 			error: 'unknown_vct',
-			message: `No metadata found for vct "${vct}"`,
+			message: `No metadata found for vct "${decodedVct}"`,
 		});
 	}
 

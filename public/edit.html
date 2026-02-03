@@ -4,7 +4,9 @@
 <head>
 	<meta charset="utf-8" />
 	<title>vct-registry</title>
-	<link rel="stylesheet" href="/style.css" />
+	<link rel="stylesheet" href="/styles/style.css" />
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jsoneditor@latest/dist/jsoneditor.min.css" />
+	<link rel="stylesheet" href="/styles/jsoneditor.css" />
 </head>
 
 <body>
@@ -18,12 +20,16 @@
 	<main class="container">
 		<section class="card">
 			<h2>Edit Verifiable Credential Type Metadata</h2>
+			<div id="selected-vct-name" class="selected-vct"></div>
+			<div id="jsoneditor" class="jsoneditor-host" ></div>
+			<button id="vct-submit-btn" type="submit" class="vct-edit-btn">Submit Changes</button>
 		</section>
 	</main>
 
 	<footer class="footer"></footer>
 
-	<script src="/app.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/jsoneditor@latest"></script>
+	<script type="module" src="/js/edit.js"></script>
 </body>
 
 </html>

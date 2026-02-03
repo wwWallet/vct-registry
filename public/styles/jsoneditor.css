@@ -1,0 +1,16 @@
+/* Host wrapper */
+.jsoneditor-host {
+	border: 1px solid rgba(0, 0, 0, 0.18);
+	border-radius: 4px;
+	overflow: hidden;
+	/* makes radius actually work */
+	background: #fff;
+	height: 480px;
+	margin: 16px auto;
+}
+
+/* Editor itself just fills the box */
+.jsoneditor {
+	border: none !important;
+	height: 100% !important;
+}

@@ -80,7 +80,8 @@ body {
 	color: #374151;
 }
 
-.vct-select {
+/* Copy select styling for selected-vct div in edit page */
+.vct-select, .selected-vct {
 	padding: 8px 10px;
 	border-radius: 8px;
 	border: 1px solid #d1d5db;
@@ -110,12 +111,19 @@ body {
 }
 
 .vct-edit-btn {
+	width: 100%;
 	font-size: 0.8rem;
 	background: #f9fafb;
 	border-radius: 8px;
 	padding: 12px;
 	border: 1px solid #e5e7eb;
 	cursor: pointer;
+	transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.vct-edit-btn:hover {
+	background: #f3f4f6;
+	border-color: #d1d5db;
 }
 
 /* JSON output box */

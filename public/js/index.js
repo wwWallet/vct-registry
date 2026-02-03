@@ -1,13 +1,4 @@
-// public/app.js
-
-async function fetchJson(url) {
-	const res = await fetch(url);
-	if (!res.ok) {
-		const text = await res.text();
-		throw new Error(`HTTP ${res.status}: ${text}`);
-	}
-	return res.json();
-}
+import { fetchJson } from './app.js';
 
 async function loadVctList() {
 	const loading = document.getElementById('vct-loading');
@@ -17,10 +8,13 @@ async function loadVctList() {
 	const metaBox = document.getElementById('vct-meta');
 	const dataBox = document.getElementById('vct-data');
 	const sourceBox = document.getElementById('vct-source');
+    const editBox = document.getElementById('vct-edit');
+
 
 	loading.hidden = false;
 	controls.hidden = true;
 	errorBox.hidden = true;
+    editBox.hidden = true;
 	errorBox.textContent = '';
 	select.innerHTML = '';
 	metaBox.innerHTML = '';
