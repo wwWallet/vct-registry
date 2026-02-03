@@ -1,5 +1,35 @@
 import { fetchJson } from './app.js';
 
+async function initializeEditorAndLoadVct() {
+  await initializeEditor();
+  await loadSelectedVct();
+}
+
+async function initializeEditor() {
+  const container = document.getElementById("jsoneditor");
+
+  var schema = await fetchJson('/type-metadata/schema');
+
+  delete schema.$schema;  // JSONEditor can't handle $schema refs, remove it
+  // schema.additionalProperties = true; // TODO vmarkop do we want this?
+
+  const options = {
+    mode: "code",
+    mainMenuBar: false,
+    statusBar: false,
+    schema: schema,
+    onValidationError: function (errors) {
+      if (errors.length > 0) {
+        document.querySelector("#vct-submit-btn").disabled = true;
+      } else {
+        document.querySelector("#vct-submit-btn").disabled = false;
+      }
+    },
+  };
+
+  editor = new JSONEditor(container, options);
+}
+
 async function loadSelectedVct() {
 	const params = new URLSearchParams(window.location.search);
 	const value = params.get('vct'); // ?vct=urn:eudi:pid:1
@@ -14,24 +44,33 @@ async function loadSelectedVct() {
 	nameContainer.textContent = metadata.name;
 }
 
-const container = document.getElementById("jsoneditor");
+document.getElementById('vct-submit-btn').addEventListener('click', async () => {
+  const data = editor.get();
 
-var schema = JSON.stringify(schema);  // TODO vmarkop load schema from file
+  const res = await fetch('/edit', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  });
 
-const options = {
-  mode: "code",
-  mainMenuBar: false,
-  statusBar: false,
-  schema: schema,
-  onValidationError: function (errors) {
-    if (errors.length > 0) {
-      document.querySelector("#vct-submit-btn").disabled = true;
-    } else {
-      document.querySelector("#vct-submit-btn").disabled = false;
-    }
-  },
-};
+  const result = await res.json();
+  if (!res.ok) {
+    showErrors(result.errors); // inline validation
+  } else {
+    showSuccess(result.message); // success toast
+  }
+});
 
-const editor = new JSONEditor(container, options);
+// TODO vmarkop implement UI feedback (or skip to saving)
+function showSuccess(message) {
+  console.log('success! ', message);
+}
 
-window.addEventListener('DOMContentLoaded', loadSelectedVct);
+// TODO vmarkop implement UI form control
+function showErrors(errors) {
+  console.log('errors: ', errors);
+}
+
+
+let editor;
+window.addEventListener('DOMContentLoaded', initializeEditorAndLoadVct);

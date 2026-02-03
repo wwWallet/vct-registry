@@ -5,11 +5,29 @@ import path from 'path';
 import { config } from '../config';
 import { ALL_METADATA } from './registry';
 import { basicAuth } from './middleware/auth';
+import { typeMetadataSchema } from './schema/typeMetadataSchema';
+import { TypeMetadata } from './schema/SdJwtVcTypeMetadataSchema';
+import Ajv2020 from 'ajv/dist/2020.js';
+import addFormats from 'ajv-formats';
 
 const app = express();
 const PORT = config.port;
 
 app.use(cors());
+app.use(express.json());
+
+// ─────────────────────────────────────────────────────────────
+// AJV Validation initialization
+// ─────────────────────────────────────────────────────────────
+
+const ajv = new Ajv2020({
+	allErrors: true,
+	strict: true,
+	allowUnionTypes: true,
+	useDefaults: true,
+	coerceTypes: true
+});
+addFormats(ajv); // optional, for date, email, uri, etc.
 
 // ─────────────────────────────────────────────────────────────
 // Basic info endpoints
@@ -100,6 +118,14 @@ app.get('/type-metadata/all', (_req, res) => {
 	res.json(ALL_METADATA);
 });
 
+/**
+ * GET /type-metadata/schema
+ * Returns the JSON schema for type metadata.
+ */
+app.get('/type-metadata/schema', (_req, res) => {
+	res.json(typeMetadataSchema);
+});
+
 // ─────────────────────────────────────────────────────────────
 // Static frontend
 // ─────────────────────────────────────────────────────────────
@@ -128,6 +154,31 @@ app.get('/', (_req, res) => {
 
 app.get('/edit', basicAuth, (_req, res) => {
 	res.sendFile(path.join(publicPath, 'edit.html'));
+});
+
+// ─────────────────────────────────────────────────────────────
+// Schema validation
+// ─────────────────────────────────────────────────────────────
+
+app.post('/edit', async (req, res) => {
+
+	// zod validation
+	const parsed = TypeMetadata.safeParse(req.body);
+	if (!parsed.success) {
+		return res.status(400).json({ errors: parsed.error });
+	}
+
+	// ajv validation
+	const validate = ajv.compile(typeMetadataSchema);
+	const isValid = validate(req.body);
+	if (!isValid) {
+		return res.status(400).json({ errors: validate.errors });
+	}
+
+	const validData = parsed.data;
+	// TODO vmarkop handle saving valid data
+  	
+  res.json({ message: 'Saved successfully', data: validData });
 });
 
 // ─────────────────────────────────────────────────────────────
