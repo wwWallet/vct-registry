@@ -1,7 +1,9 @@
+import dotenv from 'dotenv';
+dotenv.config({ quiet: true });
 
 export const config = {
-	url: "http://localhost:8097",
-	port: "8097",
+	url: process.env.URL || "http://localhost:8097",
+	port: process.env.PORT || "8097",
 	username: "admin",
 	password: "admin",
 	db_config: {
