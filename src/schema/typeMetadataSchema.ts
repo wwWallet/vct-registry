@@ -11,9 +11,6 @@ export const typeMetadataSchema = {
     "description": {
       "type": "string"
     },
-    "$comment": {
-        "type": "string"
-    },
     "extends": {
       "type": "string"
     },

@@ -5,7 +5,6 @@ export const ehicMetadata = {
 	"vct": "urn:eudi:ehic:1",
 	"name": "EHIC SD-JWT TYPE METADATA",
 	"description": "European Health Insurance Card (EHIC) SD-JWT Verifiable Credential Type Metadata, based on ietf-oauth-sd-jwt-vc (draft 09), using a single language tag (en-US).",
-	"$comment": "Implementation of this example Type Metadata may require Member State-specific clarifications to align with national policies governing the display of included claims.",
 	"display": [
 		{
 			"locale": "en-US",
