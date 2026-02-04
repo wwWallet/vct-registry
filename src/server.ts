@@ -1,17 +1,17 @@
 // src/server.ts
-import express from 'express';
-import cors from 'cors';
-import path from 'path';
-import { config } from '../config';
-import { basicAuth } from './middleware/auth';
-import { typeMetadataSchema } from './schema/typeMetadataSchema';
-import Ajv2020 from 'ajv/dist/2020.js';
-import addFormats from 'ajv-formats';
-import { knex } from 'knex';
-import { getAllVctMetadata, initVctTable } from './db/vct';
-import apiRouter from './routes/api';
-import typeMetadataRouter from './routes/typeMetadata';
-import dbVctRouter from './routes/db';
+import express from "express";
+import cors from "cors";
+import path from "path";
+import { config } from "../config";
+import { basicAuth } from "./middleware/auth";
+import { typeMetadataSchema } from "./schema/typeMetadataSchema";
+import Ajv2020 from "ajv/dist/2020.js";
+import addFormats from "ajv-formats";
+import { knex } from "knex";
+import { getAllVctMetadata, initVctTable } from "./db/vct";
+import apiRouter from "./routes/api";
+import typeMetadataRouter from "./routes/typeMetadata";
+import dbVctRouter from "./routes/db";
 
 const app = express();
 const PORT = config.port;
@@ -39,7 +39,7 @@ const ajv = new Ajv2020({
 	strict: true,
 	allowUnionTypes: true,
 	useDefaults: true,
-	coerceTypes: true
+	coerceTypes: true,
 });
 addFormats(ajv); // support uri, etc.
 export const validateAjv = ajv.compile(typeMetadataSchema);
@@ -48,7 +48,7 @@ export const validateAjv = ajv.compile(typeMetadataSchema);
 // Basic info endpoints
 // ─────────────────────────────────────────────────────────────
 
-app.use('/api', apiRouter);
+app.use("/api", apiRouter);
 
 // ─────────────────────────────────────────────────────────────
 // VCT registry API (VCT-focused)
@@ -58,8 +58,7 @@ app.use('/api', apiRouter);
  * GET /api/vct
  * Returns a simple list of all VCTs + names.
  */
-app.get('/api/vct', async (_req, res) => {
-
+app.get("/api/vct", async (_req, res) => {
 	const result = await getAllVctMetadata(db);
 
 	const list = result.map((meta) => ({
@@ -74,43 +73,43 @@ app.get('/api/vct', async (_req, res) => {
 // VCT API compatible with demo-issuer style (by vct)
 // ─────────────────────────────────────────────────────────────
 
-app.use('/type-metadata', typeMetadataRouter);
+app.use("/type-metadata", typeMetadataRouter);
 
 // ─────────────────────────────────────────────────────────────
 // Static frontend
 // ─────────────────────────────────────────────────────────────
 
-const publicPath = path.join(__dirname, '../public');
+const publicPath = path.join(__dirname, "../public");
 
 // 30-day immutable cache for images
 app.use(
-	'/images',
-	express.static(path.join(publicPath, 'images'), {
-		maxAge: '30d',
+	"/images",
+	express.static(path.join(publicPath, "images"), {
+		maxAge: "30d",
 		immutable: true,
-	})
+	}),
 );
 
 // No caching for the rest of the UI (HTML, JS, CSS)
 app.use(
 	express.static(publicPath, {
 		maxAge: 0,
-	})
+	}),
 );
 
-app.get('/', (_req, res) => {
-	res.sendFile(path.join(publicPath, 'index.html'));
+app.get("/", (_req, res) => {
+	res.sendFile(path.join(publicPath, "index.html"));
 });
 
-app.get('/edit', basicAuth, (_req, res) => {
-	res.sendFile(path.join(publicPath, 'edit.html'));
+app.get("/edit", basicAuth, (_req, res) => {
+	res.sendFile(path.join(publicPath, "edit.html"));
 });
 
 // ─────────────────────────────────────────────────────────────
 // DB CRUD operations
 // ─────────────────────────────────────────────────────────────
 
-app.use('/vct', basicAuth, dbVctRouter);
+app.use("/vct", basicAuth, dbVctRouter);
 
 // ─────────────────────────────────────────────────────────────
 // Start server

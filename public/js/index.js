@@ -1,45 +1,44 @@
-import { fetchJson } from './app.js';
+import { fetchJson } from "./app.js";
 
 async function loadVctList() {
-	const loading = document.getElementById('vct-loading');
-	const controls = document.getElementById('vct-controls');
-	const errorBox = document.getElementById('vct-error');
-	const select = document.getElementById('vct-select');
-	const metaBox = document.getElementById('vct-meta');
-	const dataBox = document.getElementById('vct-data');
-	const sourceBox = document.getElementById('vct-source');
-    const editBox = document.getElementById('vct-edit');
-
+	const loading = document.getElementById("vct-loading");
+	const controls = document.getElementById("vct-controls");
+	const errorBox = document.getElementById("vct-error");
+	const select = document.getElementById("vct-select");
+	const metaBox = document.getElementById("vct-meta");
+	const dataBox = document.getElementById("vct-data");
+	const sourceBox = document.getElementById("vct-source");
+	const editBox = document.getElementById("vct-edit");
 
 	loading.hidden = false;
 	controls.hidden = true;
 	errorBox.hidden = true;
-    editBox.hidden = true;
-	errorBox.textContent = '';
-	select.innerHTML = '';
-	metaBox.innerHTML = '';
-	dataBox.textContent = '';
-	sourceBox.textContent = '';
+	editBox.hidden = true;
+	errorBox.textContent = "";
+	select.innerHTML = "";
+	metaBox.innerHTML = "";
+	dataBox.textContent = "";
+	sourceBox.textContent = "";
 
 	try {
-		const list = await fetchJson('/api/vct'); // [{ vct, name }]
+		const list = await fetchJson("/api/vct"); // [{ vct, name }]
 
 		if (!Array.isArray(list) || list.length === 0) {
 			loading.hidden = true;
 			errorBox.hidden = false;
-			errorBox.textContent = 'No VCT entries found.';
+			errorBox.textContent = "No VCT entries found.";
 			return;
 		}
 
 		// "(All metadata)" first
-		const allOpt = document.createElement('option');
-		allOpt.value = '__all__';
-		allOpt.textContent = '(All metadata)';
+		const allOpt = document.createElement("option");
+		allOpt.value = "__all__";
+		allOpt.textContent = "(All metadata)";
 		select.appendChild(allOpt);
 
 		// Add actual VCT entries
 		for (const entry of list) {
-			const opt = document.createElement('option');
+			const opt = document.createElement("option");
 			opt.value = entry.vct;
 			opt.textContent = `${entry.name} (${entry.vct})`;
 			select.appendChild(opt);
@@ -48,17 +47,17 @@ async function loadVctList() {
 		loading.hidden = true;
 
 		// Default to showing ALL
-		select.value = '__all__';
+		select.value = "__all__";
 		await loadVctSelection(select.value);
 
 		controls.hidden = false;
 
 		// On change
-		select.addEventListener('change', async () => {
+		select.addEventListener("change", async () => {
 			await loadVctSelection(select.value);
 		});
 	} catch (err) {
-		console.error('Error loading VCT list:', err);
+		console.error("Error loading VCT list:", err);
 		loading.hidden = false;
 		errorBox.hidden = false;
 		errorBox.textContent = `Failed to load VCT list: ${err.message}`;
@@ -66,25 +65,25 @@ async function loadVctList() {
 }
 
 async function loadVctSelection(value) {
-	const errorBox = document.getElementById('vct-error');
-	const metaBox = document.getElementById('vct-meta');
-	const dataBox = document.getElementById('vct-data');
-	const sourceBox = document.getElementById('vct-source');
-	const editBox = document.getElementById('vct-edit');
+	const errorBox = document.getElementById("vct-error");
+	const metaBox = document.getElementById("vct-meta");
+	const dataBox = document.getElementById("vct-data");
+	const sourceBox = document.getElementById("vct-source");
+	const editBox = document.getElementById("vct-edit");
 
-	const editValue = document.getElementById('vct-edit-value');
+	const editValue = document.getElementById("vct-edit-value");
 
 	errorBox.hidden = true;
-	metaBox.innerHTML = '';
-	dataBox.textContent = 'Loading…';
-	sourceBox.textContent = '';
+	metaBox.innerHTML = "";
+	dataBox.textContent = "Loading…";
+	sourceBox.textContent = "";
 	editBox.hidden = true;
 
 	try {
 		const origin = window.location.origin; // 👈 dynamic domain
 
-		if (value === '__all__') {
-			const url = '/type-metadata/all';
+		if (value === "__all__") {
+			const url = "/type-metadata/all";
 			const all = await fetchJson(url);
 
 			const fullUrl = `${origin}${url}`; // http://localhost:5001/type-metadata/all
@@ -111,9 +110,10 @@ async function loadVctSelection(value) {
 		metaBox.innerHTML = `
       <div><strong>VCT:</strong> <code>${value}</code></div>
       <div><strong>Name:</strong> ${metadata.name}</div>
-      ${metadata.description
-				? `<div><strong>Description:</strong> ${metadata.description}</div>`
-				: ''
+      ${
+				metadata.description
+					? `<div><strong>Description:</strong> ${metadata.description}</div>`
+					: ""
 			}
     `;
 
@@ -124,9 +124,9 @@ async function loadVctSelection(value) {
 	} catch (err) {
 		errorBox.hidden = false;
 		errorBox.textContent = `Failed to load metadata: ${err.message}`;
-		dataBox.textContent = '';
-		sourceBox.textContent = '';
+		dataBox.textContent = "";
+		sourceBox.textContent = "";
 	}
 }
 
-window.addEventListener('DOMContentLoaded', loadVctList);
+window.addEventListener("DOMContentLoaded", loadVctList);
