@@ -154,14 +154,23 @@ body {
 	margin-bottom: 12px;
 }
 
-.error {
+.error, .success {
 	margin-top: 8px;
 	padding: 10px 12px;
+	border-radius: 8px;
+	font-size: 0.85rem;
+}
+
+.error {
 	background: #fee2e2;
 	color: #991b1b;
 	border: 1px solid #fecaca;
-	border-radius: 8px;
-	font-size: 0.85rem;
+}
+
+.success {
+	background: #d1fae5;
+	color: #16a34a;
+	border: 1px solid #a7f3d0;
 }
 
 /* Code styling */

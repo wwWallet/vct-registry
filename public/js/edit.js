@@ -55,20 +55,40 @@ document.getElementById('vct-submit-btn').addEventListener('click', async () => 
 
   const result = await res.json();
   if (!res.ok) {
-    showErrors(result.errors); // inline validation
+    showErrors(result.errors);
   } else {
-    showSuccess(result.message); // success toast
+    showSuccess();
   }
 });
 
-// TODO vmarkop implement UI feedback (or skip to saving)
-function showSuccess(message) {
-  console.log('success! ', message);
+function showSuccess() {
+  const successBox = document.getElementById('vct-success');
+  successBox.hidden = false;
+  successBox.textContent = `Successfully saved Type Metadata. Redirecting to home page...`;
+
+  setTimeout(() => {
+    hideElement('vct-success');
+    window.location.href = '/';
+  }, 5000);
 }
 
-// TODO vmarkop implement UI form control
+function hideElement(elementId) {
+  const element = document.getElementById(elementId);
+  element.hidden = true;
+}
+
+
 function showErrors(errors) {
-  console.log('errors: ', errors);
+  // TODO vmarkop contemplate adding custom JSONEditor validation errors
+
+  const errorBox = document.getElementById('vct-error');
+  errorBox.hidden = false;
+  errorBox.textContent = `Cannot save Type Metadata. The following errors were found:
+  ${JSON.stringify(errors)}`;
+
+  setTimeout(() => {
+    hideElement('vct-error');
+  }, 5000);
 }
 
 
