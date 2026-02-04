@@ -45,6 +45,10 @@ async function loadSelectedVct() {
 document
 	.getElementById("vct-submit-btn")
 	.addEventListener("click", async () => {
+		if (!confirm("Are you sure you want to edit this VC Type Metadata entry? This action is irreversible.")) {
+			return;
+		}
+
 		const editorData = editor.get();
 
 		const res = await fetch("/vct/edit", {
@@ -58,16 +62,39 @@ document
 
 		const result = await res.json();
 		if (!res.ok) {
-			showErrors(result);
+			showErrors("Failed to save VC Type Metadata", result);
 		} else {
-			showSuccess();
+			showSuccess("Successfully saved VC Type Metadata");
 		}
 	});
 
-function showSuccess() {
+document
+	.getElementById("vct-delete-btn")
+	.addEventListener("click", async () => {
+		if (!confirm("Are you sure you want to delete this VC Type Metadata entry? This action is irreversible.")) {
+			return;
+		}
+
+		const res = await fetch("/vct/delete", {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
+				vct: vctUrn,
+			}),
+		});
+
+		const result = await res.json();
+		if (!res.ok) {
+			showErrors("Failed to delete VC Type Metadata", result);
+		} else {
+			showSuccess("Successfully deleted VC Type Metadata");
+		}
+	});
+
+function showSuccess(message) {
 	const successBox = document.getElementById("vct-success");
 	successBox.hidden = false;
-	successBox.textContent = `Successfully saved Type Metadata. Redirecting to home page...`;
+	successBox.textContent = `${message}. Redirecting to home page...`;
 
 	setTimeout(() => {
 		hideElement("vct-success");
@@ -75,22 +102,22 @@ function showSuccess() {
 	}, 5000);
 }
 
-function hideElement(elementId) {
-	const element = document.getElementById(elementId);
-	element.hidden = true;
-}
-
-function showErrors(errors) {
+function showErrors(message, errors) {
 	// TODO vmarkop contemplate adding custom JSONEditor validation errors
 
 	const errorBox = document.getElementById("vct-error");
 	errorBox.hidden = false;
-	errorBox.textContent = `Cannot save Type Metadata. The following errors were found:
+	errorBox.textContent = `${message}. The following errors were found:
   ${JSON.stringify(errors)}`;
 
 	setTimeout(() => {
 		hideElement("vct-error");
 	}, 5000);
+}
+
+function hideElement(elementId) {
+	const element = document.getElementById(elementId);
+	element.hidden = true;
 }
 
 let editor;

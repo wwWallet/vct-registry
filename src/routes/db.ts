@@ -139,16 +139,16 @@ dbVctRouter.post("/edit", async (req, res) => {
 });
 
 dbVctRouter.post("/delete", async (req, res) => {
-	const rawVct = req.query.vct;
+	const { vct } = req.body;
 
-	if (!rawVct || typeof rawVct !== "string") {
+	if (!vct || typeof vct !== "string") {
 		return res.status(400).json({
 			error: "missing_vct",
-			message: 'Query parameter "vct" is required',
+			message: 'Body parameter "vct" is required',
 		});
 	}
 
-	const decodedVct = decodeVct(rawVct);
+	const decodedVct = decodeVct(vct);
 	const result = await deleteVctByUrn(db, decodedVct);
 
 	if (!result) {

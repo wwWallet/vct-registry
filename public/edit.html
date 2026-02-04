@@ -19,10 +19,16 @@
 
 	<main class="container">
 		<section class="card">
-			<h2>Edit Verifiable Credential Type Metadata</h2>
+			<div class="edit-vct-title-back">
+				<h2>Edit Verifiable Credential Type Metadata</h2>
+				<a class="vct-back-link" href="/index.html">&larr; Return to VCT List</a>
+			</div>
 			<div id="selected-vct-name" class="selected-vct"></div>
 			<div id="jsoneditor" class="jsoneditor-host"></div>
-			<button id="vct-submit-btn" type="button" class="vct-edit-btn">Submit Changes</button>
+			<div class="vct-edit-button-container">
+				<button id="vct-submit-btn" type="button" class="vct-edit-btn submit">Submit Changes</button>
+				<button id="vct-delete-btn" type="button" class="vct-edit-btn delete">Delete VCT</button>
+			</div>
 
 			<div id="vct-error" class="error" hidden></div>
 			<div id="vct-success" class="success" hidden></div>

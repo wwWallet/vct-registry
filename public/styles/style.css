@@ -110,6 +110,19 @@ body {
 	margin-top: 4px;
 }
 
+.vct-back-link {
+	font-size: 0.9rem;
+	color: #2563eb;
+	text-decoration: none;
+}
+
+.vct-edit-button-container {
+	display: flex;
+	flex-direction: row;
+	gap: 8px;
+	margin-top: 12px;
+}
+
 .vct-edit-btn {
 	width: 100%;
 	font-size: 0.8rem;
@@ -121,9 +134,24 @@ body {
 	transition: background-color 0.15s ease, border-color 0.15s ease;
 }
 
-.vct-edit-btn:hover {
-	background: #f3f4f6;
-	border-color: #d1d5db;
+.vct-edit-btn.submit {
+	flex: 4;
+}
+
+.vct-edit-btn.delete {
+	flex: 1;
+}
+
+.vct-edit-btn.submit:hover {
+	background: #d1fae5;
+	border-color: #a7f3d0;
+	color: #16a34a;
+}
+
+.vct-edit-btn.delete:hover {
+	background: #fee2e2;
+	border-color: #fecaca;
+	color: #991b1b;
 }
 
 /* JSON output box */
@@ -145,6 +173,14 @@ body {
 .vct-source {
 	font-size: 0.8rem;
 	color: #6b7280;
+}
+
+.edit-vct-title-back {
+	display: flex;
+	justify-content: space-between;
+	/* align-items: space-between; */
+	/* gap: 16px;
+	margin-bottom: 16px; */
 }
 
 /* Error + status */
