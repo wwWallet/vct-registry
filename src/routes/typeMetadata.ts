@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { decodeVct } from "../util";
-import { getAllVctMetadata, getVctByName } from "../db/vct";
+import { getAllVctMetadata, getVctByUrn } from "../db/vct";
 import { typeMetadataSchema } from "../schema/typeMetadataSchema";
 import { db } from "../server"; // TODO vmarkop is this ok?
 
@@ -23,7 +23,7 @@ typeMetadataRouter.get("/", async (req, res) => {
 	}
 
 	const decodedVct = decodeVct(rawVct);
-	const metadata = await getVctByName(db, decodedVct);
+	const metadata = await getVctByUrn(db, decodedVct);
 
 	if (!metadata) {
 		return res.status(404).json({

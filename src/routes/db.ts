@@ -2,7 +2,7 @@ import { Router } from "express";
 import { decodeVct } from "../util";
 import { TypeMetadata } from "../schema/SdJwtVcTypeMetadataSchema";
 import { db, validateAjv } from "../server";
-import { createVct, deleteVctByName, updateVctByName } from "../db/vct";
+import { createVct, deleteVctByUrn, updateVctByUrn } from "../db/vct";
 
 /** /vct */
 const dbVctRouter = Router();
@@ -120,12 +120,12 @@ dbVctRouter.post("/edit", async (req, res) => {
 		});
 	}
 
-	const result = await updateVctByName(db, decodedVct, parsedVctContent);
+	const result = await updateVctByUrn(db, decodedVct, parsedVctContent);
 
 	if (result === 0) {
 		return res.status(404).json({
 			error: "unknown_vct",
-			message: `VCT with name "${decodedVct}" not found. Updating failed.`,
+			message: `VCT with urn "${decodedVct}" not found. Updating failed.`,
 		});
 	}
 
@@ -149,12 +149,12 @@ dbVctRouter.post("/delete", async (req, res) => {
 	}
 
 	const decodedVct = decodeVct(rawVct);
-	const result = await deleteVctByName(db, decodedVct);
+	const result = await deleteVctByUrn(db, decodedVct);
 
 	if (!result) {
 		return res.status(404).json({
 			error: "unknown_vct",
-			message: `VCT with name "${decodedVct}" not found. Deleting failed.`,
+			message: `VCT with urn "${decodedVct}" not found. Deleting failed.`,
 		});
 	}
 

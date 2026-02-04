@@ -9,24 +9,24 @@ import { TypeMetadata } from "../schema/SdJwtVcTypeMetadataSchema";
 
 const initialDbContent = [
 	{
-		name: diplomaMetadata.vct,
-		content: diplomaMetadata,
+		urn: diplomaMetadata.vct,
+		metadata: diplomaMetadata,
 	},
 	{
-		name: ehicMetadata.vct,
-		content: ehicMetadata,
+		urn: ehicMetadata.vct,
+		metadata: ehicMetadata,
 	},
 	{
-		name: pda1Metadata.vct,
-		content: pda1Metadata,
+		urn: pda1Metadata.vct,
+		metadata: pda1Metadata,
 	},
 	{
-		name: pidMetadata.vct,
-		content: pidMetadata,
+		urn: pidMetadata.vct,
+		metadata: pidMetadata,
 	},
 	{
-		name: porMetadata.vct,
-		content: porMetadata,
+		urn: porMetadata.vct,
+		metadata: porMetadata,
 	},
 ];
 
@@ -37,16 +37,14 @@ export async function initVctTable(knex: Knex) {
 		if (!exists) {
 			//TODO vmarkop refactor to urn (primary) and metadata (json)
 			await knex.schema.createTable("vct", (table) => {
-				table.uuid("id").primary();
-				table.string("name").notNullable().unique();
-				table.json("content").notNullable();
+				table.string("urn").primary();
+				table.json("metadata").notNullable();
 			});
 
 			for (const vct of initialDbContent) {
 				await knex("vct").insert({
-					id: randomUUID(),
-					name: vct.name,
-					content: vct.content,
+					urn: vct.urn,
+					metadata: vct.metadata,
 				});
 			}
 		}
@@ -61,15 +59,13 @@ export async function initVctTable(knex: Knex) {
  */
 export async function createVct(
 	knex: Knex,
-	vctName: string,
-	vctContent: object,
-	vctId?: UUID,
+	vctUrn: string,
+	vctMetadata: object,
 ): Promise<number> {
 	try {
 		const result = await knex("vct").insert({
-			id: vctId || randomUUID(),
-			name: vctName,
-			content: vctContent,
+			urn: vctUrn,
+			metadata: vctMetadata,
 		})[0];
 
 		if (!result) {
@@ -83,16 +79,16 @@ export async function createVct(
 	}
 }
 
-export async function getVctByName(
+export async function getVctByUrn(
 	knex: Knex,
-	vctName: string,
+	vctUrn: string,
 ): Promise<TypeMetadata | undefined> {
 	try {
 		const result = await knex("vct")
-			.where("name", vctName)
-			.select("content")
+			.where("urn", vctUrn)
+			.select("metadata")
 			.first();
-		return result ? (JSON.parse(result.content) as TypeMetadata) : result;
+		return result ? (JSON.parse(result.metadata) as TypeMetadata) : result;
 	} catch (error) {
 		console.error("Error fetching VCT: ", error);
 		return undefined;
@@ -103,23 +99,23 @@ export async function getVctByName(
  * Should update exactly one vct entry.
  * @returns an array of IDs of updated rows
  */
-export async function updateVctByName(
+export async function updateVctByUrn(
 	knex: Knex,
-	vctName: string,
-	vctContent: object,
+	vctUrn: string,
+	vctMetadata: object,
 ): Promise<number> {
 	try {
 		const result: number = await knex("vct")
-			.where("name", vctName)
+			.where("urn", vctUrn)
 			.update({
-				content: JSON.stringify(vctContent),
+				metadata: JSON.stringify(vctMetadata),
 			});
 
 		if (result === 0) {
-			console.warn(`No VCT found with name "${vctName}" to update.`);
+			console.warn(`No VCT found with urn "${vctUrn}" to update.`);
 		} else if (result > 1) {
 			console.warn(
-				`Multiple VCTs updated with name "${vctName}". This should not happen if "name" is unique.`,
+				`Multiple VCTs updated with urn "${vctUrn}". This should not happen if "urn" is unique.`,
 			);
 		}
 
@@ -134,18 +130,18 @@ export async function updateVctByName(
  * Should delete exactly one vct entry.
  * @returns the number of deleted rows, or -1 if an error occurred
  */
-export async function deleteVctByName(
+export async function deleteVctByUrn(
 	knex: Knex,
-	vctName: string,
+	vctUrn: string,
 ): Promise<number> {
 	try {
-		const result = await knex("vct").where("name", vctName).del();
+		const result = await knex("vct").where("urn", vctUrn).del();
 
 		if (result === 0) {
-			console.warn(`No VCT found with name "${vctName}" to delete.`);
+			console.warn(`No VCT found with urn "${vctUrn}" to delete.`);
 		} else if (result > 1) {
 			console.warn(
-				`Multiple VCTs deleted with name "${vctName}". This should not happen if "name" is unique.`,
+				`Multiple VCTs deleted with urn "${vctUrn}". This should not happen if "urn" is unique.`,
 			);
 		}
 
@@ -158,9 +154,9 @@ export async function deleteVctByName(
 
 export async function getAllVctMetadata(knex: Knex): Promise<TypeMetadata[]> {
 	try {
-		const result: Array<{ content: string }> =
-			await knex("vct").select("content");
-		return result.map((row) => JSON.parse(row.content) as TypeMetadata);
+		const result: Array<{ metadata: string }> =
+			await knex("vct").select("metadata");
+		return result.map((row) => JSON.parse(row.metadata) as TypeMetadata);
 	} catch (error) {
 		console.error("Error fetching VCTs:", error);
 		return [];
