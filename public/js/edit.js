@@ -10,9 +10,6 @@ async function initializeEditor() {
 
   var schema = await fetchJson('/type-metadata/schema');
 
-  delete schema.$schema;  // JSONEditor can't handle $schema refs, remove it
-  // schema.additionalProperties = true; // TODO vmarkop do we want this?
-
   const options = {
     mode: "code",
     mainMenuBar: false,
@@ -33,6 +30,7 @@ async function initializeEditor() {
 async function loadSelectedVct() {
 	const params = new URLSearchParams(window.location.search);
 	const value = params.get('vct'); // ?vct=urn:eudi:pid:1
+  vctUrn = value;
 
 	const encoded = encodeURIComponent(value);
 	const fetchMetadataUrl = `/type-metadata?vct=${encoded}`;
@@ -45,17 +43,20 @@ async function loadSelectedVct() {
 }
 
 document.getElementById('vct-submit-btn').addEventListener('click', async () => {
-  const data = editor.get();
+  const editorData = editor.get();
 
-  const res = await fetch('/edit', {
+  const res = await fetch('/vct/edit', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data)
+    body: JSON.stringify({
+      vct: vctUrn,
+      metadata: editorData
+    })
   });
 
   const result = await res.json();
   if (!res.ok) {
-    showErrors(result.errors);
+    showErrors(result);
   } else {
     showSuccess();
   }
@@ -93,4 +94,5 @@ function showErrors(errors) {
 
 
 let editor;
+let vctUrn;
 window.addEventListener('DOMContentLoaded', initializeEditorAndLoadVct);
