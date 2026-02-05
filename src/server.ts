@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import path from "path";
 import { config } from "../config";
+import knexConfig from "../knexfile";
 import { basicAuth } from "./middleware/auth";
 import { typeMetadataSchema } from "./schema/typeMetadataSchema";
 import Ajv2020 from "ajv/dist/2020.js";
@@ -27,7 +28,7 @@ app.use(express.json());
 // Database initialization
 // ─────────────────────────────────────────────────────────────
 
-export const db = knex(config.db_config);
+export const db = knex(knexConfig);
 initVctTable(db);
 
 // ─────────────────────────────────────────────────────────────

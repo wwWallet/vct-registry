@@ -1,52 +1,9 @@
 import { Knex } from "knex";
-import { diplomaMetadata } from "../typeMetadata/diploma";
-import { ehicMetadata } from "../typeMetadata/ehic";
-import { pda1Metadata } from "../typeMetadata/pda1";
-import { pidMetadata } from "../typeMetadata/pid";
-import { porMetadata } from "../typeMetadata/por";
 import { TypeMetadata } from "../schema/SdJwtVcTypeMetadataSchema";
 
-const initialDbContentDefault = [
-	{
-		urn: diplomaMetadata.vct,
-		metadata: diplomaMetadata,
-	},
-	{
-		urn: ehicMetadata.vct,
-		metadata: ehicMetadata,
-	},
-	{
-		urn: pda1Metadata.vct,
-		metadata: pda1Metadata,
-	},
-	{
-		urn: pidMetadata.vct,
-		metadata: pidMetadata,
-	},
-	{
-		urn: porMetadata.vct,
-		metadata: porMetadata,
-	},
-];
-
-export async function initVctTable(knex: Knex, initialDbContent: Array<{ urn: string; metadata: object }> = initialDbContentDefault) {
+export async function initVctTable(knex: Knex) {
 	try {
-		const exists = await knex.schema.hasTable("vct");
-
-		if (!exists) {
-			//TODO vmarkop refactor to urn (primary) and metadata (json)
-			await knex.schema.createTable("vct", (table) => {
-				table.string("urn").primary();
-				table.json("metadata").notNullable();
-			});
-
-			for (const vct of initialDbContent) {
-				await knex("vct").insert({
-					urn: vct.urn,
-					metadata: vct.metadata,
-				});
-			}
-		}
+		await knex.migrate.latest();
 	} catch (error) {
 		console.error("Error initializing VCT table: ", error);
 	}

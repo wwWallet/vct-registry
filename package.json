@@ -10,7 +10,7 @@
 		"dotenv": "^17.2.3",
 		"express": "^5.2.1",
 		"knex": "^3.1.0",
-		"mysql": "^2.18.1",
+		"mysql2": "^3.16.3",
 		"zod": "^4.3.6"
 	},
 	"devDependencies": {
@@ -29,6 +29,8 @@
 		"start": "node dist/src/server.js",
 		"test": "vitest",
 		"test:run": "vitest run",
-		"test:watch": "vitest watch"
+		"test:watch": "vitest watch",
+		"migration:run": "knex migrate:latest",
+		"migration:revert": "knex migrate:rollback"
 	}
 }

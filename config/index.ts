@@ -7,7 +7,6 @@ export const config = {
 	username: process.env.ADMIN_USERNAME || "admin",
 	password: process.env.ADMIN_PASSWORD || "admin",
 	db_config: {
-		client: process.env.DB_CLIENT || 'mysql',
 		connection: {
 			host: process.env.DB_HOST || 'localhost',
 			port: parseInt(process.env.DB_PORT || "3307"),
