@@ -4,16 +4,16 @@ dotenv.config({ quiet: true });
 export const config = {
 	url: process.env.URL || "http://localhost:8097",
 	port: process.env.PORT || "8097",
-	username: "admin",
-	password: "admin",
+	username: process.env.ADMIN_USERNAME || "admin",
+	password: process.env.ADMIN_PASSWORD || "admin",
 	db_config: {
-		client: 'mysql',
+		client: process.env.DB_CLIENT || 'mysql',
 		connection: {
-			host: 'localhost',
-			port: 3307,
-			user: 'root',
-			password: 'root',
-			database: 'vct_registry',
+			host: process.env.DB_HOST || 'localhost',
+			port: parseInt(process.env.DB_PORT || "3307"),
+			user: process.env.DB_USER || 'root',
+			password: process.env.DB_PASSWORD || 'root',
+			database: process.env.DB_NAME || 'vct_registry',
 		},
 	}
 }
