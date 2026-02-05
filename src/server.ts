@@ -13,7 +13,7 @@ import apiRouter from "./routes/api";
 import typeMetadataRouter from "./routes/typeMetadata";
 import dbVctRouter from "./routes/db";
 
-const app = express();
+export const app = express();
 const PORT = config.port;
 
 // ─────────────────────────────────────────────────────────────

@@ -1,5 +1,4 @@
 import { Knex } from "knex";
-import { randomUUID, UUID } from "crypto";
 import { diplomaMetadata } from "../typeMetadata/diploma";
 import { ehicMetadata } from "../typeMetadata/ehic";
 import { pda1Metadata } from "../typeMetadata/pda1";
@@ -7,7 +6,7 @@ import { pidMetadata } from "../typeMetadata/pid";
 import { porMetadata } from "../typeMetadata/por";
 import { TypeMetadata } from "../schema/SdJwtVcTypeMetadataSchema";
 
-const initialDbContent = [
+const initialDbContentDefault = [
 	{
 		urn: diplomaMetadata.vct,
 		metadata: diplomaMetadata,
@@ -30,7 +29,7 @@ const initialDbContent = [
 	},
 ];
 
-export async function initVctTable(knex: Knex) {
+export async function initVctTable(knex: Knex, initialDbContent: Array<{ urn: string; metadata: object }> = initialDbContentDefault) {
 	try {
 		const exists = await knex.schema.hasTable("vct");
 

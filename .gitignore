@@ -17,3 +17,4 @@ dist/
 logs/
 *.log
 .env
+.env.test
