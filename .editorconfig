@@ -8,6 +8,7 @@ trim_trailing_whitespace = true
 
 [{*.{Dockerfile,js,jsx,ts,tsx},Dockerfile}]
 indent_style = tab
+indent_size = 4
 
 [public/styles/**.css]
 indent_style = tab

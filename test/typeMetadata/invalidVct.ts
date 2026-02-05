@@ -1,15 +1,21 @@
 import { config } from "../../config";
 import { createSRI } from "../../src/sriGenerator";
 
-export const diplomaMetadata = {
-	"vct": 'urn:credential:diploma',
-	"name": "Diploma Credential",
-	"description": "This is a Bachelor Diploma verifiable credential",
+export const invalidTestVCTypeMetadata = {
+	"vct": 'urn:vct:test',
+	"name": "Test Metadata",
+	"description": [
+		{
+			"locale": "en-US",
+			"text": "This is an invalid test verifiable credential type metadata file, based on urn:credential:diploma. This description field is invalid because it is an array instead of a string."
+		}
+	],
+	"$comment": "This file is intentionally invalid for testing purposes - it does not conform to the schema and should fail validation.",
 	"display": [
 		{
 			"locale": "en-US",
-			"name": "Diploma",
-			"description": "Bachelor Diploma SD-JWT VC",
+			"name": "Test",
+			"description": "Test SD-JWT VC",
 			"rendering": {
 				"simple": {
 					"logo": {

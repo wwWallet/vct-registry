@@ -4,7 +4,7 @@ import { createSRI } from "../../src/sriGenerator";
 export const testVCTypeMetadata = {
 	"vct": 'urn:vct:test',
 	"name": "Test Metadata",
-	"description": "This is a Test verifiable credential type metadata file",
+	"description": "This is a Test verifiable credential type metadata file, based on urn:credential:diploma",
 	"display": [
 		{
 			"locale": "en-US",
