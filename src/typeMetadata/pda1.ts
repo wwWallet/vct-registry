@@ -3,8 +3,8 @@ import { createSRI } from "../sriGenerator";
 
 export const pda1Metadata = {
 	"vct": "urn:eudi:pda1:1",
-	"name": "DC4EU PDA1 SD-JWT VCTM",
-	"description": "DC4EU Portable Document A1 (PDA1) SD-JWT Verifiable Credential Type Metadata, based on ietf-oauth-sd-jwt-vc (draft 09), using a single language tag (en-US).",
+	"name": "PDA1 SD-JWT VC Type Metadata",
+	"description": "DC4EU Portable Document A1 (PDA1) SD-JWT Verifiable Credential Type Metadata, based on ietf-oauth-sd-jwt-vc (draft 13), using a single language tag (en-US).",
 	"display": [
 		{
 			"locale": "en-US",

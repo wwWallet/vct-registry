@@ -3,8 +3,8 @@ import { createSRI } from "../sriGenerator";
 
 export const porMetadata = {
 	"vct": "urn:eu.europa.ec.eudi:por:1",
-	"name": "POTENTIAL POR SD-JWT VCTM",
-	"description": "POTENTIAL Power of Representation (POR) SD-JWT Verifiable Credential Type Metadata, based on ietf-oauth-sd-jwt-vc (draft 09), using a single language tag (en-US).",
+	"name": "POR SD-JWT VC Type Metadata",
+	"description": "Power of Representation (POR) SD-JWT Verifiable Credential Type Metadata, based on ietf-oauth-sd-jwt-vc (draft 09), using a single language tag (en-US).",
 	"display": [
 		{
 			"locale": "en-US",

@@ -3,8 +3,8 @@ import { createSRI } from "../sriGenerator";
 
 export const ehicMetadata = {
 	"vct": "urn:eudi:ehic:1",
-	"name": "EHIC SD-JWT TYPE METADATA",
-	"description": "European Health Insurance Card (EHIC) SD-JWT Verifiable Credential Type Metadata, based on ietf-oauth-sd-jwt-vc (draft 09), using a single language tag (en-US).",
+	"name": "EHIC SD-JWT VC TYPE METADATA",
+	"description": "European Health Insurance Card (EHIC) SD-JWT Verifiable Credential Type Metadata, based on ietf-oauth-sd-jwt-vc (draft 13), using a single language tag (en-US).",
 	"display": [
 		{
 			"locale": "en-US",
