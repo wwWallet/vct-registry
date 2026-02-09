@@ -122,8 +122,9 @@ function showErrors(message, errors) {
 
 	const errorBox = document.getElementById("vct-error");
 	errorBox.hidden = false;
-	errorBox.textContent = `${message}. The following errors were found:
-  ${JSON.stringify(errors)}`;
+	errorBox.textContent = `${message}.
+		The following errors were found:
+		${errors.message}`;
 
 	setTimeout(() => {
 		hideElement("vct-error");
