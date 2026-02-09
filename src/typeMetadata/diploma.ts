@@ -3,7 +3,7 @@ import { createSRI } from "../sriGenerator";
 
 export const diplomaMetadata = {
 	"vct": 'urn:credential:diploma',
-	"name": "Diploma Credential",
+	"name": "Diploma VC Type Metadata",
 	"description": "This is a Bachelor Diploma verifiable credential",
 	"display": [
 		{

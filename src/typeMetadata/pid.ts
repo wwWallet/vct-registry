@@ -3,9 +3,8 @@ import { config } from "../../config";
 
 export const pidMetadata = {
 	"vct": "urn:eudi:pid:1",
-	"name": "Example ARF 1.8 PID SD-JWT TYPE METADATA",
-	"description": "Example PID SD-JWT Verifiable Credential Type Metadata, based on ietf-oauth-sd-jwt-vc (draft 09), using a single language tag (en-US). Adheres to PID Rulebook ARF 1.8 (urn:eudi:pid:1) and later, as of the time of publication.",
-	"$comment": "Implementation of this example type metadata may require Member State–specific clarifications to align with national policies governing the display of included claims.",
+	"name": "PID SD-JWT VC Type Metadata",
+	"description": "Example PID SD-JWT Verifiable Credential Type Metadata, based on ietf-oauth-sd-jwt-vc (draft 13), using a single language tag (en-US). Adheres to PID Rulebook ARF 1.8 (urn:eudi:pid:1) and later, as of the time of publication.",
 	"display": [
 		{
 			"locale": "en-US",
