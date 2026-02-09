@@ -1,4 +1,4 @@
-import { fetchJson } from "./app.js";
+import { decodeVct, fetchJson } from "./app.js";
 
 async function initializeEditorAndLoadVct() {
 	await initializeEditor();
@@ -15,6 +15,7 @@ async function initializeEditor() {
 		mainMenuBar: false,
 		statusBar: false,
 		schema: schema,
+		onValidate: validateUrn,
 		onValidationError: function (errors) {
 			if (errors.length > 0) {
 				document.querySelector("#vct-submit-btn").disabled = true;
@@ -25,6 +26,20 @@ async function initializeEditor() {
 	};
 
 	editor = new JSONEditor(container, options);
+}
+
+function validateUrn(value) {
+
+	const errors = [];
+
+	if (value && vctUrn && value.vct != decodeVct(vctUrn)) {
+		errors.push({
+        path: ["vct"],
+        message: "Cannot edit the urn of a VCT."
+      });
+	}
+
+	return errors;
 }
 
 async function loadSelectedVct() {

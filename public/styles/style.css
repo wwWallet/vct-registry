@@ -142,18 +142,18 @@ body {
 	flex: 1;
 }
 
-.vct-edit-btn:hover {
+.vct-edit-btn:enabled:hover {
 	background: #f3f4f6;
 	border-color: #d1d5db;
 }
 
-.vct-edit-btn.submit:hover {
+.vct-edit-btn.submit:enabled:hover {
 	background: #d1fae5;
 	border-color: #a7f3d0;
 	color: #16a34a;
 }
 
-.vct-edit-btn.delete:hover {
+.vct-edit-btn.delete:enabled:hover {
 	background: #fee2e2;
 	border-color: #fecaca;
 	color: #991b1b;
