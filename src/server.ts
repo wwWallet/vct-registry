@@ -63,7 +63,9 @@ app.get('/api/vct', (_req, res) => {
  * Returns the metadata object whose .vct matches the query.
  */
 app.get('/type-metadata', (req, res) => {
-	const vct = req.query.vct;
+	const vct = typeof req.query.vct === 'string'
+		? decodeURIComponent(req.query.vct).trim()
+		: undefined;
 
 	if (!vct || typeof vct !== 'string') {
 		return res.status(400).json({
@@ -100,22 +102,22 @@ const publicPath = path.join(__dirname, '../public');
 
 // 30-day immutable cache for images
 app.use(
-  '/images',
-  express.static(path.join(publicPath, 'images'), {
-    maxAge: '30d',
-    immutable: true,
-  })
+	'/images',
+	express.static(path.join(publicPath, 'images'), {
+		maxAge: '30d',
+		immutable: true,
+	})
 );
 
 // No caching for the rest of the UI (HTML, JS, CSS)
 app.use(
-  express.static(publicPath, {
-    maxAge: 0,
-  })
+	express.static(publicPath, {
+		maxAge: 0,
+	})
 );
 
 app.get('/', (_req, res) => {
-  res.sendFile(path.join(publicPath, 'index.html'));
+	res.sendFile(path.join(publicPath, 'index.html'));
 });
 
 // ─────────────────────────────────────────────────────────────
