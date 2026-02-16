@@ -2,9 +2,10 @@
 import express from "express";
 import cors from "cors";
 import path from "path";
+import cookieParser from "cookie-parser";
 import { config } from "../config";
 import knexConfig from "../knexfile";
-import { basicAuth } from "./middleware/auth";
+import { auth, login, logout } from "./middleware/auth";
 import { typeMetadataSchema } from "./schema/typeMetadataSchema";
 import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
@@ -22,6 +23,7 @@ const PORT = config.port;
 // ─────────────────────────────────────────────────────────────
 
 app.use(cors());
+app.use(cookieParser())
 app.use(express.json());
 
 // ─────────────────────────────────────────────────────────────
@@ -50,6 +52,28 @@ export const validateAjv = ajv.compile(typeMetadataSchema);
 // ─────────────────────────────────────────────────────────────
 
 app.use("/api", apiRouter);
+
+// ─────────────────────────────────────────────────────────────
+// Authentication login/logout endpoints
+// ─────────────────────────────────────────────────────────────
+
+// Login endpoint: just triggers auth middleware to set cookie
+app.get('/login', login, (req, res) => {
+	res.send(`Logged in as ${(req as any).username}.`);
+});
+
+// Auth endpoint: checks if cookie exists
+app.get('/auth', auth, (req, res) => {
+	res.send({
+		username: (req as any).username
+	});
+});
+
+// Logout endpoint: clears cookie
+app.get('/logout', (req, res) => {
+	logout(req, res);
+	res.send('Logged out successfully.');
+});
 
 // ─────────────────────────────────────────────────────────────
 // VCT registry API (VCT-focused)
@@ -102,7 +126,7 @@ app.get("/", (_req, res) => {
 	res.sendFile(path.join(publicPath, "index.html"));
 });
 
-app.get("/edit", basicAuth, (_req, res) => {
+app.get("/edit", auth, (_req, res) => {
 	res.sendFile(path.join(publicPath, "edit.html"));
 });
 
@@ -110,7 +134,7 @@ app.get("/edit", basicAuth, (_req, res) => {
 // DB CRUD operations
 // ─────────────────────────────────────────────────────────────
 
-app.use("/vct", basicAuth, dbVctRouter);
+app.use("/vct", auth, dbVctRouter);
 
 // ─────────────────────────────────────────────────────────────
 // Start server

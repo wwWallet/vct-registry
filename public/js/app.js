@@ -24,3 +24,15 @@ export function decodeVct(rawVct) {
 
 	return decodedVct;
 }
+
+export async function login() {
+	try {
+        await fetch('/login', { credentials: 'include' });
+    } catch (_err) { }
+}
+
+export async function logout() {
+	try {
+		await fetch('/logout', { credentials: 'include' });
+	} catch (err) { }
+}

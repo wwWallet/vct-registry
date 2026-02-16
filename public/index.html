@@ -5,6 +5,7 @@
 	<meta charset="utf-8" />
 	<title>vct-registry</title>
 	<link rel="stylesheet" href="/styles/style.css" />
+	<link rel="stylesheet" href="/styles/index.css" />
 </head>
 
 <body>
@@ -13,6 +14,11 @@
 		<p class="subtitle">
 			Local SD-JWT Verifiable Credential Type Metadata registry
 		</p>
+		<div class="vct-auth-button-container">
+			<button id="vct-login-btn" type="button" class="vct-auth-btn login">Login</button>
+			<button id="vct-logout-btn" type="button" class="vct-auth-btn logout">Logout</button>
+		</div>
+		<p id="username-container"></p>
 	</header>
 
 	<main class="container">
@@ -41,7 +47,7 @@
 				<div id="vct-edit" class="vct-edit" hidden>
 					<form id="vct-edit-form" method="GET" action="/edit">
 						<input id="vct-edit-value" type="hidden" name="vct" value="all">
-						<button class="vct-edit-btn" type="submit">Edit credential</button>
+						<button id="vct-edit-btn" class="vct-edit-btn" type="submit">Edit credential</button>
 					</form>
 				</div>
 			</div>

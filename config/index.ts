@@ -4,8 +4,9 @@ dotenv.config({ quiet: true });
 export const config = {
 	url: process.env.URL || "http://localhost:8097",
 	port: process.env.PORT || "8097",
-	username: process.env.ADMIN_USERNAME || "admin",
-	password: process.env.ADMIN_PASSWORD || "admin",
+	users: {
+		[process.env.ADMIN_USERNAME || "admin"]: process.env.ADMIN_PASSWORD || "admin",
+	},
 	db_config: {
 		connection: {
 			host: process.env.DB_HOST || 'localhost',

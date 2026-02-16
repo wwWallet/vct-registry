@@ -116,6 +116,14 @@ body {
 	text-decoration: none;
 }
 
+.vct-auth-button-container {
+	display: flex;
+	flex-direction: row;
+	gap: 8px;
+	margin: 12px auto;
+	width: 50%;
+}
+
 .vct-edit-button-container {
 	display: flex;
 	flex-direction: row;

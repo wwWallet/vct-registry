@@ -1,4 +1,24 @@
-import { fetchJson } from "./app.js";
+import { fetchJson, login, logout } from "./app.js";
+
+const loginBtn = document.getElementById('vct-login-btn');
+const logoutBtn = document.getElementById('vct-logout-btn');
+const editBtn = document.getElementById('vct-edit-btn');
+const usernameContainer = document.getElementById('username-container');
+
+loginBtn.addEventListener('click', async () => {
+	await login();
+	await checkLogin();
+});
+
+logoutBtn.addEventListener('click', async () => {
+	await logout();
+	await checkLogin();
+});
+
+async function onLoad() {
+	loadVctList();
+	checkLogin();
+}
 
 async function loadVctList() {
 	const loading = document.getElementById("vct-loading");
@@ -129,4 +149,24 @@ async function loadVctSelection(value) {
 	}
 }
 
-window.addEventListener("DOMContentLoaded", loadVctList);
+async function checkLogin() {
+	try {
+        const res = await fetch('/auth', { credentials: 'include' });
+        if (res.ok) {
+			loginBtn.disabled = true;
+			logoutBtn.disabled = false;
+			editBtn.disabled = false;
+			const body = await res.json();
+			usernameContainer.textContent = `Logged in as ${body.username}`;
+			return;
+        }
+    } catch (_err) { }
+	// else
+	loginBtn.disabled = false;
+	logoutBtn.disabled = true;
+	editBtn.disabled = true;
+	usernameContainer.textContent = "";
+}
+
+window.addEventListener("DOMContentLoaded", onLoad);
+
