@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { decodeVct } from "../util";
 import { TypeMetadata } from "../schema/SdJwtVcTypeMetadataSchema";
 import { db, validateAjv } from "../server";
 import { createVct, deleteVctByUrn, updateVctByUrn } from "../db/vct";
+import { decodeVct } from "../util";
 
 /** /vct */
 const dbVctRouter = Router();
@@ -12,14 +12,24 @@ const dbVctRouter = Router();
  */
 
 dbVctRouter.post("/create", async (req, res) => {
-	const { vct, metadata } = req.body;
 
-	if (!vct || typeof vct !== "string") {
+	const vct = decodeVct(req.body.vct);
+
+	if (vct == undefined) {
 		return res.status(400).json({
-			error: "missing_vct",
+			error: 'missing_vct',
 			message: 'Body parameter "vct" is required',
 		});
 	}
+
+	if (vct == null) {
+		return res.status(400).json({
+			error: 'invalid_vct',
+			message: 'Body parameter "vct" must be a valid URI string',
+		});
+	}
+
+	const metadata = req.body.metadata;
 
 	if (!metadata || typeof metadata !== "object") {
 		return res.status(400).json({
@@ -28,8 +38,6 @@ dbVctRouter.post("/create", async (req, res) => {
 		});
 	}
 
-	const decodedVct = decodeVct(vct);
-
 	// zod validation
 	const zodVctValidationResult = TypeMetadata.safeParse(metadata);
 	if (!zodVctValidationResult.success) {
@@ -53,42 +61,50 @@ dbVctRouter.post("/create", async (req, res) => {
 		});
 	}
 
-	if (parsedVctContent.vct !== decodedVct) {
+	if (parsedVctContent.vct !== vct) {
 		return res.status(400).json({
 			error: "vct_urn_mismatch",
-			message: `VCT name in content ("${parsedVctContent.vct}") does not match VCT name in query ("${decodedVct}"). It is not possible to change the VCT urn.`,
+			message: `VCT name in content ("${parsedVctContent.vct}") does not match VCT name in query ("${vct}"). It is not possible to change the VCT urn.`,
 		});
 	}
 
-	const result = await createVct(db, decodedVct, parsedVctContent);
+	const result = await createVct(db, vct, parsedVctContent);
 
 	if (!result) {
 		return res.status(500).json({
 			error: "creation_failed",
-			message: `VCT with name "${decodedVct}" could not be created.`,
+			message: `VCT with name "${vct}" could not be created.`,
 		});
 	}
 	res.json({ message: "VCT Created successfully", data: result });
 });
 
 dbVctRouter.post("/edit", async (req, res) => {
-	const { vct, metadata } = req.body;
 
-	if (!vct || typeof vct !== "string") {
+	const vct = decodeVct(req.body.vct);
+
+	if (vct == undefined) {
 		return res.status(400).json({
-			error: "missing_vct",
+			error: 'missing_vct',
 			message: 'Body parameter "vct" is required',
 		});
 	}
 
-	if (!metadata || typeof metadata !== "object") {
+	if (vct == null) {
 		return res.status(400).json({
-			error: "missing_vct_content",
-			message: 'Body parameter "vctContent" (object) is required',
+			error: 'invalid_vct',
+			message: 'Body parameter "vct" must be a valid URI string',
 		});
 	}
 
-	const decodedVct = decodeVct(vct);
+	const metadata = req.body.metadata;
+
+	if (!metadata || typeof metadata !== "object") {
+		return res.status(400).json({
+			error: "missing_vct_content",
+			message: 'Body parameter "metadata" (object) is required',
+		});
+	}
 
 	// zod validation
 	const zodVctValidationResult = TypeMetadata.safeParse(metadata);
@@ -113,55 +129,61 @@ dbVctRouter.post("/edit", async (req, res) => {
 		});
 	}
 
-	if (parsedVctContent.vct !== decodedVct) {
+	if (parsedVctContent.vct !== vct) {
 		return res.status(400).json({
 			error: "vct_urn_mismatch",
-			message: `VCT name in content ("${parsedVctContent.vct}") does not match VCT name in query ("${decodedVct}"). It is not possible to change the VCT urn.`,
+			message: `VCT name in content ("${parsedVctContent.vct}") does not match VCT name in query ("${vct}"). It is not possible to change the VCT urn.`,
 		});
 	}
 
-	const result = await updateVctByUrn(db, decodedVct, parsedVctContent);
+	const result = await updateVctByUrn(db, vct, parsedVctContent);
 
 	if (result === 0) {
 		return res.status(404).json({
 			error: "unknown_vct",
-			message: `VCT with urn "${decodedVct}" not found. Updating failed.`,
+			message: `VCT with urn "${vct}" not found. Updating failed.`,
 		});
 	}
 
 	if (result > 1) {
 		return res.status(400).json({
 			error: "many_vct_updated",
-			message: `More than one VCT with name "${decodedVct}" was found. All have been updated, which is unexpected.`,
+			message: `More than one VCT with name "${vct}" was found. All have been updated, which is unexpected.`,
 		});
 	}
 	res.json({ message: "VCT Updated successfully", data: result[0] });
 });
 
 dbVctRouter.post("/delete", async (req, res) => {
-	const { vct } = req.body;
+	const vct = decodeVct(req.body.vct);
 
-	if (!vct || typeof vct !== "string") {
+	if (vct == undefined) {
 		return res.status(400).json({
-			error: "missing_vct",
+			error: 'missing_vct',
 			message: 'Body parameter "vct" is required',
 		});
 	}
 
-	const decodedVct = decodeVct(vct);
-	const result = await deleteVctByUrn(db, decodedVct);
+	if (vct == null) {
+		return res.status(400).json({
+			error: 'invalid_vct',
+			message: 'Body parameter "vct" must be a valid URI string',
+		});
+	}
+
+	const result = await deleteVctByUrn(db, vct);
 
 	if (!result) {
 		return res.status(404).json({
 			error: "unknown_vct",
-			message: `VCT with urn "${decodedVct}" not found. Deleting failed.`,
+			message: `VCT with urn "${vct}" not found. Deleting failed.`,
 		});
 	}
 
 	if (result > 1) {
 		return res.status(400).json({
 			error: "many_vct_deleted",
-			message: `More than one VCT with name "${decodedVct}" was found. All have been deleted, which is unexpected.`,
+			message: `More than one VCT with name "${vct}" was found. All have been deleted, which is unexpected.`,
 		});
 	}
 	res.json({ message: "VCT Deleted successfully" });

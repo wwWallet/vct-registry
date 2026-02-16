@@ -13,22 +13,29 @@ const typeMetadataRouter = Router();
  * Also acts as database getter for vct records.
  */
 typeMetadataRouter.get("/", async (req, res) => {
-	const rawVct = req.query.vct;
 
-	if (!rawVct || typeof rawVct !== "string") {
+	const vct = decodeVct(req.query.vct);
+
+	if (vct == undefined) {
 		return res.status(400).json({
-			error: "missing_vct",
+			error: 'missing_vct',
 			message: 'Query parameter "vct" is required',
 		});
 	}
 
-	const decodedVct = decodeVct(rawVct);
-	const metadata = await getVctByUrn(db, decodedVct);
+	if (vct == null) {
+		return res.status(400).json({
+			error: 'invalid_vct',
+			message: 'Query parameter "vct" must be a valid URI string',
+		});
+	}
+
+	const metadata = await getVctByUrn(db, vct);
 
 	if (!metadata) {
 		return res.status(404).json({
 			error: "unknown_vct",
-			message: `No metadata found for vct "${decodedVct}"`,
+			message: `No metadata found for vct "${vct}"`,
 		});
 	}
 
