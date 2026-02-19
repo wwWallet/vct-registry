@@ -101,7 +101,7 @@ async function loadVctSelection(value) {
 	const sourceBox = document.getElementById('vct-source');
 
 	errorBox.hidden = true;
-	metaBox.innerHTML = '';
+	metaBox.replaceChildren();
 	dataBox.textContent = 'Loading…';
 	sourceBox.textContent = '';
 
