@@ -1,5 +1,28 @@
 // public/app.js
 
+function clearEl(el) {
+	el.replaceChildren();
+}
+
+function addMetaRow(container, label, value, { code = false } = {}) {
+	const row = document.createElement('div');
+
+	const strong = document.createElement('strong');
+	strong.textContent = label;
+
+	row.append(strong, ' ');
+
+	if (code) {
+		const codeEl = document.createElement('code');
+		codeEl.textContent = String(value ?? '');
+		row.append(codeEl);
+	} else {
+		row.append(document.createTextNode(String(value ?? '')));
+	}
+
+	container.appendChild(row);
+}
+
 async function fetchJson(url) {
 	const res = await fetch(url);
 	if (!res.ok) {
@@ -22,8 +45,8 @@ async function loadVctList() {
 	controls.hidden = true;
 	errorBox.hidden = true;
 	errorBox.textContent = '';
-	select.innerHTML = '';
-	metaBox.innerHTML = '';
+	select.replaceChildren();
+	metaBox.replaceChildren();
 	dataBox.textContent = '';
 	sourceBox.textContent = '';
 
@@ -92,10 +115,9 @@ async function loadVctSelection(value) {
 			const fullUrl = `${origin}${url}`; // http://localhost:5001/type-metadata/all
 			sourceBox.textContent = `Source: GET ${fullUrl}`;
 
-			metaBox.innerHTML = `
-        <div><strong>Showing:</strong> All metadata entries</div>
-        <div><strong>Total entries:</strong> ${all.length}</div>
-      `;
+			clearEl(metaBox);
+			addMetaRow(metaBox, 'Showing:', 'All metadata entries');
+			addMetaRow(metaBox, 'Total entries:', all.length);
 
 			dataBox.textContent = JSON.stringify(all, null, 2);
 			return;
@@ -110,14 +132,14 @@ async function loadVctSelection(value) {
 
 		const metadata = await fetchJson(fetchUrl);
 
-		metaBox.innerHTML = `
-      <div><strong>VCT:</strong> <code>${value}</code></div>
-      <div><strong>Name:</strong> ${metadata.name}</div>
-      ${metadata.description
-				? `<div><strong>Description:</strong> ${metadata.description}</div>`
-				: ''
-			}
-    `;
+		clearEl(metaBox);
+		addMetaRow(metaBox, 'VCT:', value, { code: true });
+		addMetaRow(metaBox, 'Name:', metadata.name);
+
+		if (metadata.description) {
+			addMetaRow(metaBox, 'Description:', metadata.description);
+		}
+
 
 		dataBox.textContent = JSON.stringify(metadata, null, 2);
 	} catch (err) {
