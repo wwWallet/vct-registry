@@ -20,6 +20,25 @@ async function onLoad() {
 	checkLogin();
 }
 
+function addMetaRow(container, label, value, { code = false } = {}) {
+	const row = document.createElement('div');
+
+	const strong = document.createElement('strong');
+	strong.textContent = label;
+
+	row.append(strong, ' ');
+
+	if (code) {
+		const codeEl = document.createElement('code');
+		codeEl.textContent = String(value ?? '');
+		row.append(codeEl);
+	} else {
+		row.append(document.createTextNode(String(value ?? '')));
+	}
+
+	container.appendChild(row);
+}
+
 async function loadVctList() {
 	const loading = document.getElementById("vct-loading");
 	const controls = document.getElementById("vct-controls");
@@ -35,13 +54,13 @@ async function loadVctList() {
 	errorBox.hidden = true;
 	editBox.hidden = true;
 	errorBox.textContent = "";
-	select.innerHTML = "";
-	metaBox.innerHTML = "";
+	select.replaceChildren();
+	metaBox.replaceChildren();
 	dataBox.textContent = "";
 	sourceBox.textContent = "";
 
 	try {
-		const list = await fetchJson("/api/vct"); // [{ vct, name }]
+		const list = await fetchJson("api/vct"); // [{ vct, name }]
 
 		if (!Array.isArray(list) || list.length === 0) {
 			loading.hidden = true;
@@ -94,51 +113,45 @@ async function loadVctSelection(value) {
 	const editValue = document.getElementById("vct-edit-value");
 
 	errorBox.hidden = true;
-	metaBox.innerHTML = "";
+	metaBox.replaceChildren();
 	dataBox.textContent = "Loading…";
 	sourceBox.textContent = "";
 	editBox.hidden = true;
 
 	try {
-		const origin = window.location.origin; // 👈 dynamic domain
+		const { origin, pathname } = window.location; // dynamic domain
 
 		if (value === "__all__") {
-			const url = "/type-metadata/all";
+			const url = "type-metadata/all";
 			const all = await fetchJson(url);
 
-			const fullUrl = `${origin}${url}`; // http://localhost:5001/type-metadata/all
+			const fullUrl = `${origin}${pathname}${url}`; // http://localhost:5001/type-metadata/all
 			sourceBox.textContent = `Source: GET ${fullUrl}`;
 
-			metaBox.innerHTML = `
-        <div><strong>Showing:</strong> All metadata entries</div>
-        <div><strong>Total entries:</strong> ${all.length}</div>
-      `;
+			clearEl(metaBox);
+			addMetaRow(metaBox, 'Showing:', 'All metadata entries');
+			addMetaRow(metaBox, 'Total entries:', all.length);
 
 			dataBox.textContent = JSON.stringify(all, null, 2);
 			return;
 		}
 
 		const encoded = encodeURIComponent(value);
-		const fetchUrl = `/type-metadata?vct=${encoded}`;
+		const fetchUrl = `type-metadata?vct=${encoded}`;
 
 		// Display pretty full URL with domain + decoded VCT
-		const displayUrl = `${origin}/type-metadata?vct=${value}`;
+		const displayUrl = `${origin}${pathname}type-metadata?vct=${value}`;
 		sourceBox.textContent = `Source: GET ${displayUrl}`;
 
 		const metadata = await fetchJson(fetchUrl);
 
-		metaBox.innerHTML = `
-      <div><strong>VCT:</strong> <code>${value}</code></div>
-      <div><strong>Name:</strong> ${metadata.name}</div>
-      ${
-				metadata.description
-					? `<div><strong>Description:</strong> ${metadata.description}</div>`
-					: ""
-			}
-    `;
+		clearEl(metaBox);
+		addMetaRow(metaBox, 'VCT:', value, { code: true });
+		addMetaRow(metaBox, 'Name:', metadata.name);
 
-		editBox.hidden = false;
-		editValue.value = encoded;
+		if (metadata.description) {
+			addMetaRow(metaBox, 'Description:', metadata.description);
+		}
 
 		dataBox.textContent = JSON.stringify(metadata, null, 2);
 	} catch (err) {
