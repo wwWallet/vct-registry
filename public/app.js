@@ -127,7 +127,7 @@ async function loadVctSelection(value) {
 		const fetchUrl = `type-metadata?vct=${encoded}`;
 
 		// Display pretty full URL with domain + decoded VCT
-		const displayUrl = `${origin}${pathname}/type-metadata?vct=${value}`;
+		const displayUrl = `${origin}${pathname}type-metadata?vct=${value}`;
 		sourceBox.textContent = `Source: GET ${displayUrl}`;
 
 		const metadata = await fetchJson(fetchUrl);
