@@ -31,12 +31,12 @@ export function decodeVct(rawVct) {
 
 export async function login() {
 	try {
-        await fetch('/login', { credentials: 'include' });
+        await fetch('login', { credentials: 'include' });
     } catch (_err) { }
 }
 
 export async function logout() {
 	try {
-		await fetch('/logout', { credentials: 'include' });
+		await fetch('logout', { credentials: 'include' });
 	} catch (err) { }
 }

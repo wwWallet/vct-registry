@@ -1,4 +1,4 @@
-import { fetchJson, login, logout } from "./app.js";
+import { clearEl, fetchJson, login, logout } from "./app.js";
 
 const loginBtn = document.getElementById('vct-login-btn');
 const logoutBtn = document.getElementById('vct-logout-btn');
@@ -153,6 +153,9 @@ async function loadVctSelection(value) {
 			addMetaRow(metaBox, 'Description:', metadata.description);
 		}
 
+		editBox.hidden = false;
+		editValue.value = encoded;
+
 		dataBox.textContent = JSON.stringify(metadata, null, 2);
 	} catch (err) {
 		errorBox.hidden = false;
@@ -164,7 +167,7 @@ async function loadVctSelection(value) {
 
 async function checkLogin() {
 	try {
-        const res = await fetch('/auth', { credentials: 'include' });
+        const res = await fetch('auth', { credentials: 'include' });
         if (res.ok) {
 			loginBtn.disabled = true;
 			logoutBtn.disabled = false;

@@ -8,7 +8,7 @@ async function initializeEditorAndLoadVct() {
 async function initializeEditor() {
 	const container = document.getElementById("jsoneditor");
 
-	var schema = await fetchJson("/type-metadata/schema");
+	var schema = await fetchJson("type-metadata/schema");
 
 	const options = {
 		mode: "code",
@@ -48,7 +48,7 @@ async function loadSelectedVct() {
 	vctUrn = value;
 
 	const encoded = encodeURIComponent(value);
-	const fetchMetadataUrl = `/type-metadata?vct=${encoded}`;
+	const fetchMetadataUrl = `type-metadata?vct=${encoded}`;
 
 	const metadata = await fetchJson(fetchMetadataUrl);
 	editor.set(metadata);
@@ -66,7 +66,7 @@ document
 
 		const editorData = editor.get();
 
-		const res = await fetch("/vct/edit", {
+		const res = await fetch("vct/edit", {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({
@@ -90,7 +90,7 @@ document
 			return;
 		}
 
-		const res = await fetch("/vct/delete", {
+		const res = await fetch("vct/delete", {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({
@@ -118,8 +118,6 @@ function showSuccess(message) {
 }
 
 function showErrors(message, errors) {
-	// TODO vmarkop contemplate adding custom JSONEditor validation errors
-
 	const errorBox = document.getElementById("vct-error");
 	errorBox.hidden = false;
 	errorBox.textContent = `${message}.
