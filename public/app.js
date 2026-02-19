@@ -108,11 +108,15 @@ async function loadVctSelection(value) {
 	try {
 		const { origin, pathname } = window.location; // dynamic domain
 
-		if (value === '__all__') {
-			const url = 'type-metadata/all';
-			const all = await fetchJson(url);
+		let url;
+		const segments = window.location.pathname.split('/');
+		const base = segments[1] ? `/${segments[1]}/` : '/';
 
-			const fullUrl = `${origin}${pathname}${url}`; // http://localhost:5001/type-metadata/all
+		if (value === '__all__') {
+			url = 'type-metadata/all';
+			const fullUrl = new URL(base + url, window.location.origin).href;
+			const all = await fetchJson(fullUrl);
+
 			sourceBox.textContent = `Source: GET ${fullUrl}`;
 
 			clearEl(metaBox);
@@ -124,10 +128,10 @@ async function loadVctSelection(value) {
 		}
 
 		const encoded = encodeURIComponent(value);
-		const fetchUrl = `type-metadata?vct=${encoded}`;
-
 		// Display pretty full URL with domain + decoded VCT
-		const displayUrl = `${origin}${pathname}/type-metadata?vct=${value}`;
+		url = `type-metadata?vct=`;
+		const displayUrl = new URL(base + url + value, window.location.origin).href;
+		const fetchUrl = new URL(base + url + encoded, window.location.origin).href;
 		sourceBox.textContent = `Source: GET ${displayUrl}`;
 
 		const metadata = await fetchJson(fetchUrl);
