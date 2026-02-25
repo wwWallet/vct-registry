@@ -14,6 +14,7 @@ import { getAllVctMetadata, initVctTable } from "./db/vct";
 import apiRouter from "./routes/api";
 import typeMetadataRouter from "./routes/typeMetadata";
 import dbVctRouter from "./routes/db";
+import nunjucks from "nunjucks";
 
 export const app = express();
 const PORT = config.port;
@@ -105,6 +106,14 @@ app.use("/type-metadata", typeMetadataRouter);
 // ─────────────────────────────────────────────────────────────
 
 const publicPath = path.join(__dirname, "../public");
+const viewsPath = path.join(publicPath, "views");
+
+nunjucks.configure(path.join(publicPath, "views"), {
+    autoescape: true,
+    express: app
+});
+
+app.set("view engine", "njk");
 
 // 30-day immutable cache for images
 app.use(
@@ -123,11 +132,11 @@ app.use(
 );
 
 app.get("/", (_req, res) => {
-	res.sendFile(path.join(publicPath, "index.html"));
+	res.render(path.join(viewsPath, "index.html"));
 });
 
 app.get("/edit", auth, (_req, res) => {
-	res.sendFile(path.join(publicPath, "edit.html"));
+	res.render(path.join(viewsPath, "edit.html"));
 });
 
 // ─────────────────────────────────────────────────────────────
