@@ -132,11 +132,15 @@ app.use(
 );
 
 app.get("/", (_req, res) => {
-	res.render(path.join(viewsPath, "index.html"));
+	res.render(path.join(viewsPath, "index.html"), {
+		baseHref: config.base_url,
+	});
 });
 
 app.get("/edit", auth, (_req, res) => {
-	res.render(path.join(viewsPath, "edit.html"));
+	res.render(path.join(viewsPath, "edit.html"), {
+		baseHref: config.base_url,
+	});
 });
 
 // ─────────────────────────────────────────────────────────────

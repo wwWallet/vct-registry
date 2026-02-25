@@ -15,5 +15,6 @@ export const config = {
 			password: process.env.DB_PASSWORD || 'root',
 			database: process.env.DB_NAME || 'vct_registry',
 		},
-	}
+	},
+	base_url: process.env.STATIC_BASE_URL || "/"
 }
