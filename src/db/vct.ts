@@ -11,7 +11,7 @@ export async function initVctTable(knex: Knex) {
 
 /**
  * Insert a new vct entry.
- * @returns an array of IDs of updated rows
+ * @returns number of inserted rows, or -1 on error
  */
 export async function createVct(
 	knex: Knex,
@@ -22,13 +22,8 @@ export async function createVct(
 		const result = await knex("vct").insert({
 			urn: vctUrn,
 			metadata: vctMetadata,
-		})[0];
-
-		if (!result) {
-			console.warn(`VCT was not created.`);
-		}
-
-		return result;
+		});
+		return result.length; // number of inserted rows (should be 1)
 	} catch (error) {
 		console.error("Error creating VCT: ", error);
 		return -1;

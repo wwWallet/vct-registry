@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { TypeMetadata } from "../schema/SdJwtVcTypeMetadataSchema";
 import { db, validateAjv } from "../server";
-import { createVct, deleteVctByUrn, updateVctByUrn } from "../db/vct";
+import { createVct, deleteVctByUrn, getVctByUrn, updateVctByUrn } from "../db/vct";
 import { decodeVct } from "../util";
 
 /** /vct */
@@ -26,6 +26,14 @@ dbVctRouter.post("/create", async (req, res) => {
 		return res.status(400).json({
 			error: 'invalid_vct',
 			message: 'Body parameter "vct" must be a valid URI string',
+		});
+	}
+
+	const exists = await getVctByUrn(db, vct);
+	if (exists) {
+		return res.status(400).json({
+			error: 'vct_already_exists',
+			message: `A VCT with urn "${vct}" already exists.`,
 		});
 	}
 
@@ -70,10 +78,10 @@ dbVctRouter.post("/create", async (req, res) => {
 
 	const result = await createVct(db, vct, parsedVctContent);
 
-	if (!result) {
+	if (result !== 1) {
 		return res.status(500).json({
 			error: "creation_failed",
-			message: `VCT with name "${vct}" could not be created.`,
+			message: `VCT "${vct}" could not be created.`,
 		});
 	}
 	res.json({ message: "VCT Created successfully", data: result });

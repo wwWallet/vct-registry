@@ -5,6 +5,7 @@
 	<meta charset="utf-8" />
 	<title>vct-registry</title>
 	<link rel="stylesheet" href="./styles/style.css" />
+	<link rel="stylesheet" href="./styles/add.css" />
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jsoneditor@latest/dist/jsoneditor.min.css" />
 	<link rel="stylesheet" href="./styles/jsoneditor.css" />
 </head>
@@ -20,14 +21,18 @@
 	<main class="container">
 		<section class="card">
 			<div class="edit-vct-title-back">
-				<h2>Edit Verifiable Credential Type Metadata</h2>
+				<h2>Create Verifiable Credential Type Metadata</h2>
 				<a class="vct-back-link" href="/">&larr; Return to VCT List</a>
 			</div>
-			<div id="selected-vct-name" class="selected-vct"></div>
+			<div>
+				<input type="text" id="add-vct-name" class="add-vct-input selected-vct" placeholder="Enter VCT Display Name">
+			</div>
+			<div>
+				<input type="text" id="add-vct-id" class="add-vct-input selected-vct" placeholder="Enter VCT ID (URI format)">
+			</div>
 			<div id="jsoneditor" class="jsoneditor-host"></div>
 			<div class="vct-edit-button-container">
-				<button id="vct-submit-btn" type="button" class="vct-edit-btn submit">Submit Changes</button>
-				<button id="vct-delete-btn" type="button" class="vct-edit-btn delete">Delete VCT</button>
+				<button id="vct-submit-btn" type="button" class="vct-edit-btn submit">Create VCT</button>
 			</div>
 
 			<div id="vct-error" class="error" hidden></div>
@@ -38,7 +43,7 @@
 	<footer class="footer"></footer>
 
 	<script src="https://cdn.jsdelivr.net/npm/jsoneditor@latest"></script>
-	<script type="module" src="./js/edit.js"></script>
+	<script type="module" src="./js/add.js"></script>
 </body>
 
 </html>

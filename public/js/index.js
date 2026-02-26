@@ -2,6 +2,7 @@ import { clearEl, fetchJson, login, logout } from "./app.js";
 
 const loginBtn = document.getElementById('vct-login-btn');
 const logoutBtn = document.getElementById('vct-logout-btn');
+const addBtn = document.getElementById('vct-add-btn');
 const editBtn = document.getElementById('vct-edit-btn');
 const usernameContainer = document.getElementById('username-container');
 
@@ -171,6 +172,7 @@ async function checkLogin() {
         if (res.ok) {
 			loginBtn.disabled = true;
 			logoutBtn.disabled = false;
+			addBtn.disabled = false;
 			editBtn.disabled = false;
 			const body = await res.json();
 			usernameContainer.textContent = `Logged in as ${body.username}`;
@@ -180,6 +182,7 @@ async function checkLogin() {
 	// else
 	loginBtn.disabled = false;
 	logoutBtn.disabled = true;
+	addBtn.disabled = true;
 	editBtn.disabled = true;
 	usernameContainer.textContent = "";
 }

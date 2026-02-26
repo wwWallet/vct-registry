@@ -143,6 +143,12 @@ app.get("/edit", auth, (_req, res) => {
 	});
 });
 
+app.get("/add", auth, (_req, res) => {
+	res.render(path.join(viewsPath, "add.html"), {
+		baseHref: config.base_url,
+	});
+});
+
 // ─────────────────────────────────────────────────────────────
 // DB CRUD operations
 // ─────────────────────────────────────────────────────────────
