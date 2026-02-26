@@ -1,5 +1,4 @@
-import { fetchJson } from "./app.js";
-
+import { initializeEditor, showErrors, showSuccess } from "./app.js";
 
 let editor;
 let vctName = "";
@@ -10,33 +9,17 @@ const vctNameInput = document.getElementById("add-vct-name");
 const vctIdInput = document.getElementById("add-vct-id");
 
 async function initializeEditorAndLoadVct() {
-	await initializeEditor();
-}
-
-async function initializeEditor() {
-
-	var schema = await fetchJson("type-metadata/schema");
-
-	const options = {
-		mode: "code",
-		mainMenuBar: false,
-		statusBar: false,
-		schema: schema,
-		onValidate: validateInputs,
-		onValidationError: function (errors) {
-			if (errors.length > 0) {
-				document.querySelector("#vct-submit-btn").disabled = true;
-			} else {
-				document.querySelector("#vct-submit-btn").disabled = false;
-			}
-		},
-	};
-
-	editor = new JSONEditor(container, options);
-	editor.set();
+	editor = await initializeEditor(container, validateInputs);
 }
 
 container.addEventListener("paste", () => {
+
+	// Sanitize duplicate json start
+	const text = editor.getText();
+	if (text.startsWith("{}{")) {
+		editor.setText(text.substring(2));
+	}
+
 	try {
 		const content = editor.get();
 
@@ -98,41 +81,13 @@ document
 		}
 	});
 
-function showSuccess(message) {
-	const successBox = document.getElementById("vct-success");
-	successBox.hidden = false;
-	successBox.textContent = `${message}. Redirecting to home page...`;
-
-	setTimeout(() => {
-		hideElement("vct-success");
-		window.location.href = "/";
-	}, 5000);
-}
-
-function showErrors(message, errors) {
-	const errorBox = document.getElementById("vct-error");
-	errorBox.hidden = false;
-	errorBox.textContent = `${message}.
-		The following errors were found:
-		${errors.message}`;
-
-	setTimeout(() => {
-		hideElement("vct-error");
-	}, 5000);
-}
-
-function hideElement(elementId) {
-	const element = document.getElementById(elementId);
-	element.hidden = true;
-}
-
 vctNameInput
 	.addEventListener("input", (nameInput) => {
 		vctName = nameInput.target.value;
 
-		const json = editor.get();
-		json.name = vctName;
-		editor.set(json);
+		const editorData = editor.get();
+		editorData.name = vctName;
+		editor.set(editorData);
 	});
 
 vctIdInput

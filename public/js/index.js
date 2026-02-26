@@ -55,8 +55,8 @@ async function loadVctList() {
 	errorBox.hidden = true;
 	editBox.hidden = true;
 	errorBox.textContent = "";
-	select.replaceChildren();
-	metaBox.replaceChildren();
+	clearEl(select);
+	clearEl(metaBox);
 	dataBox.textContent = "";
 	sourceBox.textContent = "";
 
@@ -114,7 +114,7 @@ async function loadVctSelection(value) {
 	const editValue = document.getElementById("vct-edit-value");
 
 	errorBox.hidden = true;
-	metaBox.replaceChildren();
+	clearEl(metaBox);
 	dataBox.textContent = "Loading…";
 	sourceBox.textContent = "";
 	editBox.hidden = true;

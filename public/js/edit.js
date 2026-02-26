@@ -1,34 +1,16 @@
-import { decodeVct, fetchJson } from "./app.js";
+import { decodeVct, fetchJson, initializeEditor, showErrors, showSuccess } from "./app.js";
+
+let editor;
+let vctUrn;
+
+const container = document.getElementById("jsoneditor");
 
 async function initializeEditorAndLoadVct() {
-	await initializeEditor();
+	editor = await initializeEditor(container, validateVct);
 	await loadSelectedVct();
 }
 
-async function initializeEditor() {
-	const container = document.getElementById("jsoneditor");
-
-	var schema = await fetchJson("type-metadata/schema");
-
-	const options = {
-		mode: "code",
-		mainMenuBar: false,
-		statusBar: false,
-		schema: schema,
-		onValidate: validateUrn,
-		onValidationError: function (errors) {
-			if (errors.length > 0) {
-				document.querySelector("#vct-submit-btn").disabled = true;
-			} else {
-				document.querySelector("#vct-submit-btn").disabled = false;
-			}
-		},
-	};
-
-	editor = new JSONEditor(container, options);
-}
-
-function validateUrn(value) {
+function validateVct(value) {
 
 	const errors = [];
 
@@ -106,34 +88,4 @@ document
 		}
 	});
 
-function showSuccess(message) {
-	const successBox = document.getElementById("vct-success");
-	successBox.hidden = false;
-	successBox.textContent = `${message}. Redirecting to home page...`;
-
-	setTimeout(() => {
-		hideElement("vct-success");
-		window.location.href = "/";
-	}, 5000);
-}
-
-function showErrors(message, errors) {
-	const errorBox = document.getElementById("vct-error");
-	errorBox.hidden = false;
-	errorBox.textContent = `${message}.
-		The following errors were found:
-		${errors.message}`;
-
-	setTimeout(() => {
-		hideElement("vct-error");
-	}, 5000);
-}
-
-function hideElement(elementId) {
-	const element = document.getElementById(elementId);
-	element.hidden = true;
-}
-
-let editor;
-let vctUrn;
 window.addEventListener("DOMContentLoaded", initializeEditorAndLoadVct);
