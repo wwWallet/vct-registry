@@ -15,6 +15,16 @@ body {
 	color: #1f2937;
 }
 
+/* Code styling */
+code {
+	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+		"Liberation Mono", "Courier New", monospace;
+	background: #f3f4f6;
+	padding: 2px 4px;
+	border-radius: 4px;
+	font-size: 0.85em;
+}
+
 /* Header */
 .header {
 	padding: 28px 16px;
@@ -64,22 +74,6 @@ body {
 	color: #6b7280;
 }
 
-/* Controls */
-.vct-controls {
-	display: flex;
-	flex-direction: column;
-	gap: 12px;
-	margin-bottom: 16px;
-}
-
-.select-label {
-	display: flex;
-	flex-direction: column;
-	gap: 6px;
-	font-size: 0.9rem;
-	color: #374151;
-}
-
 /* Copy select styling for selected-vct div in edit page */
 .vct-select, .selected-vct {
 	padding: 8px 10px;
@@ -91,37 +85,10 @@ body {
 	transition: border-color 0.15s ease;
 }
 
-.vct-select:focus {
-	outline: none;
-	border-color: #2563eb;
-	box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.25);
-}
-
-/* Metadata summary box */
-.vct-meta {
-	font-size: 0.9rem;
-	background: #f9fafb;
-	border-radius: 8px;
-	padding: 12px;
-	border: 1px solid #e5e7eb;
-}
-
-.vct-meta div+div {
-	margin-top: 4px;
-}
-
 .vct-back-link {
 	font-size: 0.9rem;
 	color: #2563eb;
 	text-decoration: none;
-}
-
-.vct-auth-button-container {
-	display: flex;
-	flex-direction: row;
-	gap: 8px;
-	margin: 12px auto;
-	width: 50%;
 }
 
 .vct-edit-button-container {
@@ -167,40 +134,9 @@ body {
 	color: #991b1b;
 }
 
-/* JSON output box */
-.vct-data {
-	margin-top: 8px;
-	border-radius: 8px;
-	padding: 12px;
-	background: #f9fafb;
-	border: 1px solid #e5e7eb;
-	color: #1f2937;
-	max-height: 480px;
-	overflow: auto;
-	font-size: 0.85rem;
-	line-height: 1.4;
-	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-		"Liberation Mono", "Courier New", monospace;
-}
-
-.vct-source {
-	font-size: 0.8rem;
-	color: #6b7280;
-}
-
 .edit-vct-title-back {
 	display: flex;
 	justify-content: space-between;
-	/* align-items: space-between; */
-	/* gap: 16px;
-	margin-bottom: 16px; */
-}
-
-/* Error + status */
-.status-text {
-	font-size: 0.9rem;
-	color: #6b7280;
-	margin-bottom: 12px;
 }
 
 .error, .success {
@@ -220,14 +156,4 @@ body {
 	background: #d1fae5;
 	color: #16a34a;
 	border: 1px solid #a7f3d0;
-}
-
-/* Code styling */
-code {
-	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-		"Liberation Mono", "Courier New", monospace;
-	background: #f3f4f6;
-	padding: 2px 4px;
-	border-radius: 4px;
-	font-size: 0.85em;
 }

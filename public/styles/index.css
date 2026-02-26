@@ -1,3 +1,37 @@
+/* Controls */
+.vct-controls {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	margin-bottom: 16px;
+}
+
+.select-label {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	font-size: 0.9rem;
+	color: #374151;
+}
+
+.vct-select:focus {
+	outline: none;
+	border-color: #2563eb;
+	box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.25);
+}
+
+/* Metadata summary box */
+.vct-meta {
+	font-size: 0.9rem;
+	background: #f9fafb;
+	border-radius: 8px;
+	padding: 12px;
+	border: 1px solid #e5e7eb;
+}
+
+.vct-meta div+div {
+	margin-top: 4px;
+}
 
 .vct-auth-button-container {
 	display: flex;
@@ -33,4 +67,32 @@
 	background: #fee2e2;
 	border-color: #fecaca;
 	color: #991b1b;
+}
+
+/* JSON output box */
+.vct-data {
+	margin-top: 8px;
+	border-radius: 8px;
+	padding: 12px;
+	background: #f9fafb;
+	border: 1px solid #e5e7eb;
+	color: #1f2937;
+	max-height: 480px;
+	overflow: auto;
+	font-size: 0.85rem;
+	line-height: 1.4;
+	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+		"Liberation Mono", "Courier New", monospace;
+}
+
+.vct-source {
+	font-size: 0.8rem;
+	color: #6b7280;
+}
+
+/* Error + status */
+.status-text {
+	font-size: 0.9rem;
+	color: #6b7280;
+	margin-bottom: 12px;
 }
