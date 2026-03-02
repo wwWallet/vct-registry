@@ -37,6 +37,9 @@ async function loadSelectedVct() {
 
 	const nameContainer = document.getElementById("selected-vct-name");
 	nameContainer.textContent = metadata.name;
+
+	const vctIdContainer = document.getElementById("selected-vct-id");
+	vctIdContainer.textContent = metadata.vct;
 }
 
 document
