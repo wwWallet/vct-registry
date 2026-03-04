@@ -36,12 +36,10 @@ describe("Info", () => {
 
 describe("Time", () => {
 	beforeEach(() => {
-		// Tell Vitest to mock the system clock
 		vi.useFakeTimers();
 	});
 
 	afterEach(() => {
-		// Restore the real clock after each test
 		vi.useRealTimers();
 	});
 
@@ -65,7 +63,6 @@ describe("Time with real timers", () => {
 	it("GET /api/time returns real time within 1 second margin", async () => {
 		vi.useRealTimers();
 
-		const beforeTime = Date.now();
 		const response = await request(app)
 			.get("/api/time")
 			.expect(200)
@@ -74,7 +71,6 @@ describe("Time with real timers", () => {
 		const receivedTime = new Date(response.body.now).getTime();
 		const currentTime = Date.now();
 
-		// Check if the time difference is less than 1 second
 		expect(Math.abs(currentTime - receivedTime)).toBeLessThan(1000);
 		expect(response.body.timezone).toBeTypeOf("string");
 	});

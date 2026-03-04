@@ -1,15 +1,13 @@
 import { Router } from "express";
 import { TypeMetadata } from "../schema/SdJwtVcTypeMetadataSchema";
-import { db, validateAjv } from "../server";
+import { db } from "../server";
 import { createVct, deleteVctByUrn, getVctByUrn, updateVctByUrn } from "../db/vct";
 import { decodeVct } from "../util";
 
 /** /vct */
 const dbVctRouter = Router();
 
-/**
- * NO GET /vct/get?vct=urn:... endpoint - this is handled by GET /type-metadata?.
- */
+/** NO GET /vct/get?vct=urn:... endpoint - this is handled by GET /type-metadata?. */
 
 dbVctRouter.post("/create", async (req, res) => {
 
@@ -46,7 +44,6 @@ dbVctRouter.post("/create", async (req, res) => {
 		});
 	}
 
-	// zod validation
 	const zodVctValidationResult = TypeMetadata.safeParse(metadata);
 	if (!zodVctValidationResult.success) {
 		return res.status(400).json({
@@ -56,19 +53,8 @@ dbVctRouter.post("/create", async (req, res) => {
 				JSON.stringify(zodVctValidationResult.error),
 		});
 	}
+
 	const parsedVctContent = zodVctValidationResult.data;
-
-	// ajv validation
-	const ajvValidationResult = validateAjv(parsedVctContent);
-	if (!ajvValidationResult) {
-		return res.status(400).json({
-			error: "invalid_metadata",
-			message:
-				"Metadata AJV validation failed. Errors: " +
-				JSON.stringify(validateAjv.errors),
-		});
-	}
-
 	if (parsedVctContent.vct !== vct) {
 		return res.status(400).json({
 			error: "vct_urn_mismatch",
@@ -114,7 +100,6 @@ dbVctRouter.post("/edit", async (req, res) => {
 		});
 	}
 
-	// zod validation
 	const zodVctValidationResult = TypeMetadata.safeParse(metadata);
 	if (!zodVctValidationResult.success) {
 		return res.status(400).json({
@@ -125,18 +110,6 @@ dbVctRouter.post("/edit", async (req, res) => {
 		});
 	}
 	const parsedVctContent = zodVctValidationResult.data;
-
-	// ajv validation
-	const ajvValidationResult = validateAjv(parsedVctContent);
-	if (!ajvValidationResult) {
-		return res.status(400).json({
-			error: "invalid_metadata",
-			message:
-				"Metadata AJV validation failed. Errors: " +
-				JSON.stringify(validateAjv.errors),
-		});
-	}
-
 	if (parsedVctContent.vct !== vct) {
 		return res.status(400).json({
 			error: "vct_urn_mismatch",

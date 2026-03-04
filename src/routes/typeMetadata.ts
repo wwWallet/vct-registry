@@ -2,7 +2,7 @@ import { Router } from "express";
 import { decodeVct } from "../util";
 import { getAllVctMetadata, getVctByUrn } from "../db/vct";
 import { typeMetadataSchema } from "../schema/typeMetadataSchema";
-import { db } from "../server"; // TODO vmarkop is this ok?
+import { db } from "../server";
 
 /** /type-metadata */
 const typeMetadataRouter = Router();

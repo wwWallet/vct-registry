@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import crypto from "crypto";
 import { config } from "../../config";
+import { is } from "zod/v4/locales";
 
 const USERS = config.users;
 const COOKIE_NAME = "vctRegistrySessionId"
@@ -8,12 +9,16 @@ const COOKIE_MAX_AGE = 30 * 60 * 1000; // 30 minutes
 
 const SESSIONS = new Map<string, { username: string; expires: number }>();
 
-// Helper: generate a random session ID
+/**
+ * @returns a random session ID
+ */
 function generateSessionId() {
     return crypto.randomBytes(16).toString('hex');
 }
 
-// Middleware: Basic Auth
+/**
+ * Middleware that performs basic authentication.
+ */
 function basicAuth(req: Request, res: Response, next: NextFunction) {
     const authHeader = req.headers['authorization'];
     if (!authHeader || !authHeader.startsWith('Basic ')) {
@@ -26,7 +31,6 @@ function basicAuth(req: Request, res: Response, next: NextFunction) {
     const [username, password] = credentials.split(':');
 
     if (USERS[username] && USERS[username] === password) {
-        // Credentials valid
         (req as any).username = username;
         next();
     } else {
@@ -35,33 +39,41 @@ function basicAuth(req: Request, res: Response, next: NextFunction) {
     }
 }
 
-// Middleware: check cookie OR fallback to Basic Auth
-export function login(req: Request, res: Response, next: NextFunction) {
+function isValidSession(req: Request) {
     const sessionId = req.cookies[COOKIE_NAME];
 
     if (sessionId && SESSIONS.has(sessionId)) {
         const session = SESSIONS.get(sessionId)!;
         if (session.expires > Date.now()) {
-            // Refresh expiry
             session.expires = Date.now() + COOKIE_MAX_AGE;
-            (req as any).username = session.username;
-            return next();
+            return session.username;
         } else {
-            // Expired
             SESSIONS.delete(sessionId);
         }
     }
+    return null;
+}
 
-    // No valid cookie - fallback to Basic Auth
+/**
+ * Middleware that checks for a valid session cookie.
+ * If not present, it falls back to basic authentication and issues a session cookie.
+ */
+export function login(req: Request, res: Response, next: NextFunction) {
+
+    const username = isValidSession(req);
+    if (username) {
+        (req as any).username = username;
+        return next();
+    }
+
     basicAuth(req, res, () => {
-        // Issue new cookie
         const newSessionId = generateSessionId();
         const expires = Date.now() + COOKIE_MAX_AGE;
         SESSIONS.set(newSessionId, { username: (req as any).username, expires });
 
         res.cookie(COOKIE_NAME, newSessionId, {
             httpOnly: true,
-            secure: false, // set true if HTTPS
+            secure: config.https,
             sameSite: 'lax',
             maxAge: COOKIE_MAX_AGE
         });
@@ -70,27 +82,39 @@ export function login(req: Request, res: Response, next: NextFunction) {
     });
 }
 
-// Middleware: check cookie only
+/**
+ * Middleware that checks for a valid session cookie without falling back to basic authentication.
+ */
 export function auth(req: Request, res: Response, next: NextFunction) {
-    const sessionId = req.cookies[COOKIE_NAME];
 
-    if (sessionId && SESSIONS.has(sessionId)) {
-        const session = SESSIONS.get(sessionId)!;
-        if (session.expires > Date.now()) {
-            // Refresh expiry
-            session.expires = Date.now() + COOKIE_MAX_AGE;
-            (req as any).username = session.username;
-            return next();
-        } else {
-            // Expired
-            SESSIONS.delete(sessionId);
-        }
+    const username = isValidSession(req);
+    if (username) {
+        (req as any).username = username;
+        return next();
     }
 
     // Do not provide Basic authentication
     return res.status(401).send('Invalid credentials.');
 }
 
+/**
+ * Middleware that checks for a valid session cookie without falling back to basic authentication.
+ */
+export function authView(req: Request, res: Response, next: NextFunction) {
+
+    const username = isValidSession(req);
+    if (username) {
+        (req as any).username = username;
+        return next();
+    }
+
+    // Do not provide Basic authentication
+    return res.redirect(config.base_url);
+}
+
+/**
+ * Clear auth cookie to logout.
+ */
 export function logout(req: Request, res: Response) {
     const sessionId = req.cookies[COOKIE_NAME];
     if (sessionId) SESSIONS.delete(sessionId);

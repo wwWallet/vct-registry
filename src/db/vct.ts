@@ -23,7 +23,7 @@ export async function createVct(
 			urn: vctUrn,
 			metadata: vctMetadata,
 		});
-		return result.length; // number of inserted rows (should be 1)
+		return result.length;
 	} catch (error) {
 		console.error("Error creating VCT: ", error);
 		return -1;

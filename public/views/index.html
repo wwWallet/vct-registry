@@ -22,6 +22,8 @@
 	</header>
 
 	<main class="container">
+		<div id="vct-success" class="success" hidden></div>
+
 		<section class="card">
 			<h2>Verifiable Credential Type Metadata</h2>
 			<p class="section-description">
@@ -32,9 +34,7 @@
 			</p>
 
 			<div id="vct-add" class="vct-add">
-				<form id="vct-add-form" method="GET" action="add">
-					<button id="vct-add-btn" class="vct-edit-btn" type="submit" disabled>Add new credential</button>
-				</form>
+				<a id="vct-add-btn" class="vct-edit-btn" href="/add" hidden>Add new credential</a>
 			</div>
 
 			<div id="vct-loading" class="status-text">Loading VCT entries…</div>
@@ -53,7 +53,7 @@
 				<div id="vct-edit" class="vct-edit" hidden>
 					<form id="vct-edit-form" method="GET" action="edit">
 						<input id="vct-edit-value" type="hidden" name="vct" value="all">
-						<button id="vct-edit-btn" class="vct-edit-btn" type="submit">Edit credential</button>
+						<button id="vct-edit-btn" class="vct-edit-btn" type="submit" hidden>Edit credential</button>
 					</form>
 				</div>
 			</div>

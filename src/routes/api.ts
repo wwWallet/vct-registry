@@ -1,4 +1,6 @@
 import { Router } from "express";
+import { getAllVctMetadata } from "../db/vct";
+import { db } from "../server";
 
 /** /api */
 const apiRouter = Router();
@@ -24,6 +26,20 @@ apiRouter.get("/time", (_req, res) => {
 		now: new Date().toISOString(),
 		timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
 	});
+});
+
+/**
+ * Returns a simple list of all VCTs + names.
+ */
+apiRouter.get("/vct", async (_req, res) => {
+	const result = await getAllVctMetadata(db);
+
+	const list = result.map((meta) => ({
+		vct: meta.vct,
+		name: meta.name,
+	}));
+
+	res.json(list);
 });
 
 export default apiRouter;

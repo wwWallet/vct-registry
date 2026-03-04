@@ -1,4 +1,4 @@
-import { clearEl, fetchJson, login, logout } from "./app.js";
+import { clearEl, fetchJson, login, logout, showSuccess } from "./app.js";
 
 const loginBtn = document.getElementById('vct-login-btn');
 const logoutBtn = document.getElementById('vct-logout-btn');
@@ -19,6 +19,7 @@ logoutBtn.addEventListener('click', async () => {
 async function onLoad() {
 	loadVctList();
 	checkLogin();
+	checkSuccess();
 }
 
 function addMetaRow(container, label, value, { code = false } = {}) {
@@ -92,7 +93,6 @@ async function loadVctList() {
 
 		controls.hidden = false;
 
-		// On change
 		select.addEventListener("change", async () => {
 			await loadVctSelection(select.value);
 		});
@@ -120,7 +120,7 @@ async function loadVctSelection(value) {
 	editBox.hidden = true;
 
 	try {
-		const { origin, pathname } = window.location; // dynamic domain
+		const { origin, pathname } = window.location;
 
 		if (value === "__all__") {
 			const url = "type-metadata/all";
@@ -140,7 +140,6 @@ async function loadVctSelection(value) {
 		const encoded = encodeURIComponent(value);
 		const fetchUrl = `type-metadata?vct=${encoded}`;
 
-		// Display pretty full URL with domain + decoded VCT
 		const displayUrl = `${origin}${pathname}type-metadata?vct=${value}`;
 		sourceBox.textContent = `Source: GET ${displayUrl}`;
 
@@ -172,19 +171,34 @@ async function checkLogin() {
         if (res.ok) {
 			loginBtn.disabled = true;
 			logoutBtn.disabled = false;
-			addBtn.disabled = false;
-			editBtn.disabled = false;
+			addBtn.hidden = false;
+			editBtn.hidden = false;
 			const body = await res.json();
 			usernameContainer.textContent = `Logged in as ${body.username}`;
 			return;
         }
     } catch (_err) { }
-	// else
 	loginBtn.disabled = false;
 	logoutBtn.disabled = true;
-	addBtn.disabled = true;
-	editBtn.disabled = true;
+	addBtn.hidden = true;
+	editBtn.hidden = true;
 	usernameContainer.textContent = "";
+}
+
+async function checkSuccess() {
+	const toast = new URLSearchParams(window.location.search).get("toast");
+
+	switch (toast) {
+		case "add-success":
+		case "edit-success":
+			showSuccess("Successfully saved VC Type Metadata.");
+			break;
+		case "delete-success":
+			showSuccess("Successfully deleted VC Type Metadata.");
+			break;
+		default:
+			break;
+	}
 }
 
 window.addEventListener("DOMContentLoaded", onLoad);

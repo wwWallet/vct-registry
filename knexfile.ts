@@ -1,4 +1,3 @@
-// knexfile.ts
 import type { Knex } from "knex";
 import { config } from "./config";
 

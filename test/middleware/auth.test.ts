@@ -5,20 +5,34 @@ import { describe, it } from "vitest";
 
 describe("Frontend Authentication", () => {
 	it("GET /edit returns 401 when not authenticated", async () => {
-		await request(app).get("/edit").expect(401);
+		await request(app)
+			.get("/edit")
+			.expect(302)
+			.expect("Location", "/");
 	});
 
 	it("GET /edit returns 401 with wrong credentials", async () => {
 		await request(app)
 			.get("/edit")
 			.auth("fake_user", "wrong_password")
-			.expect(401);
+			.expect(302)
+			.expect("Location", "/");
 	});
 
 	it("GET /edit returns 200 when authenticated properly", async () => {
-		await request(app)
+
+		const username = Object.keys(config.users)[0];
+		const password = config.users[username];
+
+		const agent = request.agent(app);
+
+		await agent
+			.get("/auth/login")
+			.auth(username, password)
+			.expect(200);
+
+		await agent
 			.get("/edit")
-			.auth(config.username, config.password)
 			.expect(200);
 	});
 });

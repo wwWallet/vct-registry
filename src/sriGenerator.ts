@@ -1,4 +1,3 @@
-// src/sriGenerator.ts
 import * as fs from 'fs';
 import * as crypto from 'crypto';
 import path from 'path';

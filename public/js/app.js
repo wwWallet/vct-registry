@@ -29,7 +29,7 @@ export function decodeVct(rawVct) {
 	return decodedVct;
 }
 
-export async function initializeEditor(container, validationFn) {
+export async function initializeEditor(container, validationFn, initialData) {
 
 	var schema = await fetchJson("type-metadata/schema");
 
@@ -49,6 +49,9 @@ export async function initializeEditor(container, validationFn) {
 	};
 
 	const editor = new JSONEditor(container, options);
+	if (initialData) {
+		editor.set(initialData);
+	}
 	return editor;
 }
 
@@ -56,11 +59,10 @@ export async function initializeEditor(container, validationFn) {
 export function showSuccess(message) {
 	const successBox = document.getElementById("vct-success");
 	successBox.hidden = false;
-	successBox.textContent = `${message}. Redirecting to home page...`;
+	successBox.textContent = message;
 
 	setTimeout(() => {
 		hideElement("vct-success");
-		window.location.href = "/";
 	}, 5000);
 }
 
@@ -83,12 +85,30 @@ function hideElement(elementId) {
 
 export async function login() {
 	try {
-        await fetch('login', { credentials: 'include' });
+        await fetch('auth/login', { credentials: 'include' });
     } catch (_err) { }
 }
 
 export async function logout() {
 	try {
-		await fetch('logout', { credentials: 'include' });
+		await fetch('auth/logout', { credentials: 'include' });
 	} catch (err) { }
+}
+
+export const initialAddVctData = {
+	"vct": "",
+	"name": "",
+	"display": [
+		{
+		}
+	],
+	"claims": [
+		{
+			"path": [
+				"vct"
+			],
+			"mandatory": true,
+			"sd": "never"
+		}
+	]
 }

@@ -1,4 +1,4 @@
-import { decodeVct, fetchJson, initializeEditor, showErrors, showSuccess } from "./app.js";
+import { decodeVct, fetchJson, initializeEditor, showErrors } from "./app.js";
 
 let editor;
 let vctUrn;
@@ -35,11 +35,8 @@ async function loadSelectedVct() {
 	const metadata = await fetchJson(fetchMetadataUrl);
 	editor.set(metadata);
 
-	const nameContainer = document.getElementById("selected-vct-name");
-	nameContainer.textContent = metadata.name;
-
-	const vctIdContainer = document.getElementById("selected-vct-id");
-	vctIdContainer.textContent = metadata.vct;
+	const vctIdContainer = document.getElementById("edit-vct-title");
+	vctIdContainer.textContent = `Edit VCT ${metadata.vct}`;
 }
 
 document
@@ -64,7 +61,7 @@ document
 		if (!res.ok) {
 			showErrors("Failed to save VC Type Metadata", result);
 		} else {
-			showSuccess("Successfully saved VC Type Metadata");
+			window.location.href = "/?toast=edit-success";
 		}
 	});
 
@@ -87,7 +84,7 @@ document
 		if (!res.ok) {
 			showErrors("Failed to delete VC Type Metadata", result);
 		} else {
-			showSuccess("Successfully deleted VC Type Metadata");
+			window.location.href = "/?toast=delete-success";
 		}
 	});
 

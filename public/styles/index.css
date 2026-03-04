@@ -90,6 +90,15 @@
 	color: #6b7280;
 }
 
+.vct-add {
+	margin: 12px auto;
+}
+
+a.vct-edit-btn {
+	text-decoration: none;
+	color: inherit;
+}
+
 /* Error + status */
 .status-text {
 	font-size: 0.9rem;

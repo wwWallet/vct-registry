@@ -1,4 +1,4 @@
-import { initializeEditor, showErrors, showSuccess } from "./app.js";
+import { initialAddVctData, initializeEditor, showErrors } from "./app.js";
 
 let editor;
 let vctName = "";
@@ -9,7 +9,7 @@ const vctNameInput = document.getElementById("add-vct-name");
 const vctIdInput = document.getElementById("add-vct-id");
 
 async function initializeEditorAndLoadVct() {
-	editor = await initializeEditor(container, validateInputs);
+	editor = await initializeEditor(container, validateInputs, initialAddVctData);
 }
 
 container.addEventListener("paste", () => {
@@ -36,7 +36,13 @@ function validateInputs(value) {
 
 	const errors = [];
 
-	const vctUrn = vctIdInput.value.trim();
+	if (!value.vct) {
+		errors.push({
+			path: ["vct"],
+			message: "VCT URN cannot be empty.",
+		});
+	}
+
 	if (vctUrn && value.vct != vctUrn) {
 		errors.push({
         path: ["vct"],
@@ -44,7 +50,6 @@ function validateInputs(value) {
       });
 	}
 
-	const vctName = vctNameInput.value;
 	if (vctName && value.name != vctName) {
 		errors.push({
         path: ["name"],
@@ -77,7 +82,7 @@ document
 		if (!res.ok) {
 			showErrors("Failed to create VC Type Metadata", result);
 		} else {
-			showSuccess("Successfully created VC Type Metadata");
+			window.location.href = "/?toast=add-success";
 		}
 	});
 
