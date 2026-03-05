@@ -82,7 +82,7 @@ document
 		if (!res.ok) {
 			showErrors("Failed to create VC Type Metadata", result);
 		} else {
-			window.location.href = "/?toast=add-success";
+			window.location.href = "./?toast=add-success";
 		}
 	});
 
