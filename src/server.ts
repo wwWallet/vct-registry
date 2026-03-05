@@ -100,11 +100,11 @@ app.get('/type-metadata/all', (_req, res) => {
 
 const publicPath = path.join(__dirname, '../public');
 
-// 30-day immutable cache for images
+// 1-day immutable cache for images
 app.use(
 	'/images',
 	express.static(path.join(publicPath, 'images'), {
-		maxAge: '30d',
+		maxAge: '1d',
 		immutable: true,
 	})
 );
