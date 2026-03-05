@@ -3,6 +3,7 @@ import { TypeMetadata } from "../schema/SdJwtVcTypeMetadataSchema";
 import { db } from "../server";
 import { createVct, deleteVctByUrn, getVctByUrn, updateVctByUrn } from "../db/vct";
 import { decodeVct } from "../util";
+import { config } from "../../config";
 
 /** /vct */
 const dbVctRouter = Router();
@@ -36,7 +37,6 @@ dbVctRouter.post("/create", async (req, res) => {
 	}
 
 	const metadata = req.body.metadata;
-
 	if (!metadata || typeof metadata !== "object") {
 		return res.status(400).json({
 			error: "missing_vct_content",
@@ -62,8 +62,15 @@ dbVctRouter.post("/create", async (req, res) => {
 		});
 	}
 
-	const result = await createVct(db, vct, parsedVctContent);
+	const contentSize = Buffer.byteLength(JSON.stringify(parsedVctContent));
+	if (contentSize > config.max_vct_size) {
+		return res.status(413).json({
+			error: "vct_too_large",
+			message: `VCT JSON content is too large. Maximum allowed content size is ${config.max_vct_size}B.`
+		})
+	}
 
+	const result = await createVct(db, vct, parsedVctContent);
 	if (result !== 1) {
 		return res.status(500).json({
 			error: "creation_failed",
@@ -92,7 +99,6 @@ dbVctRouter.post("/edit", async (req, res) => {
 	}
 
 	const metadata = req.body.metadata;
-
 	if (!metadata || typeof metadata !== "object") {
 		return res.status(400).json({
 			error: "missing_vct_content",
@@ -115,6 +121,14 @@ dbVctRouter.post("/edit", async (req, res) => {
 			error: "vct_urn_mismatch",
 			message: `VCT name in content ("${parsedVctContent.vct}") does not match VCT name in query ("${vct}"). It is not possible to change the VCT urn.`,
 		});
+	}
+
+	const contentSize = Buffer.byteLength(JSON.stringify(parsedVctContent));
+	if (contentSize > config.max_vct_size) {
+		return res.status(413).json({
+			error: "vct_too_large",
+			message: `VCT JSON content is too large. Maximum allowed content size is ${config.max_vct_size}B.`
+		})
 	}
 
 	const result = await updateVctByUrn(db, vct, parsedVctContent);

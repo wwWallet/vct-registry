@@ -20,7 +20,9 @@ export const app = express();
 
 app.use(cors());
 app.use(cookieParser())
-app.use(express.json());
+app.use(express.json({
+	limit: config.max_vct_size
+}));
 
 export const db = knex(knexConfig);
 initVctTable(db);
