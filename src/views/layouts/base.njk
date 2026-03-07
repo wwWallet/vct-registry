@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% block title %}vct-registry{% endblock %}</title>
+  <link rel="stylesheet" href="./styles/style.css" />
+  {% block page_styles %}{% endblock %}
+</head>
+<body>
+  <header class="header">
+    <h1>wwWallet VCT Registry</h1>
+    <p class="subtitle">
+      Local SD-JWT Verifiable Credential Type Metadata registry
+    </p>
+    {% block header_actions %}{% endblock %}
+  </header>
+
+  <main class="container">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="footer"></footer>
+
+  {% block page_scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,30 @@
+{% extends "layouts/base.njk" %}
+
+{% block title %}vct-registry{% endblock %}
+
+{% block page_styles %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jsoneditor@latest/dist/jsoneditor.min.css" />
+<link rel="stylesheet" href="./styles/jsoneditor.css" />
+{% endblock %}
+
+{% block content %}
+<section class="card">
+  <div class="edit-vct-title-back">
+    <h2 id="edit-vct-title">Edit VCT</h2>
+    <a class="vct-back-link" href="./">&larr; Return to VCT List</a>
+  </div>
+  <div id="jsoneditor" class="jsoneditor-host"></div>
+  <div class="vct-edit-button-container">
+    <button id="vct-delete-btn" type="button" class="vct-edit-btn delete">Delete VCT</button>
+    <button id="vct-submit-btn" type="button" class="vct-edit-btn submit">Submit Changes</button>
+  </div>
+
+  <div id="vct-error" class="error" hidden></div>
+  <div id="vct-success" class="success" hidden></div>
+</section>
+{% endblock %}
+
+{% block page_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/jsoneditor@latest"></script>
+<script type="module" src="./js/edit.js"></script>
+{% endblock %}

@@ -28,7 +28,7 @@ export const db = knex(knexConfig);
 initVctTable(db);
 
 const publicPath = path.join(__dirname, "../public");
-export const viewsPath = path.join(publicPath, "views");
+export const viewsPath = path.join(__dirname, "views");
 
 nunjucks.configure(viewsPath, {
     autoescape: true,

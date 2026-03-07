@@ -1,0 +1,36 @@
+{% extends "layouts/base.njk" %}
+
+{% block title %}vct-registry{% endblock %}
+
+{% block page_styles %}
+<link rel="stylesheet" href="./styles/add.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jsoneditor@latest/dist/jsoneditor.min.css" />
+<link rel="stylesheet" href="./styles/jsoneditor.css" />
+{% endblock %}
+
+{% block content %}
+<section class="card">
+  <div class="edit-vct-title-back">
+    <h2>Create Verifiable Credential Type Metadata</h2>
+    <a class="vct-back-link" href="./">&larr; Return to VCT List</a>
+  </div>
+  <div>
+    <input type="text" id="add-vct-name" class="add-vct-input selected-vct" placeholder="Enter VCT Display Name">
+  </div>
+  <div>
+    <input type="text" id="add-vct-id" class="add-vct-input selected-vct" placeholder="Enter VCT ID (URI format)">
+  </div>
+  <div id="jsoneditor" class="jsoneditor-host"></div>
+  <div class="vct-edit-button-container">
+    <button id="vct-submit-btn" type="button" class="vct-edit-btn submit">Create VCT</button>
+  </div>
+
+  <div id="vct-error" class="error" hidden></div>
+  <div id="vct-success" class="success" hidden></div>
+</section>
+{% endblock %}
+
+{% block page_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/jsoneditor@latest"></script>
+<script type="module" src="./js/add.js"></script>
+{% endblock %}

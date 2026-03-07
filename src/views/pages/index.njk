@@ -1,0 +1,62 @@
+{% extends "layouts/base.njk" %}
+
+{% block title %}vct-registry{% endblock %}
+
+{% block page_styles %}
+<link rel="stylesheet" href="./styles/index.css" />
+{% endblock %}
+
+{% block header_actions %}
+<div class="vct-auth-button-container">
+  <button id="vct-login-btn" type="button" class="vct-auth-btn login">Login</button>
+  <button id="vct-logout-btn" type="button" class="vct-auth-btn logout">Logout</button>
+</div>
+<p id="username-container"></p>
+{% endblock %}
+
+{% block content %}
+<div id="vct-success" class="success" hidden></div>
+
+<section class="card">
+  <h2>Verifiable Credential Type Metadata</h2>
+  <p class="section-description">
+    Select a Verifiable Credential Type (VCT) to view its metadata from
+    <code>GET /type-metadata?vct=…</code>, or choose
+    <code>(All metadata)</code> to view everything from
+    <code>GET /type-metadata/all</code>.
+  </p>
+
+  <div id="vct-add" class="vct-add">
+    <a id="vct-add-btn" class="vct-edit-btn" href="add" hidden>Add new credential</a>
+  </div>
+
+  <div id="vct-loading" class="status-text">Loading VCT entries…</div>
+
+  <div id="vct-controls" class="vct-controls" hidden>
+    <label for="vct-select" class="select-label">
+      Select VCT:
+      <select id="vct-select" class="vct-select"></select>
+    </label>
+
+    <div id="vct-source" class="vct-source"></div>
+
+    <div id="vct-meta" class="vct-meta"></div>
+
+    <div id="vct-edit" class="vct-edit" hidden>
+      <form id="vct-edit-form" method="GET" action="edit">
+        <input id="vct-edit-value" type="hidden" name="vct" value="all">
+        <button id="vct-edit-btn" class="vct-edit-btn" type="submit" hidden>Edit credential</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="vct-error" class="error" hidden></div>
+
+  <h3>Raw metadata JSON</h3>
+  <pre id="vct-data" class="vct-data"></pre>
+</section>
+{% endblock %}
+
+{% block page_scripts %}
+<script type="module" src="./js/index.js"></script>
+{% endblock %}
