@@ -4,22 +4,23 @@ import { config } from "../../config";
 
 /** / */
 const viewsRouter = Router();
+const baseHref = config.base_url.endsWith("/") ? config.base_url : `${config.base_url}/`;
 
 viewsRouter.get("/", (_req, res) => {
 	res.render("pages/index.njk", {
-		baseHref: config.base_url,
+		baseHref,
 	});
 });
 
 viewsRouter.get("/add", authView, (_req, res) => {
 	res.render("pages/add.njk", {
-		baseHref: config.base_url,
+		baseHref,
 	});
 });
 
 viewsRouter.get("/edit", authView, (_req, res) => {
 	res.render("pages/edit.njk", {
-		baseHref: config.base_url,
+		baseHref,
 	});
 });
 

@@ -6,6 +6,10 @@ const addBtn = document.getElementById('vct-add-btn');
 const editBtn = document.getElementById('vct-edit-btn');
 const usernameContainer = document.getElementById('username-container');
 
+function appUrl(path) {
+	return new URL(path, document.baseURI).toString();
+}
+
 loginBtn.addEventListener('click', async () => {
 	await login();
 	await checkLogin();
@@ -62,7 +66,7 @@ async function loadVctList() {
 	sourceBox.textContent = "";
 
 	try {
-		const list = await fetchJson("api/vct"); // [{ vct, name }]
+		const list = await fetchJson(appUrl("api/vct")); // [{ vct, name }]
 
 		if (!Array.isArray(list) || list.length === 0) {
 			loading.hidden = true;
@@ -120,14 +124,10 @@ async function loadVctSelection(value) {
 	editBox.hidden = true;
 
 	try {
-		const { origin, pathname } = window.location;
-
 		if (value === "__all__") {
-			const url = "type-metadata/all";
+			const url = appUrl("type-metadata/all");
 			const all = await fetchJson(url);
-
-			const fullUrl = `${origin}${pathname}${url}`; // http://localhost:5001/type-metadata/all
-			sourceBox.textContent = `Source: GET ${fullUrl}`;
+			sourceBox.textContent = `Source: GET ${url}`;
 
 			clearEl(metaBox);
 			addMetaRow(metaBox, 'Showing:', 'All metadata entries');
@@ -138,10 +138,8 @@ async function loadVctSelection(value) {
 		}
 
 		const encoded = encodeURIComponent(value);
-		const fetchUrl = `type-metadata?vct=${encoded}`;
-
-		const displayUrl = `${origin}${pathname}type-metadata?vct=${value}`;
-		sourceBox.textContent = `Source: GET ${displayUrl}`;
+		const fetchUrl = appUrl(`type-metadata?vct=${encoded}`);
+		sourceBox.textContent = `Source: GET ${fetchUrl}`;
 
 		const metadata = await fetchJson(fetchUrl);
 
@@ -167,7 +165,7 @@ async function loadVctSelection(value) {
 
 async function checkLogin() {
 	try {
-        const res = await fetch('auth', { credentials: 'include' });
+        const res = await fetch(appUrl("auth"), { credentials: 'include' });
         if (res.ok) {
 			loginBtn.disabled = true;
 			logoutBtn.disabled = false;
@@ -202,4 +200,3 @@ async function checkSuccess() {
 }
 
 window.addEventListener("DOMContentLoaded", onLoad);
-
