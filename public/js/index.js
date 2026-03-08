@@ -1,28 +1,15 @@
-import { clearEl, fetchJson, login, logout, showSuccess } from "./app.js";
+import { clearEl, fetchJson, getAuthState, showSuccess } from "./app.js";
 
-const loginBtn = document.getElementById('vct-login-btn');
-const logoutBtn = document.getElementById('vct-logout-btn');
 const addBtn = document.getElementById('vct-add-btn');
 const editBtn = document.getElementById('vct-edit-btn');
-const usernameContainer = document.getElementById('username-container');
 
 function appUrl(path) {
 	return new URL(path, document.baseURI).toString();
 }
 
-loginBtn.addEventListener('click', async () => {
-	await login();
-	await checkLogin();
-});
-
-logoutBtn.addEventListener('click', async () => {
-	await logout();
-	await checkLogin();
-});
-
 async function onLoad() {
 	loadVctList();
-	checkLogin();
+	updatePageAuthState();
 	checkSuccess();
 }
 
@@ -163,34 +150,10 @@ async function loadVctSelection(value) {
 	}
 }
 
-async function checkLogin() {
-	try {
-		const res = await fetch(appUrl("auth"), { credentials: 'include' });
-		if (res.ok) {
-			loginBtn.hidden = true;
-			loginBtn.disabled = true;
-			logoutBtn.hidden = false;
-			logoutBtn.disabled = false;
-			addBtn.hidden = false;
-			editBtn.hidden = false;
-			const body = await res.json();
-			usernameContainer.hidden = false;
-			usernameContainer.dataset.username = body.username;
-			usernameContainer.title = "";
-			usernameContainer.setAttribute("aria-label", `Logged in as ${body.username}`);
-			return;
-		}
-	} catch (_err) { }
-	loginBtn.hidden = false;
-	loginBtn.disabled = false;
-	logoutBtn.hidden = true;
-	logoutBtn.disabled = true;
-	addBtn.hidden = true;
-	editBtn.hidden = true;
-	usernameContainer.hidden = true;
-	usernameContainer.removeAttribute("data-username");
-	usernameContainer.title = "";
-	usernameContainer.setAttribute("aria-label", "Logged in user");
+async function updatePageAuthState() {
+	const authState = await getAuthState();
+	addBtn.hidden = !authState.loggedIn;
+	editBtn.hidden = !authState.loggedIn;
 }
 
 async function checkSuccess() {
@@ -210,3 +173,6 @@ async function checkSuccess() {
 }
 
 window.addEventListener("DOMContentLoaded", onLoad);
+document.addEventListener("auth:changed", () => {
+	updatePageAuthState();
+});

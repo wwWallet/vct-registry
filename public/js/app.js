@@ -95,6 +95,23 @@ export async function logout() {
 	} catch (err) { }
 }
 
+export async function getAuthState() {
+	try {
+		const res = await fetch("auth", { credentials: "include" });
+		if (!res.ok) {
+			return { loggedIn: false, username: "" };
+		}
+
+		const body = await res.json();
+		return {
+			loggedIn: true,
+			username: body?.username ?? "",
+		};
+	} catch (_err) {
+		return { loggedIn: false, username: "" };
+	}
+}
+
 export const initialAddVctData = {
 	"vct": "",
 	"name": "",
