@@ -9,15 +9,22 @@
   {% block page_styles %}{% endblock %}
 </head>
 <body>
-  <header class="header">
-    <h1>wwWallet VCT Registry</h1>
-    <p class="subtitle">
-      Local SD-JWT Verifiable Credential Type Metadata registry
-    </p>
-    {% block header_actions %}{% endblock %}
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <header class="header" role="banner">
+    <div class="header-inner">
+      <div class="header-copy">
+        <p class="header-kicker">wwWallet</p>
+        <h1>VCT Registry</h1>
+        <p class="subtitle">
+          Local SD-JWT Verifiable Credential Type Metadata registry
+        </p>
+      </div>
+      {% block header_actions %}{% endblock %}
+    </div>
   </header>
 
-  <main class="container">
+  <main id="main-content" class="container">
     {% block content %}{% endblock %}
   </main>
 

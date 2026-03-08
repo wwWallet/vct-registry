@@ -165,22 +165,32 @@ async function loadVctSelection(value) {
 
 async function checkLogin() {
 	try {
-        const res = await fetch(appUrl("auth"), { credentials: 'include' });
-        if (res.ok) {
+		const res = await fetch(appUrl("auth"), { credentials: 'include' });
+		if (res.ok) {
+			loginBtn.hidden = true;
 			loginBtn.disabled = true;
+			logoutBtn.hidden = false;
 			logoutBtn.disabled = false;
 			addBtn.hidden = false;
 			editBtn.hidden = false;
 			const body = await res.json();
-			usernameContainer.textContent = `Logged in as ${body.username}`;
+			usernameContainer.hidden = false;
+			usernameContainer.dataset.username = body.username;
+			usernameContainer.title = "";
+			usernameContainer.setAttribute("aria-label", `Logged in as ${body.username}`);
 			return;
-        }
-    } catch (_err) { }
+		}
+	} catch (_err) { }
+	loginBtn.hidden = false;
 	loginBtn.disabled = false;
+	logoutBtn.hidden = true;
 	logoutBtn.disabled = true;
 	addBtn.hidden = true;
 	editBtn.hidden = true;
-	usernameContainer.textContent = "";
+	usernameContainer.hidden = true;
+	usernameContainer.removeAttribute("data-username");
+	usernameContainer.title = "";
+	usernameContainer.setAttribute("aria-label", "Logged in user");
 }
 
 async function checkSuccess() {

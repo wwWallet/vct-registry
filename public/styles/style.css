@@ -15,6 +15,24 @@ body {
 	color: #1f2937;
 }
 
+.skip-link {
+	position: absolute;
+	left: 12px;
+	top: -44px;
+	background: #111827;
+	color: #ffffff;
+	padding: 8px 10px;
+	border-radius: 8px;
+	text-decoration: none;
+	font-size: 0.85rem;
+	z-index: 1000;
+	transition: top 0.15s ease;
+}
+
+.skip-link:focus {
+	top: 12px;
+}
+
 /* Code styling */
 code {
 	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
@@ -27,21 +45,48 @@ code {
 
 /* Header */
 .header {
-	padding: 28px 16px;
-	text-align: center;
-	background: #ffffff;
+	padding: 12px 16px;
+	background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
 	border-bottom: 1px solid #e5e7eb;
+}
+
+.header-inner {
+	max-width: 960px;
+	margin: 0 auto;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-start;
+	justify-content: space-between;
+	align-items: end;
+	gap: 0px 14px;
+}
+
+.header-copy {
+	min-width: 280px;
+	flex: 1 1 380px;
+}
+
+.header-kicker {
+	margin: 0 0 2px;
+	font-size: 0.72rem;
+	font-weight: 700;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: #2563eb;
 }
 
 .header h1 {
 	margin: 0;
-	font-size: 1.9rem;
+	font-size: 1.45rem;
+	line-height: 1.15;
 	color: #111827;
 }
 
 .subtitle {
-	margin-top: 6px;
-	font-size: 0.95rem;
+	margin-top: 4px;
+	margin-bottom: 0;
+	max-width: 46ch;
+	font-size: 0.85rem;
 	color: #6b7280;
 }
 
@@ -156,4 +201,14 @@ code {
 	background: #d1fae5;
 	color: #16a34a;
 	border: 1px solid #a7f3d0;
+}
+
+@media (max-width: 640px) {
+	.header {
+		padding: 10px 14px;
+	}
+
+	.header h1 {
+		font-size: 1.2rem;
+	}
 }

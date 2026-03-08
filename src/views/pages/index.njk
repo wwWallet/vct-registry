@@ -9,9 +9,11 @@
 {% block header_actions %}
 <div class="vct-auth-button-container">
   <button id="vct-login-btn" type="button" class="vct-auth-btn login">Login</button>
-  <button id="vct-logout-btn" type="button" class="vct-auth-btn logout">Logout</button>
+  <span id="username-container" class="vct-user-indicator" hidden aria-label="Logged in user" tabindex="0">
+    <span class="vct-user-avatar" aria-hidden="true"></span>
+  </span>
+  <button id="vct-logout-btn" type="button" class="vct-auth-btn logout" hidden>Logout</button>
 </div>
-<p id="username-container"></p>
 {% endblock %}
 
 {% block content %}

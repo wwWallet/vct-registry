@@ -36,37 +36,113 @@
 .vct-auth-button-container {
 	display: flex;
 	flex-direction: row;
+	align-items: center;
 	gap: 8px;
-	margin: 12px auto;
-	width: 50%;
+	margin: 0;
 }
 
 .vct-auth-btn {
-	width: 100%;
-	font-size: 0.8rem;
+	flex: 1;
+	font-size: 0.85rem;
+	font-weight: 600;
 	background: #f9fafb;
-	border-radius: 8px;
-	padding: 12px;
-	border: 1px solid #e5e7eb;
+	border-radius: 10px;
+	padding: 8px 20px;
+	border: 1px solid #d1d5db;
 	cursor: pointer;
-	transition: background-color 0.15s ease, border-color 0.15s ease;
+	transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
 }
 
 .vct-auth-btn:enabled:hover {
 	background: #f3f4f6;
 	border-color: #d1d5db;
+	transform: translateY(-1px);
+}
+
+.vct-auth-btn:focus-visible {
+	outline: none;
+	box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
+}
+
+.vct-auth-btn.login {
+	background: #048ba8;
+	border-color: #048ba8;
+	color: #ffffff;
 }
 
 .vct-auth-btn.login:enabled:hover {
-	background: #d1fae5;
-	border-color: #a7f3d0;
-	color: #16a34a;
+	background: #2e4057;
+	border-color: #2e4057;
+	color: #ffffff;
 }
 
 .vct-auth-btn.logout:enabled:hover {
 	background: #fee2e2;
 	border-color: #fecaca;
 	color: #991b1b;
+}
+
+.vct-user-indicator {
+	position: relative;
+	flex: 0 0 34px;
+	width: 34px;
+	height: 34px;
+	border-radius: 999px;
+	border: 1px solid #d1d5db;
+	background: #f9fafb;
+}
+
+.vct-user-indicator:focus-visible {
+	outline: none;
+	box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
+}
+
+.vct-user-indicator::after {
+	content: attr(data-username);
+	position: absolute;
+	left: 50%;
+	bottom: calc(100% + 8px);
+	transform: translateX(-50%) translateY(4px);
+	background: #111827;
+	color: #ffffff;
+	font-size: 0.75rem;
+	line-height: 1;
+	padding: 6px 8px;
+	border-radius: 6px;
+	white-space: nowrap;
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.vct-user-indicator[data-username]:not([data-username=""]):hover::after,
+.vct-user-indicator[data-username]:not([data-username=""]):focus-visible::after {
+	opacity: 1;
+	transform: translateX(-50%) translateY(0);
+}
+
+.vct-user-avatar::before {
+	content: "";
+	position: absolute;
+	top: 5px;
+	left: 50%;
+	width: 10px;
+	height: 10px;
+	border-radius: 999px;
+	background: #4b5563;
+	transform: translateX(-50%);
+}
+
+.vct-user-avatar::after {
+	content: "";
+	position: absolute;
+	left: 50%;
+	bottom: 6px;
+	width: 16px;
+	height: 9px;
+	border-radius: 9px 9px 6px 6px;
+	background: #4b5563;
+	transform: translateX(-50%);
 }
 
 /* JSON output box */
@@ -104,4 +180,14 @@ a.vct-edit-btn {
 	font-size: 0.9rem;
 	color: #6b7280;
 	margin-bottom: 12px;
+}
+
+@media (max-width: 640px) {
+	.vct-auth-button-container {
+		width: 100%;
+	}
+
+	.vct-auth-btn {
+		padding: 10px;
+	}
 }
