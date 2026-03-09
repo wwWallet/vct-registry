@@ -15,6 +15,17 @@ function getRegistryBaseUrl(req: Request): string {
 	return new URL(baseHref, origin).toString();
 }
 
+function readQueryVct(req: Request): string | undefined {
+	const vctParam = req.query.vct;
+	if (typeof vctParam !== "string") return undefined;
+
+	try {
+		return decodeURIComponent(vctParam);
+	} catch {
+		return vctParam;
+	}
+}
+
 viewsRouter.get("/", async (req, res) => {
 	const registryBaseUrl = getRegistryBaseUrl(req);
 	try {
@@ -43,12 +54,43 @@ viewsRouter.get("/", async (req, res) => {
 	}
 });
 
-viewsRouter.get("/metadata", (req, res) => {
-	res.render("pages/metadata.njk", {
-		baseHref,
-		registryBaseUrl: getRegistryBaseUrl(req),
-		currentPage: "metadata",
-	});
+viewsRouter.get("/metadata", async (req, res) => {
+	const registryBaseUrl = getRegistryBaseUrl(req);
+
+	try {
+		const metadataList = await getAllVctMetadata(db);
+		const queryVct = readQueryVct(req);
+		const selectedMetadata = queryVct ? metadataList.find((meta) => meta.vct === queryVct) : undefined;
+		const selectedVct = selectedMetadata ? selectedMetadata.vct : "__all__";
+		const selectedPayload = selectedVct === "__all__" ? metadataList : selectedMetadata;
+		const sourceUrl = selectedVct === "__all__"
+			? `${registryBaseUrl}type-metadata/all`
+			: `${registryBaseUrl}type-metadata?vct=${encodeURIComponent(selectedVct)}`;
+
+		res.render("pages/metadata.njk", {
+			baseHref,
+			registryBaseUrl,
+			currentPage: "metadata",
+			metadataList,
+			selectedVct,
+			selectedMetadata,
+			sourceUrl,
+			metadataJson: JSON.stringify(selectedPayload, null, 2),
+			metadataError: "",
+		});
+	} catch (err) {
+		res.render("pages/metadata.njk", {
+			baseHref,
+			registryBaseUrl,
+			currentPage: "metadata",
+			metadataList: [],
+			selectedVct: "__all__",
+			selectedMetadata: null,
+			sourceUrl: `${registryBaseUrl}type-metadata/all`,
+			metadataJson: "",
+			metadataError: err instanceof Error ? err.message : "Failed to load metadata.",
+		});
+	}
 });
 
 viewsRouter.get("/vct-list", async (_req, res) => {
