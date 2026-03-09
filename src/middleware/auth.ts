@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import crypto from "crypto";
 import { config } from "../../config";
-import { is } from "zod/v4/locales";
 
 const USERS = config.users;
 const COOKIE_NAME = "vctRegistrySessionId"
@@ -44,7 +43,7 @@ function basicAuth(req: Request, res: Response, next: NextFunction) {
     }
 }
 
-function isValidSession(req: Request) {
+export function getSessionUsername(req: Request): string | null {
     const sessionId = req.cookies[COOKIE_NAME];
 
     if (sessionId && SESSIONS.has(sessionId)) {
@@ -65,7 +64,7 @@ function isValidSession(req: Request) {
  */
 export function login(req: Request, res: Response, next: NextFunction) {
 
-    const username = isValidSession(req);
+    const username = getSessionUsername(req);
     if (username) {
         (req as any).username = username;
         return next();
@@ -92,7 +91,7 @@ export function login(req: Request, res: Response, next: NextFunction) {
  */
 export function auth(req: Request, res: Response, next: NextFunction) {
 
-    const username = isValidSession(req);
+    const username = getSessionUsername(req);
     if (username) {
         (req as any).username = username;
         return next();
@@ -107,7 +106,7 @@ export function auth(req: Request, res: Response, next: NextFunction) {
  */
 export function authView(req: Request, res: Response, next: NextFunction) {
 
-    const username = isValidSession(req);
+    const username = getSessionUsername(req);
     if (username) {
         (req as any).username = username;
         return next();

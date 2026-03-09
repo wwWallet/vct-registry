@@ -1,6 +1,6 @@
 import { Router } from "express";
 import type { Request } from "express";
-import { authView } from "../middleware/auth";
+import { authView, getSessionUsername } from "../middleware/auth";
 import { config } from "../../config";
 import { getAllVctMetadata } from "../db/vct";
 import { db } from "../server";
@@ -13,6 +13,14 @@ const baseHref = config.base_url.endsWith("/") ? config.base_url : `${config.bas
 function getRegistryBaseUrl(req: Request): string {
 	const origin = `${req.protocol}://${req.get("host")}/`;
 	return new URL(baseHref, origin).toString();
+}
+
+function getAuthViewState(req: Request) {
+	const username = getSessionUsername(req);
+	return {
+		isAuthenticated: Boolean(username),
+		username: username ?? "",
+	};
 }
 
 function readQueryVct(req: Request): string | undefined {
@@ -28,6 +36,7 @@ function readQueryVct(req: Request): string | undefined {
 
 viewsRouter.get("/", async (req, res) => {
 	const registryBaseUrl = getRegistryBaseUrl(req);
+	const authState = getAuthViewState(req);
 	try {
 		const metadataList = await getAllVctMetadata(db);
 		const metadataWithPreview = await Promise.all(
@@ -40,6 +49,7 @@ viewsRouter.get("/", async (req, res) => {
 			baseHref,
 			registryBaseUrl,
 			currentPage: "home",
+			...authState,
 			metadataList: metadataWithPreview,
 			homeError: "",
 		});
@@ -48,6 +58,7 @@ viewsRouter.get("/", async (req, res) => {
 			baseHref,
 			registryBaseUrl,
 			currentPage: "home",
+			...authState,
 			metadataList: [],
 			homeError: err instanceof Error ? err.message : "Failed to load metadata cards.",
 		});
@@ -56,6 +67,7 @@ viewsRouter.get("/", async (req, res) => {
 
 viewsRouter.get("/metadata", async (req, res) => {
 	const registryBaseUrl = getRegistryBaseUrl(req);
+	const authState = getAuthViewState(req);
 
 	try {
 		const metadataList = await getAllVctMetadata(db);
@@ -71,6 +83,7 @@ viewsRouter.get("/metadata", async (req, res) => {
 			baseHref,
 			registryBaseUrl,
 			currentPage: "metadata",
+			...authState,
 			metadataList,
 			selectedVct,
 			selectedMetadata,
@@ -83,6 +96,7 @@ viewsRouter.get("/metadata", async (req, res) => {
 			baseHref,
 			registryBaseUrl,
 			currentPage: "metadata",
+			...authState,
 			metadataList: [],
 			selectedVct: "__all__",
 			selectedMetadata: null,
@@ -108,6 +122,7 @@ viewsRouter.get("/usage", (req, res) => {
 		baseHref,
 		registryBaseUrl: getRegistryBaseUrl(req),
 		currentPage: "usage",
+		...getAuthViewState(req),
 	});
 });
 
@@ -116,6 +131,7 @@ viewsRouter.get("/add", authView, (req, res) => {
 		baseHref,
 		registryBaseUrl: getRegistryBaseUrl(req),
 		currentPage: "metadata",
+		...getAuthViewState(req),
 	});
 });
 
@@ -124,6 +140,7 @@ viewsRouter.get("/edit", authView, (req, res) => {
 		baseHref,
 		registryBaseUrl: getRegistryBaseUrl(req),
 		currentPage: "metadata",
+		...getAuthViewState(req),
 	});
 });
 
