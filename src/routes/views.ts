@@ -44,7 +44,7 @@ viewsRouter.get("/", async (req, res) => {
 });
 
 viewsRouter.get("/metadata", (req, res) => {
-	res.render("pages/index.njk", {
+	res.render("pages/metadata.njk", {
 		baseHref,
 		registryBaseUrl: getRegistryBaseUrl(req),
 		currentPage: "metadata",
