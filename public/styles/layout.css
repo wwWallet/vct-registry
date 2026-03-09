@@ -1,0 +1,28 @@
+/* Shared page layout */
+.container {
+	max-width: 960px;
+	margin: 32px auto 40px;
+	padding: 0 16px;
+}
+
+/* Generic content block */
+.card {
+	background: #ffffff;
+	border-radius: 12px;
+	padding: 22px;
+	border: 1px solid #e5e7eb;
+	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+}
+
+.card h2 {
+	margin-top: 0;
+	margin-bottom: 8px;
+	font-size: 1.35rem;
+	color: #111827;
+}
+
+.section-description {
+	margin: 0 0 20px;
+	font-size: 0.9rem;
+	color: #6b7280;
+}
