@@ -54,6 +54,7 @@ async function loadVctList() {
 
 	try {
 		const list = await fetchJson(appUrl("api/vct")); // [{ vct, name }]
+		const selectedVctParam = new URLSearchParams(window.location.search).get("vct");
 
 		if (!Array.isArray(list) || list.length === 0) {
 			loading.hidden = true;
@@ -78,8 +79,9 @@ async function loadVctList() {
 
 		loading.hidden = true;
 
-		// Default to showing ALL
-		select.value = "__all__";
+		// Default selection from query param (?vct=...), fallback to ALL
+		const selectedFromQuery = selectedVctParam && list.some((entry) => entry.vct === selectedVctParam);
+		select.value = selectedFromQuery ? selectedVctParam : "__all__";
 		await loadVctSelection(select.value);
 
 		controls.hidden = false;

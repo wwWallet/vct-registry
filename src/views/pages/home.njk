@@ -1,0 +1,36 @@
+{% extends "layouts/base.njk" %}
+
+{% block title %}vct-registry{% endblock %}
+
+{% block page_styles %}
+<link rel="stylesheet" href="./styles/home.css" />
+{% endblock %}
+
+{% block content %}
+<section class="home-shell">
+  <h2>Metadata Home</h2>
+  <p class="section-description">
+    Browse registered Verifiable Credential Type metadata as cards, then open each entry in the metadata explorer.
+  </p>
+
+  <div class="home-actions">
+    <a class="vct-edit-btn" href="metadata">Open Metadata Explorer</a>
+  </div>
+
+  {% if homeError %}
+  <div class="error">{{ homeError }}</div>
+  {% elif metadataList and metadataList.length %}
+  <div class="home-cards">
+    {% for metadata in metadataList %}
+    <a class="home-metadata-card" href="metadata?vct={{ metadata.vct | urlencode }}">
+      <h3>{{ metadata.name or metadata.vct or "Unnamed credential" }}</h3>
+      <p class="home-vct">{{ metadata.vct or "" }}</p>
+      <p class="home-description">{{ metadata.description or "No description provided." }}</p>
+    </a>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="status-text">No metadata entries found.</div>
+  {% endif %}
+</section>
+{% endblock %}

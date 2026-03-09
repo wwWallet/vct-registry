@@ -1,0 +1,67 @@
+.home-shell {
+	padding: 4px 0;
+}
+
+.home-shell h2 {
+	margin-top: 0;
+}
+
+.home-actions {
+	margin-bottom: 12px;
+}
+
+.home-actions .vct-edit-btn {
+	text-decoration: none;
+	color: inherit;
+	display: inline-block;
+	width: auto;
+}
+
+.home-cards {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+	gap: 12px;
+}
+
+.home-metadata-card {
+	border: 1px solid #e5e7eb;
+	border-radius: 10px;
+	padding: 14px;
+	background: transparent;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	text-decoration: none;
+	color: inherit;
+	transition: border-color 0.15s ease;
+}
+
+.home-metadata-card:hover {
+	border-color: #94a3b8;
+}
+
+.home-metadata-card:focus-visible {
+	outline: none;
+	box-shadow: 0 0 0 3px rgba(148, 163, 184, 0.3);
+}
+
+.home-metadata-card h3 {
+	margin: 0;
+	font-size: 1rem;
+	color: #111827;
+}
+
+.home-vct {
+	margin: 0;
+	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+	font-size: 0.8rem;
+	color: #4b5563;
+	word-break: break-all;
+}
+
+.home-description {
+	margin: 0;
+	font-size: 0.9rem;
+	color: #374151;
+	flex: 1;
+}

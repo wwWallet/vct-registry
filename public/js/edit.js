@@ -61,7 +61,7 @@ document
 		if (!res.ok) {
 			showErrors("Failed to save VC Type Metadata", result);
 		} else {
-			window.location.href = "./?toast=edit-success";
+			window.location.href = "./metadata?toast=edit-success";
 		}
 	});
 
@@ -84,7 +84,7 @@ document
 		if (!res.ok) {
 			showErrors("Failed to delete VC Type Metadata", result);
 		} else {
-			window.location.href = "./?toast=delete-success";
+			window.location.href = "./metadata?toast=delete-success";
 		}
 	});
 
