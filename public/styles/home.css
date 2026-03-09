@@ -48,6 +48,15 @@
 	transition: border-color 0.15s ease;
 }
 
+.home-preview {
+	display: block;
+	width: 100%;
+	height: auto;
+	border-radius: 8px;
+	border: 1px solid #e5e7eb;
+	background: #f8fafc;
+}
+
 .home-metadata-card:hover {
 	border-color: #94a3b8;
 }
@@ -76,4 +85,9 @@
 	font-size: 0.9rem;
 	color: #374151;
 	flex: 1;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 3;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
