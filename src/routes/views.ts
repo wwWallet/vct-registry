@@ -51,6 +51,16 @@ viewsRouter.get("/metadata", (req, res) => {
 	});
 });
 
+viewsRouter.get("/vct-list", async (_req, res) => {
+	const result = await getAllVctMetadata(db);
+	const list = result.map((meta) => ({
+		vct: meta.vct,
+		name: meta.name,
+	}));
+
+	res.json(list);
+});
+
 viewsRouter.get("/usage", (req, res) => {
 	res.render("pages/usage.njk", {
 		baseHref,

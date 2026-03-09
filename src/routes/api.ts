@@ -1,4 +1,5 @@
 import { Router } from "express";
+import type { Request, Response } from "express";
 import { getAllVctMetadata } from "../db/vct";
 import { db } from "../server";
 
@@ -31,7 +32,7 @@ apiRouter.get("/time", (_req, res) => {
 /**
  * Returns a simple list of all VCTs + names.
  */
-apiRouter.get("/vct", async (_req, res) => {
+async function getVctList(_req: Request, res: Response) {
 	const result = await getAllVctMetadata(db);
 
 	const list = result.map((meta) => ({
@@ -40,6 +41,11 @@ apiRouter.get("/vct", async (_req, res) => {
 	}));
 
 	res.json(list);
-});
+}
+
+apiRouter.get("/vct-list", getVctList);
+
+// Backward-compatible alias
+apiRouter.get("/vct", getVctList);
 
 export default apiRouter;

@@ -53,7 +53,7 @@ async function loadVctList() {
 	sourceBox.textContent = "";
 
 	try {
-		const list = await fetchJson(appUrl("api/vct")); // [{ vct, name }]
+		const list = await fetchJson(appUrl("vct-list")); // [{ vct, name }]
 		const selectedVctParam = new URLSearchParams(window.location.search).get("vct");
 
 		if (!Array.isArray(list) || list.length === 0) {
