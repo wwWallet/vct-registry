@@ -8,17 +8,14 @@
 .header-inner {
 	max-width: 960px;
 	margin: 0 auto;
-	display: flex;
-	flex-wrap: wrap;
-	align-items: flex-start;
-	justify-content: space-between;
-	align-items: end;
-	gap: 0px 14px;
+	display: grid;
+	grid-template-columns: 1fr auto 1fr;
+	align-items: center;
+	gap: 12px;
 }
 
 .header-copy {
-	min-width: 280px;
-	flex: 1 1 380px;
+	min-width: 0;
 }
 
 .header-kicker {
@@ -37,17 +34,10 @@
 	color: #111827;
 }
 
-.subtitle {
-	margin-top: 4px;
-	margin-bottom: 0;
-	max-width: 46ch;
-	font-size: 0.85rem;
-	color: #6b7280;
-}
-
 .header-nav {
 	display: flex;
 	gap: 12px;
+	justify-self: center;
 }
 
 .header-nav a {
@@ -92,11 +82,7 @@
 
 /* Header actions */
 .vct-auth-button-container {
-	display: flex;
-	flex-direction: column;
-	align-items: flex-end;
-	gap: 12px;
-	margin: 0;
+	justify-self: end;
 }
 
 .vct-auth-actions {
@@ -275,17 +261,25 @@
 		padding: 10px 14px;
 	}
 
+	.header-inner {
+		grid-template-columns: 1fr;
+		justify-items: center;
+	}
+
+	.header-copy {
+		justify-content: center;
+	}
+
 	.header h1 {
 		font-size: 1.2rem;
 	}
 
 	.vct-auth-button-container {
-		width: 100%;
-		align-items: flex-start;
+		justify-self: center;
 	}
 
 	.vct-auth-actions {
-		width: 100%;
+		justify-content: center;
 	}
 
 	.vct-auth-btn {

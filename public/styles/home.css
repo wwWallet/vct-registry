@@ -2,12 +2,21 @@
 	padding: 4px 0;
 }
 
-.home-shell h2 {
+.home-shell h1 {
 	margin-top: 0;
+	text-align: center;
+	margin-bottom: 8px;
+}
+
+.home-subtitle {
+	text-align: center;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 .home-actions {
-	margin-bottom: 12px;
+	text-align: center;
+	margin-bottom: 20px;
 }
 
 .home-actions .vct-edit-btn {
@@ -18,12 +27,15 @@
 }
 
 .home-cards {
-	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
 	gap: 12px;
 }
 
 .home-metadata-card {
+	flex: 0 1 300px;
+	max-width: 360px;
 	border: 1px solid #e5e7eb;
 	border-radius: 10px;
 	padding: 14px;
