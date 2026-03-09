@@ -1,4 +1,5 @@
 import { Router } from "express";
+import type { Request } from "express";
 import { authView } from "../middleware/auth";
 import { config } from "../../config";
 import { getAllVctMetadata } from "../db/vct";
@@ -9,10 +10,15 @@ import { getMetadataPreviewDataUri } from "../util/metadataPreview";
 const viewsRouter = Router();
 const baseHref = config.base_url.endsWith("/") ? config.base_url : `${config.base_url}/`;
 
-viewsRouter.get("/", async (_req, res) => {
+function getRegistryBaseUrl(req: Request): string {
+	const origin = `${req.protocol}://${req.get("host")}/`;
+	return new URL(baseHref, origin).toString();
+}
+
+viewsRouter.get("/", async (req, res) => {
+	const registryBaseUrl = getRegistryBaseUrl(req);
 	try {
 		const metadataList = await getAllVctMetadata(db);
-		console.log("Fetched metadata list for home page:", metadataList);
 		const metadataWithPreview = await Promise.all(
 			metadataList.map(async (metadata: any) => ({
 				...metadata,
@@ -21,6 +27,7 @@ viewsRouter.get("/", async (_req, res) => {
 		);
 		res.render("pages/home.njk", {
 			baseHref,
+			registryBaseUrl,
 			currentPage: "home",
 			metadataList: metadataWithPreview,
 			homeError: "",
@@ -28,6 +35,7 @@ viewsRouter.get("/", async (_req, res) => {
 	} catch (err) {
 		res.render("pages/home.njk", {
 			baseHref,
+			registryBaseUrl,
 			currentPage: "home",
 			metadataList: [],
 			homeError: err instanceof Error ? err.message : "Failed to load metadata cards.",
@@ -35,23 +43,34 @@ viewsRouter.get("/", async (_req, res) => {
 	}
 });
 
-viewsRouter.get("/metadata", (_req, res) => {
+viewsRouter.get("/metadata", (req, res) => {
 	res.render("pages/index.njk", {
 		baseHref,
+		registryBaseUrl: getRegistryBaseUrl(req),
 		currentPage: "metadata",
 	});
 });
 
-viewsRouter.get("/add", authView, (_req, res) => {
+viewsRouter.get("/usage", (req, res) => {
+	res.render("pages/usage.njk", {
+		baseHref,
+		registryBaseUrl: getRegistryBaseUrl(req),
+		currentPage: "usage",
+	});
+});
+
+viewsRouter.get("/add", authView, (req, res) => {
 	res.render("pages/add.njk", {
 		baseHref,
+		registryBaseUrl: getRegistryBaseUrl(req),
 		currentPage: "metadata",
 	});
 });
 
-viewsRouter.get("/edit", authView, (_req, res) => {
+viewsRouter.get("/edit", authView, (req, res) => {
 	res.render("pages/edit.njk", {
 		baseHref,
+		registryBaseUrl: getRegistryBaseUrl(req),
 		currentPage: "metadata",
 	});
 });
