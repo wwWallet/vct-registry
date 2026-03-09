@@ -158,6 +158,66 @@
 	transform: translateX(-50%);
 }
 
+.vct-login-dialog {
+	border: 0;
+	border-radius: 12px;
+	padding: 0;
+	width: min(420px, calc(100vw - 32px));
+	box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.vct-login-dialog::backdrop {
+	background: rgba(17, 24, 39, 0.45);
+}
+
+.vct-login-form {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	padding: 16px;
+}
+
+.vct-login-form h2 {
+	margin: 0 0 4px;
+	font-size: 1.1rem;
+}
+
+.vct-login-label {
+	font-size: 0.85rem;
+	color: #374151;
+}
+
+.vct-login-input {
+	width: 100%;
+	padding: 10px;
+	border-radius: 8px;
+	border: 1px solid #d1d5db;
+	font-size: 0.9rem;
+}
+
+.vct-login-input:focus-visible {
+	outline: none;
+	border-color: #2563eb;
+	box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+}
+
+.vct-login-error {
+	margin: 4px 0 0;
+	padding: 8px 10px;
+	border-radius: 8px;
+	font-size: 0.8rem;
+	color: #991b1b;
+	background: #fee2e2;
+	border: 1px solid #fecaca;
+}
+
+.vct-login-actions {
+	margin-top: 6px;
+	display: flex;
+	justify-content: flex-end;
+	gap: 8px;
+}
+
 @media (max-width: 640px) {
 	.header {
 		padding: 10px 14px;

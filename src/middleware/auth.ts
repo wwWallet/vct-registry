@@ -20,9 +20,12 @@ function generateSessionId() {
  * Middleware that performs basic authentication.
  */
 function basicAuth(req: Request, res: Response, next: NextFunction) {
+    const isProgrammaticLogin = req.get("X-Requested-With") === "XMLHttpRequest";
     const authHeader = req.headers['authorization'];
     if (!authHeader || !authHeader.startsWith('Basic ')) {
-        res.setHeader('WWW-Authenticate', 'Basic realm="Login Required"');
+        if (!isProgrammaticLogin) {
+            res.setHeader('WWW-Authenticate', 'Basic realm="Login Required"');
+        }
         return res.status(401).send('Authentication required.');
     }
 
@@ -34,7 +37,9 @@ function basicAuth(req: Request, res: Response, next: NextFunction) {
         (req as any).username = username;
         next();
     } else {
-        res.setHeader('WWW-Authenticate', 'Basic realm="Login Required"');
+        if (!isProgrammaticLogin) {
+            res.setHeader('WWW-Authenticate', 'Basic realm="Login Required"');
+        }
         return res.status(401).send('Invalid credentials.');
     }
 }

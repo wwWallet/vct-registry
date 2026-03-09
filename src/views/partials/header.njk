@@ -15,4 +15,23 @@
       <button id="vct-logout-btn" type="button" class="vct-auth-btn logout" hidden>Logout</button>
     </div>
   </div>
+
+  <dialog id="vct-login-dialog" class="vct-login-dialog" aria-labelledby="vct-login-title">
+    <form id="vct-login-form" class="vct-login-form" method="dialog">
+      <h2 id="vct-login-title">Login</h2>
+
+      <label class="vct-login-label" for="vct-login-username">Username</label>
+      <input id="vct-login-username" name="username" class="vct-login-input" type="text" autocomplete="username" required />
+
+      <label class="vct-login-label" for="vct-login-password">Password</label>
+      <input id="vct-login-password" name="password" class="vct-login-input" type="password" autocomplete="current-password" required />
+
+      <p id="vct-login-error" class="vct-login-error" hidden></p>
+
+      <div class="vct-login-actions">
+        <button id="vct-login-cancel-btn" type="button" class="vct-auth-btn">Cancel</button>
+        <button id="vct-login-submit-btn" type="submit" class="vct-auth-btn login">Sign in</button>
+      </div>
+    </form>
+  </dialog>
 </header>

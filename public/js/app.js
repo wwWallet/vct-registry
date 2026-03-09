@@ -83,10 +83,24 @@ function hideElement(elementId) {
 	element.hidden = true;
 }
 
-export async function login() {
-	try {
-        await fetch('auth/login', { credentials: 'include' });
-    } catch (_err) { }
+export async function login(username, password) {
+	const headers = {};
+
+	if (username && password) {
+		headers.Authorization = `Basic ${btoa(`${username}:${password}`)}`;
+	}
+
+	const res = await fetch("auth/login", {
+		credentials: "include",
+		headers: {
+			...headers,
+			"X-Requested-With": "XMLHttpRequest",
+		},
+	});
+
+	if (!res.ok) {
+		throw new Error("Invalid username or password.");
+	}
 }
 
 export async function logout() {
