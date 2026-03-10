@@ -1,31 +1,3 @@
-.metadata-shell {
-	display: flex;
-	flex-direction: column;
-	gap: 18px;
-}
-
-.metadata-hero {
-	display: flex;
-	justify-content: center;
-	padding: 20px 22px;
-}
-
-.metadata-hero-copy {
-	max-width: 64ch;
-	text-align: center;
-}
-
-.metadata-hero h2 {
-	margin: 0;
-	font-size: 1.6rem;
-	line-height: 1.1;
-}
-
-.metadata-description {
-	margin-top: 8px;
-	margin-bottom: 0;
-}
-
 .metadata-layout {
 	display: grid;
 	grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);

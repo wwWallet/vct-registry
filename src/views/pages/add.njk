@@ -9,24 +9,32 @@
 {% endblock %}
 
 {% block content %}
-<section class="card">
-  <div class="edit-vct-title-back">
+<section class="page-shell">
+  <div class="page-header">
     <h2>Create Verifiable Credential Type Metadata</h2>
-    <a class="vct-back-link" href="./metadata">&larr; Return to VCT List</a>
+    <p class="page-subtitle">
+      Create a new registry entry by defining the VCT identity and supplying its full metadata document.
+    </p>
   </div>
-  <div>
-    <input type="text" id="add-vct-name" class="add-vct-input selected-vct" placeholder="Enter VCT Display Name">
-  </div>
-  <div>
-    <input type="text" id="add-vct-id" class="add-vct-input selected-vct" placeholder="Enter VCT ID (URI format)">
-  </div>
-  <div id="jsoneditor" class="jsoneditor-host"></div>
-  <div class="vct-edit-button-container">
-    <button id="vct-submit-btn" type="button" class="vct-edit-btn submit">Create VCT</button>
-  </div>
+  <section class="card page-card">
+    <div class="edit-vct-title-back">
+      <span></span>
+      <a class="vct-back-link" href="./metadata">&larr; Return to VCT List</a>
+    </div>
+    <div>
+      <input type="text" id="add-vct-name" class="add-vct-input selected-vct" placeholder="Enter VCT Display Name">
+    </div>
+    <div>
+      <input type="text" id="add-vct-id" class="add-vct-input selected-vct" placeholder="Enter VCT ID (URI format)">
+    </div>
+    <div id="jsoneditor" class="jsoneditor-host"></div>
+    <div class="vct-edit-button-container">
+      <button id="vct-submit-btn" type="button" class="vct-edit-btn submit">Create VCT</button>
+    </div>
 
-  <div id="vct-error" class="error" hidden></div>
-  <div id="vct-success" class="success" hidden></div>
+    <div id="vct-error" class="error" hidden></div>
+    <div id="vct-success" class="success" hidden></div>
+  </section>
 </section>
 {% endblock %}
 

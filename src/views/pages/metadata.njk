@@ -9,23 +9,21 @@
 {% block content %}
 <div id="vct-success" class="success" hidden></div>
 
-<section class="metadata-shell">
-  <div class="metadata-hero">
-    <div class="metadata-hero-copy">
-      <h2>Verifiable Credential Type Metadata</h2>
-      <p class="section-description metadata-description">
-        Explore one credential definition at a time or inspect the full registry payload. This page is optimized for both quick browsing and raw JSON review.
-      </p>
-    </div>
+<section class="page-shell metadata-shell">
+  <div class="page-header metadata-hero-copy">
+    <h2>Verifiable Credential Type Metadata</h2>
+    <p class="page-subtitle metadata-description">
+      Explore one credential definition at a time or inspect the full registry payload. This page is optimized for both quick browsing and raw JSON review.
+    </p>
   </div>
 
   {% if metadataError %}
   <div id="vct-error" class="error">{{ metadataError }}</div>
   {% elif metadataList and metadataList.length %}
-  <section class="card metadata-selection-panel">
+  <section class="card page-card metadata-selection-panel">
     <div class="metadata-panel-header">
       <h3>Selection</h3>
-      <p class="metadata-panel-copy">Choose a VCT to inspect a single record, or switch to the complete registry response.</p>
+      <p class="metadata-panel-copy">Selection Choose a VCT to inspect a single record, or switch to the complete registry response.</p>
     </div>
 
     <div class="metadata-selection-row">
@@ -47,7 +45,7 @@
   </section>
 
   <div class="metadata-layout">
-    <section class="card metadata-sidebar">
+    <section class="card page-card metadata-sidebar">
       <div class="metadata-panel-header">
         <h3>Details</h3>
         <p class="metadata-panel-copy">Current selection, source endpoint, and edit actions for this metadata view.</p>
@@ -93,7 +91,7 @@
       </div>
     </section>
 
-    <section class="card metadata-json-panel">
+    <section class="card page-card metadata-json-panel">
       <div class="metadata-panel-header">
         <h3>Raw Metadata JSON</h3>
         <p class="metadata-panel-copy">Full response payload for the currently selected source.</p>

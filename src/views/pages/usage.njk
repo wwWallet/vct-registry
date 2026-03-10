@@ -7,37 +7,41 @@
 {% endblock %}
 
 {% block content %}
-<section class="card usage-card">
-  <h2>How To Fetch Metadata</h2>
-  <p class="section-description">
-    Use these endpoints to integrate the VCT Registry from backend services, CLI scripts, or browser clients.
-  </p>
-  <p class="usage-text">
-    Registry base URL: <code>{{ registryBaseUrl }}</code>
-  </p>
+<section class="page-shell">
+  <div class="page-header">
+    <h2>How To Fetch Metadata</h2>
+    <p class="page-subtitle">
+      Use these endpoints from backend services, scripts, or browser clients to integrate with the registry cleanly.
+    </p>
+  </div>
+  <section class="card page-card usage-card">
+    <p class="usage-text">
+      Registry base URL: <code>{{ registryBaseUrl }}</code>
+    </p>
 
-  <h3>1. Fetch All Metadata</h3>
-  <p class="usage-text">
-    Endpoint: <code>GET {{ registryBaseUrl }}type-metadata/all</code>
-  </p>
-  <pre class="usage-code"><code>curl -s "{{ registryBaseUrl }}type-metadata/all"</code></pre>
+    <h3>1. Fetch All Metadata</h3>
+    <p class="usage-text">
+      Endpoint: <code>GET {{ registryBaseUrl }}type-metadata/all</code>
+    </p>
+    <pre class="usage-code"><code>curl -s "{{ registryBaseUrl }}type-metadata/all"</code></pre>
 
-  <h3>2. Fetch One Metadata Entry By VCT</h3>
-  <p class="usage-text">
-    Endpoint: <code>GET {{ registryBaseUrl }}type-metadata?vct=&lt;vct-value&gt;</code>
-  </p>
-  <pre class="usage-code"><code>curl -s "{{ registryBaseUrl }}type-metadata?vct=urn:eudi:pid:1"</code></pre>
+    <h3>2. Fetch One Metadata Entry By VCT</h3>
+    <p class="usage-text">
+      Endpoint: <code>GET {{ registryBaseUrl }}type-metadata?vct=&lt;vct-value&gt;</code>
+    </p>
+    <pre class="usage-code"><code>curl -s "{{ registryBaseUrl }}type-metadata?vct=urn:eudi:pid:1"</code></pre>
 
-  <h3>3. Browser Fetch Example</h3>
-  <pre class="usage-code"><code>const vct = encodeURIComponent("urn:eudi:pid:1");
+    <h3>3. Browser Fetch Example</h3>
+    <pre class="usage-code"><code>const vct = encodeURIComponent("urn:eudi:pid:1");
 const res = await fetch(`{{ registryBaseUrl }}type-metadata?vct=${vct}`);
 const metadata = await res.json();
 console.log(metadata);</code></pre>
 
-  <h3>4. Optional: List Available VCTs (Name + VCT)</h3>
-  <p class="usage-text">
-    Endpoint: <code>GET {{ registryBaseUrl }}vct-list</code>
-  </p>
-  <pre class="usage-code"><code>curl -s "{{ registryBaseUrl }}vct-list"</code></pre>
+    <h3>4. Optional: List Available VCTs (Name + VCT)</h3>
+    <p class="usage-text">
+      Endpoint: <code>GET {{ registryBaseUrl }}vct-list</code>
+    </p>
+    <pre class="usage-code"><code>curl -s "{{ registryBaseUrl }}vct-list"</code></pre>
+  </section>
 </section>
 {% endblock %}

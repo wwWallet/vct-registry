@@ -8,19 +8,27 @@
 {% endblock %}
 
 {% block content %}
-<section class="card">
-  <div class="edit-vct-title-back">
+<section class="page-shell">
+  <div class="page-header">
     <h2 id="edit-vct-title">Edit VCT</h2>
-    <a class="vct-back-link" href="./metadata">&larr; Return to VCT List</a>
+    <p class="page-subtitle">
+      Review and update the selected registry entry, then save or delete it from the registry.
+    </p>
   </div>
-  <div id="jsoneditor" class="jsoneditor-host"></div>
-  <div class="vct-edit-button-container">
-    <button id="vct-delete-btn" type="button" class="vct-edit-btn delete">Delete VCT</button>
-    <button id="vct-submit-btn" type="button" class="vct-edit-btn submit">Submit Changes</button>
-  </div>
+  <section class="card page-card">
+    <div class="edit-vct-title-back">
+      <span></span>
+      <a class="vct-back-link" href="./metadata">&larr; Return to VCT List</a>
+    </div>
+    <div id="jsoneditor" class="jsoneditor-host"></div>
+    <div class="vct-edit-button-container">
+      <button id="vct-delete-btn" type="button" class="vct-edit-btn delete">Delete VCT</button>
+      <button id="vct-submit-btn" type="button" class="vct-edit-btn submit">Submit Changes</button>
+    </div>
 
-  <div id="vct-error" class="error" hidden></div>
-  <div id="vct-success" class="success" hidden></div>
+    <div id="vct-error" class="error" hidden></div>
+    <div id="vct-success" class="success" hidden></div>
+  </section>
 </section>
 {% endblock %}
 
