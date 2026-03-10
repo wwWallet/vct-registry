@@ -126,7 +126,7 @@
 	content: attr(data-username);
 	position: absolute;
 	left: 50%;
-	bottom: calc(100% + 8px);
+	bottom: calc(100% - 60px);
 	transform: translateX(-50%) translateY(4px);
 	background: #111827;
 	color: #ffffff;
