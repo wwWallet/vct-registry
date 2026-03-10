@@ -89,23 +89,22 @@ a.vct-btn-primary:hover {
 	flex-direction: row;
 	gap: 8px;
 	margin-top: 12px;
+	align-items: stretch;
 }
 
 .vct-edit-btn {
 	width: 100%;
 }
 
+.vct-btn-cancel {
+	flex: 1;
+	width: auto;
+}
+
 .vct-edit-btn.submit {
-	flex: 4;
+	flex: 3;
 }
 
 .vct-edit-btn.delete {
 	flex: 1;
-}
-
-.edit-vct-title-back {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	margin: -4px 0 16px;
 }
