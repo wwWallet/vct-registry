@@ -11,11 +11,11 @@
     </nav>
     <div class="vct-auth-button-container">
       <div class="vct-auth-actions">
-        <button id="vct-login-btn" type="button" class="vct-auth-btn login" {% if isAuthenticated %}hidden disabled{% endif %}>Login</button>
+        <button id="vct-login-btn" type="button" class="vct-btn vct-auth-btn login" {% if isAuthenticated %}hidden disabled{% endif %}>Login</button>
         <span id="username-container" class="vct-user-indicator" {% if not isAuthenticated %}hidden{% endif %} {% if isAuthenticated %}data-username="{{ username }}"{% endif %} aria-label="{% if isAuthenticated %}Logged in as {{ username }}{% else %}Logged in user{% endif %}" tabindex="0">
           <span class="vct-user-avatar" aria-hidden="true"></span>
         </span>
-        <button id="vct-logout-btn" type="button" class="vct-auth-btn logout" {% if not isAuthenticated %}hidden disabled{% endif %}>Logout</button>
+        <button id="vct-logout-btn" type="button" class="vct-btn vct-auth-btn logout" {% if not isAuthenticated %}hidden disabled{% endif %}>Logout</button>
       </div>
     </div>
   </div>
@@ -33,8 +33,8 @@
       <p id="vct-login-error" class="vct-login-error" hidden></p>
 
       <div class="vct-login-actions">
-        <button id="vct-login-cancel-btn" type="button" class="vct-auth-btn">Cancel</button>
-        <button id="vct-login-submit-btn" type="submit" class="vct-auth-btn login">Sign in</button>
+        <button id="vct-login-cancel-btn" type="button" class="vct-btn vct-auth-btn">Cancel</button>
+        <button id="vct-login-submit-btn" type="submit" class="vct-btn vct-auth-btn login">Sign in</button>
       </div>
     </form>
   </dialog>

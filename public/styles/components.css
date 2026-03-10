@@ -10,6 +10,74 @@
 	transition: border-color 0.15s ease;
 }
 
+.vct-btn,
+.vct-edit-btn,
+.vct-auth-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	width: 100%;
+	padding: 10px 16px;
+	border-radius: 10px;
+	border: 1px solid #d1d5db;
+	background: #f9fafb;
+	color: #111827;
+	font-size: 0.85rem;
+	font-weight: 600;
+	line-height: 1.2;
+	text-decoration: none;
+	cursor: pointer;
+	transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease,
+		box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.vct-btn:enabled:hover,
+.vct-edit-btn:enabled:hover,
+.vct-auth-btn:enabled:hover,
+a.vct-btn:hover,
+a.vct-edit-btn:hover,
+a.vct-auth-btn:hover {
+	background: #f3f4f6;
+	border-color: #cbd5e1;
+}
+
+.vct-btn:focus-visible,
+.vct-edit-btn:focus-visible,
+.vct-auth-btn:focus-visible {
+	outline: none;
+	box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+}
+
+.vct-btn-primary,
+.vct-edit-btn.submit,
+.vct-auth-btn.login {
+	background: #048ba8;
+	border-color: #048ba8;
+	color: #ffffff;
+}
+
+.vct-btn-primary:enabled:hover,
+.vct-edit-btn.submit:enabled:hover,
+.vct-auth-btn.login:enabled:hover,
+a.vct-btn-primary:hover {
+	background: #2e4057;
+	border-color: #2e4057;
+	color: #ffffff;
+}
+
+.vct-btn-danger,
+.vct-edit-btn.delete {
+	color: #7f1d1d;
+}
+
+.vct-btn-danger:enabled:hover,
+.vct-edit-btn.delete:enabled:hover {
+	background: #fee2e2;
+	border-color: #fecaca;
+	color: #991b1b;
+}
+
 .vct-back-link {
 	font-size: 0.9rem;
 	color: #2563eb;
@@ -25,13 +93,6 @@
 
 .vct-edit-btn {
 	width: 100%;
-	font-size: 0.8rem;
-	background: #f9fafb;
-	border-radius: 8px;
-	padding: 12px;
-	border: 1px solid #e5e7eb;
-	cursor: pointer;
-	transition: background-color 0.15s ease, border-color 0.15s ease;
 }
 
 .vct-edit-btn.submit {
@@ -40,23 +101,6 @@
 
 .vct-edit-btn.delete {
 	flex: 1;
-}
-
-.vct-edit-btn:enabled:hover {
-	background: #f3f4f6;
-	border-color: #d1d5db;
-}
-
-.vct-edit-btn.submit:enabled:hover {
-	background: #d1fae5;
-	border-color: #a7f3d0;
-	color: #16a34a;
-}
-
-.vct-edit-btn.delete:enabled:hover {
-	background: #fee2e2;
-	border-color: #fecaca;
-	color: #991b1b;
 }
 
 .edit-vct-title-back {

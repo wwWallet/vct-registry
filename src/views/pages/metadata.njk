@@ -23,7 +23,7 @@
   <section class="card page-card metadata-selection-panel">
     <div class="metadata-panel-header">
       <h3>Selection</h3>
-      <p class="metadata-panel-copy">Selection Choose a VCT to inspect a single record, or switch to the complete registry response.</p>
+      <p class="metadata-panel-copy">Choose a VCT to inspect a single record, or switch to the complete registry response.</p>
     </div>
 
     <div class="metadata-selection-row">
@@ -39,7 +39,7 @@
       </form>
 
       <div id="vct-add" class="vct-add">
-        <a id="vct-add-btn" class="vct-edit-btn metadata-add-btn" href="add" hidden>Add new credential</a>
+        <a id="vct-add-btn" class="vct-btn vct-edit-btn metadata-add-btn" href="add" hidden>Add new credential</a>
       </div>
     </div>
   </section>
@@ -85,7 +85,7 @@
         <div id="vct-edit" class="vct-edit" {% if selectedVct == "__all__" %}hidden{% endif %}>
           <form id="vct-edit-form" method="GET" action="edit">
             <input id="vct-edit-value" type="hidden" name="vct" value="{{ selectedVct | urlencode }}">
-            <button id="vct-edit-btn" class="vct-edit-btn metadata-edit-btn" type="submit" hidden>Edit credential</button>
+            <button id="vct-edit-btn" class="vct-btn vct-edit-btn metadata-edit-btn" type="submit" hidden>Edit credential</button>
           </form>
         </div>
       </div>

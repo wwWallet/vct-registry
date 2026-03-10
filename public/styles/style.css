@@ -15,6 +15,10 @@ body {
 	color: #1f2937;
 }
 
+[hidden] {
+	display: none !important;
+}
+
 .skip-link {
 	position: absolute;
 	left: 12px;
