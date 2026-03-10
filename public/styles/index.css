@@ -156,6 +156,14 @@
 	margin-top: -4px;
 }
 
+.metadata-delete-action {
+	margin-top: 4px;
+}
+
+.metadata-delete-action .vct-btn {
+	width: 100%;
+}
+
 a.vct-btn,
 a.vct-edit-btn {
 	text-decoration: none;

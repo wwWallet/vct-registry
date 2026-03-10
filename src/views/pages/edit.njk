@@ -3,6 +3,7 @@
 {% block title %}vct-registry{% endblock %}
 
 {% block page_styles %}
+<link rel="stylesheet" href="./styles/add.css" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jsoneditor@latest/dist/jsoneditor.min.css" />
 <link rel="stylesheet" href="./styles/jsoneditor.css" />
 {% endblock %}
@@ -12,23 +13,59 @@
   <div class="page-header">
     <h2 id="edit-vct-title">Edit VCT</h2>
     <p class="page-subtitle">
-      Review and update the selected registry entry, then save or delete it from the registry.
+      Review and update the selected registry entry, then save the latest metadata to the registry.
     </p>
   </div>
-  <section class="card page-card">
-    <div class="edit-vct-title-back">
-      <span></span>
-      <a class="vct-back-link" href="./metadata">&larr; Return to VCT List</a>
-    </div>
-    <div id="jsoneditor" class="jsoneditor-host"></div>
-    <div class="vct-edit-button-container">
-      <button id="vct-delete-btn" type="button" class="vct-btn vct-edit-btn delete">Delete VCT</button>
-      <button id="vct-submit-btn" type="button" class="vct-btn vct-edit-btn submit">Submit Changes</button>
-    </div>
+  <div class="editor-layout">
+    <section class="card page-card editor-sidebar">
+      <div class="edit-vct-title-back">
+        <span></span>
+        <a class="vct-back-link" href="./metadata">&larr; Return to VCT List</a>
+      </div>
 
-    <div id="vct-error" class="error" hidden></div>
-    <div id="vct-success" class="success" hidden></div>
-  </section>
+      <div class="metadata-panel-header">
+        <h3>Details</h3>
+        <p class="metadata-panel-copy">Review the selected credential metadata and its current preview while editing.</p>
+      </div>
+
+      <dl class="vct-meta editor-meta">
+        <div class="metadata-stat">
+          <dt class="metadata-stat-label">VCT</dt>
+          <dd id="edit-vct-id-value" class="metadata-stat-value metadata-stat-code"><code></code></dd>
+        </div>
+        <div class="metadata-stat">
+          <dt class="metadata-stat-label">Name</dt>
+          <dd id="edit-vct-name-value" class="metadata-stat-value">-</dd>
+        </div>
+        <div class="metadata-stat metadata-stat-description">
+          <dt class="metadata-stat-label">Description</dt>
+          <dd id="edit-vct-description" class="metadata-stat-value">No description provided.</dd>
+        </div>
+        <div class="metadata-stat metadata-preview-stat">
+          <dt class="metadata-stat-label">Preview</dt>
+          <dd class="metadata-stat-value">
+            <img id="metadata-preview-image" class="metadata-preview" alt="Credential preview" hidden />
+            <p id="metadata-preview-empty" class="editor-preview-empty">Preview will appear when metadata includes display information.</p>
+          </dd>
+        </div>
+      </dl>
+    </section>
+
+    <section class="card page-card editor-main">
+      <div class="metadata-panel-header">
+        <h3>Metadata JSON</h3>
+        <p class="metadata-panel-copy">Update the full type metadata document directly.</p>
+      </div>
+
+      <div id="jsoneditor" class="jsoneditor-host"></div>
+      <div class="vct-edit-button-container">
+        <button id="vct-submit-btn" type="button" class="vct-btn vct-edit-btn submit">Submit Changes</button>
+      </div>
+
+      <div id="vct-error" class="error" hidden></div>
+      <div id="vct-success" class="success" hidden></div>
+    </section>
+  </div>
 </section>
 {% endblock %}
 

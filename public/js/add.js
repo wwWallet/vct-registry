@@ -1,39 +1,29 @@
-import { initialAddVctData, initializeEditor, showErrors } from "./app.js";
+import { initialAddVctData, initializeEditor, requestMetadataPreview, showErrors } from "./app.js";
 
 let editor;
-let vctName = "";
-let vctUrn = "";
+let previewTimer;
 
 const container = document.getElementById("jsoneditor");
-const vctNameInput = document.getElementById("add-vct-name");
-const vctIdInput = document.getElementById("add-vct-id");
+const vctIdValue = document.querySelector("#add-vct-id-value code");
+const vctNameValue = document.getElementById("add-vct-name-value");
+const descriptionOutput = document.getElementById("add-vct-description");
+const previewImage = document.getElementById("metadata-preview-image");
+const previewEmpty = document.getElementById("metadata-preview-empty");
 
 async function initializeEditorAndLoadVct() {
-	editor = await initializeEditor(container, validateInputs, initialAddVctData);
+	editor = await initializeEditor(container, validateInputs, initialAddVctData, onEditorContentChange);
+	updateMetadataDetails(initialAddVctData);
+	queuePreviewUpdate(initialAddVctData);
 }
 
 container.addEventListener("paste", () => {
-
-	// Sanitize duplicate json start
 	const text = editor.getText();
 	if (text.startsWith("{}{")) {
 		editor.setText(text.substring(2));
 	}
-
-	try {
-		const content = editor.get();
-
-		if (content.vct) {
-			vctIdInput.value = content.vct;
-		}
-		if (content.name) {
-			vctNameInput.value = content.name;
-		}
-	} catch (_failedToParseJsonInput) { }
 });
 
 function validateInputs(value) {
-
 	const errors = [];
 
 	if (!value.vct) {
@@ -43,21 +33,43 @@ function validateInputs(value) {
 		});
 	}
 
-	if (vctUrn && value.vct != vctUrn) {
-		errors.push({
-        path: ["vct"],
-        message: "VCT URN value must match the URN provided in the input field.",
-      });
-	}
-
-	if (vctName && value.name != vctName) {
-		errors.push({
-        path: ["name"],
-        message: "VCT name value must match the name provided in the input field.",
-      });
-	}
-
 	return errors;
+}
+
+function updateMetadataDetails(metadata) {
+	vctIdValue.textContent = metadata?.vct || "";
+	vctNameValue.textContent = metadata?.name || "-";
+	descriptionOutput.textContent = metadata?.description || "No description provided yet.";
+}
+
+function renderPreview(dataUri) {
+	if (dataUri) {
+		previewImage.src = dataUri;
+		previewImage.hidden = false;
+		previewEmpty.hidden = true;
+		return;
+	}
+
+	previewImage.hidden = true;
+	previewImage.removeAttribute("src");
+	previewEmpty.hidden = false;
+}
+
+function queuePreviewUpdate(metadata) {
+	clearTimeout(previewTimer);
+	previewTimer = setTimeout(async () => {
+		try {
+			const result = await requestMetadataPreview(metadata);
+			renderPreview(result.dataUri || null);
+		} catch (_error) {
+			renderPreview(null);
+		}
+	}, 180);
+}
+
+function onEditorContentChange(metadata) {
+	updateMetadataDetails(metadata);
+	queuePreviewUpdate(metadata);
 }
 
 document
@@ -73,7 +85,7 @@ document
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({
-				vct: vctUrn,
+				vct: editorData.vct,
 				metadata: editorData,
 			}),
 		});
@@ -84,24 +96,6 @@ document
 		} else {
 			window.location.href = "./metadata?toast=add-success";
 		}
-	});
-
-vctNameInput
-	.addEventListener("input", (nameInput) => {
-		vctName = nameInput.target.value;
-
-		const editorData = editor.get();
-		editorData.name = vctName;
-		editor.set(editorData);
-	});
-
-vctIdInput
-	.addEventListener("input", (vctInput) => {
-		vctUrn = vctInput.target.value.trim();
-
-		const editorData = editor.get();
-		editorData.vct = vctUrn;
-		editor.set(editorData);
 	});
 
 window.addEventListener("DOMContentLoaded", initializeEditorAndLoadVct);

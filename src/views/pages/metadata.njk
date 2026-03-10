@@ -105,6 +105,10 @@
           </div>
           {% endif %}
         </dl>
+
+        <div id="vct-delete" class="metadata-delete-action" {% if selectedVct == "__all__" %}hidden{% endif %}>
+          <button id="vct-delete-btn" type="button" class="vct-btn vct-edit-btn delete" hidden>Delete credential</button>
+        </div>
       </div>
     </section>
 

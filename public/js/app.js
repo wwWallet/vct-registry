@@ -29,7 +29,7 @@ export function decodeVct(rawVct) {
 	return decodedVct;
 }
 
-export async function initializeEditor(container, validationFn, initialData) {
+export async function initializeEditor(container, validationFn, initialData, onContentChange) {
 
 	var schema = await fetchJson("type-metadata/schema");
 
@@ -46,6 +46,13 @@ export async function initializeEditor(container, validationFn, initialData) {
 				document.querySelector("#vct-submit-btn").disabled = false;
 			}
 		},
+		onChange() {
+			if (typeof onContentChange === "function") {
+				try {
+					onContentChange(editor.get());
+				} catch (_error) { }
+			}
+		},
 	};
 
 	const editor = new JSONEditor(container, options);
@@ -53,6 +60,21 @@ export async function initializeEditor(container, validationFn, initialData) {
 		editor.set(initialData);
 	}
 	return editor;
+}
+
+export async function requestMetadataPreview(metadata) {
+	const res = await fetch("vct/preview", {
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
+		body: JSON.stringify({ metadata }),
+	});
+
+	if (!res.ok) {
+		const body = await res.json().catch(() => ({}));
+		throw new Error(body?.message || "Failed to generate preview.");
+	}
+
+	return res.json();
 }
 
 

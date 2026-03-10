@@ -4,6 +4,7 @@ import { db } from "../server";
 import { createVct, deleteVctByUrn, getVctByUrn, updateVctByUrn } from "../db/vct";
 import { decodeVct } from "../util";
 import { config } from "../../config";
+import { getMetadataPreviewDataUri } from "../util/metadataPreview";
 
 /** /vct */
 const dbVctRouter = Router();
@@ -182,6 +183,27 @@ dbVctRouter.post("/delete", async (req, res) => {
 		});
 	}
 	res.json({ message: "VCT Deleted successfully" });
+});
+
+dbVctRouter.post("/preview", async (req, res) => {
+	const metadata = req.body?.metadata;
+
+	if (!metadata || typeof metadata !== "object") {
+		return res.status(400).json({
+			error: "missing_vct_content",
+			message: 'Body parameter "metadata" (object) is required',
+		});
+	}
+
+	try {
+		const dataUri = await getMetadataPreviewDataUri(metadata);
+		res.json({ dataUri });
+	} catch (error) {
+		return res.status(400).json({
+			error: "preview_generation_failed",
+			message: error instanceof Error ? error.message : "Failed to generate preview.",
+		});
+	}
 });
 
 export default dbVctRouter;
