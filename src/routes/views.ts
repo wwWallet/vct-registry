@@ -61,11 +61,15 @@ function readQueryVct(req: Request): string | undefined {
 	}
 }
 
+function reverseMetadataList<T>(items: T[]): T[] {
+	return items.slice().reverse();
+}
+
 viewsRouter.get("/", async (req, res) => {
 	const registryBaseUrl = getRegistryBaseUrl(req);
 	const authState = getAuthViewState(req);
 	try {
-		const metadataList = await getAllVctMetadata(db);
+		const metadataList = reverseMetadataList(await getAllVctMetadata(db));
 		const metadataWithPreview = await Promise.all(
 			metadataList.map(async (metadata: any) => ({
 				...metadata,
@@ -97,7 +101,7 @@ viewsRouter.get("/metadata", async (req, res) => {
 	const authState = getAuthViewState(req);
 
 	try {
-		const metadataList = await getAllVctMetadata(db);
+		const metadataList = reverseMetadataList(await getAllVctMetadata(db));
 		const queryVct = readQueryVct(req);
 		const selectedMetadata = queryVct ? metadataList.find((meta) => meta.vct === queryVct) : undefined;
 		const selectedMetadataPreview = selectedMetadata
@@ -142,7 +146,7 @@ viewsRouter.get("/metadata", async (req, res) => {
 });
 
 viewsRouter.get("/vct-list", async (_req, res) => {
-	const result = await getAllVctMetadata(db);
+	const result = reverseMetadataList(await getAllVctMetadata(db));
 	const list = result.map((meta) => ({
 		vct: meta.vct,
 		name: meta.name,
