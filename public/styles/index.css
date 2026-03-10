@@ -16,6 +16,12 @@
 	text-align: center;
 }
 
+.metadata-header-action {
+	display: flex;
+	justify-content: center;
+	margin-top: -6px;
+}
+
 .metadata-selection-row {
 	display: flex;
 	align-items: center;
@@ -139,10 +145,6 @@
 	line-height: 1.4;
 	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
 		"Liberation Mono", "Courier New", monospace;
-}
-
-.vct-add {
-	margin: 0;
 }
 
 .metadata-add-btn,
