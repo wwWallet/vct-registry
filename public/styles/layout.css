@@ -28,7 +28,7 @@
 	padding: 0;
 	list-style: none;
 	font-size: 0.88rem;
-	color: #64748b;
+	color: var(--vct-text-muted);
 }
 
 .breadcrumbs-item {
@@ -39,39 +39,40 @@
 
 .breadcrumbs-item:not(:last-child)::after {
 	content: "/";
-	color: #cbd5e1;
+	color: var(--vct-border-strong);
 }
 
 .breadcrumbs a {
-	color: #475569;
+	color: var(--vct-text-muted);
 	text-decoration: none;
 }
 
 .breadcrumbs a:hover {
-	color: #0f172a;
+	color: var(--vct-text);
 	text-decoration: underline;
 	text-underline-offset: 3px;
 }
 
 .breadcrumbs [aria-current="page"] {
-	color: #111827;
+	color: var(--vct-text);
 	font-weight: 600;
 }
 
 /* Generic content block */
 .card {
-	background: #ffffff;
-	border-radius: 12px;
+	background: rgba(255, 255, 255, 0.92);
+	border-radius: 14px;
 	padding: 22px;
-	border: 1px solid #e5e7eb;
-	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+	border: 1px solid var(--vct-border);
+	box-shadow: var(--vct-shadow);
+	backdrop-filter: blur(6px);
 }
 
 .card h2 {
 	margin-top: 0;
 	margin-bottom: 4px;
 	font-size: 1.35rem;
-	color: #111827;
+	color: var(--vct-text);
 }
 
 .page-header {
@@ -84,7 +85,7 @@
 	margin: 0;
 	font-size: 1.6rem;
 	line-height: 1.1;
-	color: #111827;
+	color: var(--vct-text);
 }
 
 .page-subtitle {
@@ -92,5 +93,5 @@
 	margin: 10px auto 0;
 	font-size: 0.95rem;
 	line-height: 1.5;
-	color: #6b7280;
+	color: var(--vct-text-muted);
 }
