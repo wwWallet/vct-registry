@@ -9,65 +9,104 @@
 {% block content %}
 <div id="vct-success" class="success" hidden></div>
 
-<section class="card">
-  <h2>Verifiable Credential Type Metadata</h2>
-  <p class="section-description">
-    Select a Verifiable Credential Type (VCT) to view its metadata from
-    <code>GET /type-metadata?vct=…</code>, or choose
-    <code>(All metadata)</code> to view everything from
-    <code>GET /type-metadata/all</code>.
-  </p>
-
-  <div id="vct-add" class="vct-add">
-    <a id="vct-add-btn" class="vct-edit-btn" href="add" hidden>Add new credential</a>
+<section class="metadata-shell">
+  <div class="metadata-hero">
+    <div class="metadata-hero-copy">
+      <h2>Verifiable Credential Type Metadata</h2>
+      <p class="section-description metadata-description">
+        Explore one credential definition at a time or inspect the full registry payload. This page is optimized for both quick browsing and raw JSON review.
+      </p>
+    </div>
   </div>
 
   {% if metadataError %}
   <div id="vct-error" class="error">{{ metadataError }}</div>
   {% elif metadataList and metadataList.length %}
-  <div id="vct-controls" class="vct-controls">
-    <form id="vct-select-form" method="GET" action="metadata">
-      <label for="vct-select" class="select-label">
-        Select VCT:
-        <select id="vct-select" class="vct-select" name="vct" onchange="this.form.submit()">
-          <option value="__all__" {% if selectedVct == "__all__" %}selected{% endif %}>(All metadata)</option>
-          {% for entry in metadataList %}
-          <option value="{{ entry.vct | urlencode }}" {% if selectedVct == entry.vct %}selected{% endif %}>
-            {{ entry.name }} ({{ entry.vct }})
-          </option>
-          {% endfor %}
-        </select>
-      </label>
-    </form>
-
-    <div id="vct-source" class="vct-source">Source: GET {{ sourceUrl }}</div>
-
-    <div id="vct-meta" class="vct-meta">
-      {% if selectedVct == "__all__" %}
-      <div><strong>Showing:</strong> All metadata entries</div>
-      <div><strong>Total entries:</strong> {{ metadataList.length }}</div>
-      {% elif selectedMetadata %}
-      <div><strong>VCT:</strong> <code>{{ selectedMetadata.vct }}</code></div>
-      <div><strong>Name:</strong> {{ selectedMetadata.name }}</div>
-      {% if selectedMetadata.description %}
-      <div><strong>Description:</strong> {{ selectedMetadata.description }}</div>
-      {% endif %}
-      {% endif %}
+  <section class="card metadata-selection-panel">
+    <div class="metadata-panel-header">
+      <h3>Selection</h3>
+      <p class="metadata-panel-copy">Choose a VCT to inspect a single record, or switch to the complete registry response.</p>
     </div>
 
-    <div id="vct-edit" class="vct-edit" {% if selectedVct == "__all__" %}hidden{% endif %}>
-      <form id="vct-edit-form" method="GET" action="edit">
-        <input id="vct-edit-value" type="hidden" name="vct" value="{{ selectedVct | urlencode }}">
-        <button id="vct-edit-btn" class="vct-edit-btn" type="submit" hidden>Edit credential</button>
+    <div class="metadata-selection-row">
+      <form id="vct-select-form" class="metadata-select-form" method="GET" action="metadata">
+          <select id="vct-select" class="vct-select" name="vct" onchange="this.form.submit()">
+            <option value="__all__" {% if selectedVct == "__all__" %}selected{% endif %}>(All metadata)</option>
+            {% for entry in metadataList %}
+            <option value="{{ entry.vct | urlencode }}" {% if selectedVct == entry.vct %}selected{% endif %}>
+              {{ entry.name }} ({{ entry.vct }})
+            </option>
+            {% endfor %}
+          </select>
       </form>
+
+      <div id="vct-add" class="vct-add">
+        <a id="vct-add-btn" class="vct-edit-btn metadata-add-btn" href="add" hidden>Add new credential</a>
+      </div>
     </div>
+  </section>
+
+  <div class="metadata-layout">
+    <section class="card metadata-sidebar">
+      <div class="metadata-panel-header">
+        <h3>Details</h3>
+        <p class="metadata-panel-copy">Current selection, source endpoint, and edit actions for this metadata view.</p>
+      </div>
+
+      <div id="vct-controls" class="vct-controls">
+        <div id="vct-source" class="vct-source">Source: GET {{ sourceUrl }}</div>
+
+        <div id="vct-meta" class="vct-meta">
+          {% if selectedVct == "__all__" %}
+          <div class="metadata-stat">
+            <span class="metadata-stat-label">Showing</span>
+            <strong>All metadata entries</strong>
+          </div>
+          <div class="metadata-stat">
+            <span class="metadata-stat-label">Total entries</span>
+            <strong>{{ metadataList.length }}</strong>
+          </div>
+          {% elif selectedMetadata %}
+          <div class="metadata-stat">
+            <span class="metadata-stat-label">VCT</span>
+            <strong><code>{{ selectedMetadata.vct }}</code></strong>
+          </div>
+          <div class="metadata-stat">
+            <span class="metadata-stat-label">Name</span>
+            <strong>{{ selectedMetadata.name }}</strong>
+          </div>
+          {% if selectedMetadata.description %}
+          <div class="metadata-stat metadata-stat-description">
+            <span class="metadata-stat-label">Description</span>
+            <strong>{{ selectedMetadata.description }}</strong>
+          </div>
+          {% endif %}
+          {% endif %}
+        </div>
+
+        <div id="vct-edit" class="vct-edit" {% if selectedVct == "__all__" %}hidden{% endif %}>
+          <form id="vct-edit-form" method="GET" action="edit">
+            <input id="vct-edit-value" type="hidden" name="vct" value="{{ selectedVct | urlencode }}">
+            <button id="vct-edit-btn" class="vct-edit-btn metadata-edit-btn" type="submit" hidden>Edit credential</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section class="card metadata-json-panel">
+      <div class="metadata-panel-header">
+        <h3>Raw Metadata JSON</h3>
+        <p class="metadata-panel-copy">Full response payload for the currently selected source.</p>
+      </div>
+      <pre id="vct-data" class="vct-data">{{ metadataJson }}</pre>
+    </section>
+  </div>
+  <div class="metadata-inline-error">
+    <div id="vct-error" class="error" hidden></div>
   </div>
   {% else %}
   <div id="vct-error" class="error">No VCT entries found.</div>
   {% endif %}
-
-  <h3>Raw metadata JSON</h3>
-  <pre id="vct-data" class="vct-data">{{ metadataJson }}</pre>
 </section>
 {% endblock %}
 
