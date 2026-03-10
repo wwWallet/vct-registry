@@ -73,6 +73,9 @@ viewsRouter.get("/metadata", async (req, res) => {
 		const metadataList = await getAllVctMetadata(db);
 		const queryVct = readQueryVct(req);
 		const selectedMetadata = queryVct ? metadataList.find((meta) => meta.vct === queryVct) : undefined;
+		const selectedMetadataPreview = selectedMetadata
+			? await getMetadataPreviewDataUri(selectedMetadata)
+			: null;
 		const selectedVct = selectedMetadata ? selectedMetadata.vct : "__all__";
 		const selectedPayload = selectedVct === "__all__" ? metadataList : selectedMetadata;
 		const sourceUrl = selectedVct === "__all__"
@@ -87,6 +90,7 @@ viewsRouter.get("/metadata", async (req, res) => {
 			metadataList,
 			selectedVct,
 			selectedMetadata,
+			selectedMetadataPreview,
 			sourceUrl,
 			metadataJson: JSON.stringify(selectedPayload, null, 2),
 			metadataError: "",
@@ -100,6 +104,7 @@ viewsRouter.get("/metadata", async (req, res) => {
 			metadataList: [],
 			selectedVct: "__all__",
 			selectedMetadata: null,
+			selectedMetadataPreview: null,
 			sourceUrl: `${registryBaseUrl}type-metadata/all`,
 			metadataJson: "",
 			metadataError: err instanceof Error ? err.message : "Failed to load metadata.",

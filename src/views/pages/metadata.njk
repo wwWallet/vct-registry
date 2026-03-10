@@ -48,39 +48,56 @@
     <section class="card page-card metadata-sidebar">
       <div class="metadata-panel-header">
         <h3>Details</h3>
-        <p class="metadata-panel-copy">Current selection, source endpoint, and edit actions for this metadata view.</p>
       </div>
 
       <div id="vct-controls" class="vct-controls">
-        <div id="vct-source" class="vct-source">Source: GET {{ sourceUrl }}</div>
-
-        <div id="vct-meta" class="vct-meta">
+        <dl id="vct-meta" class="vct-meta">
           {% if selectedVct == "__all__" %}
           <div class="metadata-stat">
-            <span class="metadata-stat-label">Showing</span>
-            <strong>All metadata entries</strong>
+            <dt class="metadata-stat-label">Showing</dt>
+            <dd class="metadata-stat-value">All metadata entries</dd>
           </div>
           <div class="metadata-stat">
-            <span class="metadata-stat-label">Total entries</span>
-            <strong>{{ metadataList.length }}</strong>
+            <dt class="metadata-stat-label">Total entries</dt>
+            <dd class="metadata-stat-value">{{ metadataList.length }}</dd>
+          </div>
+          <div class="metadata-stat">
+            <dt class="metadata-stat-label">Source</dt>
+            <dd class="metadata-stat-value metadata-stat-code"><code>GET {{ sourceUrl }}</code></dd>
           </div>
           {% elif selectedMetadata %}
           <div class="metadata-stat">
-            <span class="metadata-stat-label">VCT</span>
-            <strong><code>{{ selectedMetadata.vct }}</code></strong>
+            <dt class="metadata-stat-label">VCT</dt>
+            <dd class="metadata-stat-value metadata-stat-code"><code>{{ selectedMetadata.vct }}</code></dd>
           </div>
           <div class="metadata-stat">
-            <span class="metadata-stat-label">Name</span>
-            <strong>{{ selectedMetadata.name }}</strong>
+            <dt class="metadata-stat-label">Name</dt>
+            <dd class="metadata-stat-value">{{ selectedMetadata.name }}</dd>
           </div>
+          {% if selectedMetadataPreview %}
+          <div class="metadata-stat metadata-preview-stat">
+            <dt class="metadata-stat-label">Preview</dt>
+            <dd class="metadata-stat-value">
+            <img
+              class="metadata-preview"
+              src="{{ selectedMetadataPreview }}"
+              alt="{{ selectedMetadata.name or selectedMetadata.vct or 'Credential' }} preview"
+            />
+            </dd>
+          </div>
+          {% endif %}
           {% if selectedMetadata.description %}
           <div class="metadata-stat metadata-stat-description">
-            <span class="metadata-stat-label">Description</span>
-            <strong>{{ selectedMetadata.description }}</strong>
+            <dt class="metadata-stat-label">Description</dt>
+            <dd class="metadata-stat-value">{{ selectedMetadata.description }}</dd>
           </div>
           {% endif %}
+          <div class="metadata-stat">
+            <dt class="metadata-stat-label">Source</dt>
+            <dd class="metadata-stat-value metadata-stat-code"><code>GET {{ sourceUrl }}</code></dd>
+          </div>
           {% endif %}
-        </div>
+        </dl>
 
         <div id="vct-edit" class="vct-edit" {% if selectedVct == "__all__" %}hidden{% endif %}>
           <form id="vct-edit-form" method="GET" action="edit">
@@ -94,7 +111,6 @@
     <section class="card page-card metadata-json-panel">
       <div class="metadata-panel-header">
         <h3>Raw Metadata JSON</h3>
-        <p class="metadata-panel-copy">Full response payload for the currently selected source.</p>
       </div>
       <pre id="vct-data" class="vct-data">{{ metadataJson }}</pre>
     </section>

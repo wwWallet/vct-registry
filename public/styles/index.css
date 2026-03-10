@@ -70,19 +70,28 @@
 .vct-meta {
 	display: grid;
 	gap: 10px;
-	background: #fbfdff;
-	border-radius: 12px;
-	padding: 12px;
-	border: 1px solid #e5e7eb;
+	margin: 0;
 }
 
 .metadata-stat {
 	display: flex;
 	flex-direction: column;
 	gap: 4px;
+	padding-bottom: 10px;
+	border-bottom: 1px solid #e5e7eb;
+}
+
+.metadata-stat:last-child {
+	padding-bottom: 0;
+	border-bottom: 0;
+}
+
+.metadata-preview-stat {
+	gap: 8px;
 }
 
 .metadata-stat-label {
+	margin: 0;
 	font-size: 0.74rem;
 	font-weight: 700;
 	letter-spacing: 0.05em;
@@ -90,15 +99,31 @@
 	color: #64748b;
 }
 
-.metadata-stat strong {
+.metadata-stat-value {
+	margin-left: 0;
 	font-size: 0.95rem;
 	font-weight: 600;
 	color: #111827;
 }
 
-.metadata-stat-description strong {
+.metadata-stat-description .metadata-stat-value {
 	font-weight: 500;
 	line-height: 1.45;
+}
+
+.metadata-stat-code code {
+	display: inline-block;
+	word-break: break-all;
+}
+
+.metadata-preview {
+	display: block;
+	width: 100%;
+	max-width: 240px;
+	height: auto;
+	border-radius: 10px;
+	border: 1px solid #e5e7eb;
+	background: #f8fafc;
 }
 
 .vct-data {
@@ -114,16 +139,6 @@
 	line-height: 1.4;
 	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
 		"Liberation Mono", "Courier New", monospace;
-}
-
-.vct-source {
-	font-size: 0.78rem;
-	color: #64748b;
-	padding: 8px 10px;
-	border-radius: 999px;
-	background: #f8fafc;
-	border: 1px solid #e5e7eb;
-	align-self: flex-start;
 }
 
 .vct-add {
