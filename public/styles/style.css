@@ -5,14 +5,37 @@
 	box-sizing: border-box;
 }
 
+:root {
+	--vct-accent: #048ba8;
+	--vct-accent-strong: color-mix(in srgb, var(--vct-accent) 68%, black);
+	--vct-accent-soft: color-mix(in srgb, var(--vct-accent) 10%, white);
+	--vct-accent-faint: color-mix(in srgb, var(--vct-accent) 5%, white);
+	--vct-accent-ring: color-mix(in srgb, var(--vct-accent) 22%, transparent);
+	--vct-accent-ring-soft: color-mix(in srgb, var(--vct-accent) 16%, transparent);
+	--vct-bg: color-mix(in srgb, var(--vct-accent) 6%, white);
+	--vct-surface: #ffffff;
+	--vct-surface-alt: color-mix(in srgb, var(--vct-accent) 4%, white);
+	--vct-border: color-mix(in srgb, var(--vct-accent) 14%, white);
+	--vct-border-strong: color-mix(in srgb, var(--vct-accent) 24%, white);
+	--vct-text: color-mix(in srgb, var(--vct-accent) 22%, black);
+	--vct-text-muted: color-mix(in srgb, var(--vct-text) 58%, white);
+	--vct-danger: #9f2f2f;
+	--vct-danger-soft: #fff1f1;
+	--vct-success: #17603f;
+	--vct-success-soft: #eef9f1;
+	--vct-shadow: 0 10px 30px rgba(29, 42, 34, 0.06);
+}
+
 html,
 body {
 	margin: 0;
 	padding: 0;
 	font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
 		Roboto, Helvetica, Arial, sans-serif;
-	background: #f7f9fc;
-	color: #1f2937;
+	background:
+		radial-gradient(circle at top left, var(--vct-accent-ring), transparent 26%),
+		linear-gradient(180deg, var(--vct-accent-faint) 0%, var(--vct-bg) 100%);
+	color: var(--vct-text);
 }
 
 [hidden] {
@@ -23,7 +46,7 @@ body {
 	position: absolute;
 	left: 12px;
 	top: -44px;
-	background: #111827;
+	background: var(--vct-text);
 	color: #ffffff;
 	padding: 8px 10px;
 	border-radius: 8px;
@@ -41,7 +64,7 @@ body {
 code {
 	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
 		"Liberation Mono", "Courier New", monospace;
-	background: #f3f4f6;
+	background: color-mix(in srgb, var(--vct-accent) 8%, white);
 	padding: 2px 4px;
 	border-radius: 4px;
 	font-size: 0.85em;

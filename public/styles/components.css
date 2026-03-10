@@ -2,17 +2,17 @@
 .vct-select {
 	padding: 8px 10px;
 	border-radius: 8px;
-	border: 1px solid #d1d5db;
-	background: #ffffff;
-	color: #111827;
+	border: 1px solid var(--vct-border);
+	background: var(--vct-surface);
+	color: var(--vct-text);
 	font-size: 0.9rem;
 	transition: border-color 0.15s ease;
 }
 
 .vct-select:focus {
 	outline: none;
-	border-color: #2563eb;
-	box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.25);
+	border-color: var(--vct-accent);
+	box-shadow: 0 0 0 3px var(--vct-accent-ring);
 }
 
 .vct-btn,
@@ -23,11 +23,11 @@
 	justify-content: center;
 	gap: 8px;
 	width: 100%;
-	padding: 10px 16px;
+	padding: 8px 16px;
 	border-radius: 10px;
-	border: 1px solid #d1d5db;
-	background: #f9fafb;
-	color: #111827;
+	border: 1px solid var(--vct-border);
+	background: var(--vct-surface-alt);
+	color: var(--vct-text);
 	font-size: 0.85rem;
 	font-weight: 600;
 	line-height: 1.2;
@@ -43,22 +43,22 @@
 a.vct-btn:hover,
 a.vct-edit-btn:hover,
 a.vct-auth-btn:hover {
-	background: #f3f4f6;
-	border-color: #cbd5e1;
+	background: #eef5f7;
+	border-color: var(--vct-border-strong);
 }
 
 .vct-btn:focus-visible,
 .vct-edit-btn:focus-visible,
 .vct-auth-btn:focus-visible {
 	outline: none;
-	box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+	box-shadow: 0 0 0 3px var(--vct-accent-ring);
 }
 
 .vct-btn-primary,
 .vct-edit-btn.submit,
 .vct-auth-btn.login {
-	background: #048ba8;
-	border-color: #048ba8;
+	background: var(--vct-accent);
+	border-color: var(--vct-accent);
 	color: #ffffff;
 }
 
@@ -66,21 +66,39 @@ a.vct-auth-btn:hover {
 .vct-edit-btn.submit:enabled:hover,
 .vct-auth-btn.login:enabled:hover,
 a.vct-btn-primary:hover {
-	background: #2e4057;
-	border-color: #2e4057;
+	background: var(--vct-accent-strong);
+	border-color: var(--vct-accent-strong);
 	color: #ffffff;
+}
+
+.vct-btn-outline {
+	border-width: 1px;
+	border-color: var(--vct-accent);
+	background: color-mix(in srgb, var(--vct-accent) 4%, white);
+}
+
+.vct-btn-outline:enabled:hover,
+a.vct-btn-outline:hover {
+	background: color-mix(in srgb, var(--vct-accent) 10%, white);
+	border-color: var(--vct-accent-strong);
+	color: var(--vct-accent-strong);
+}
+
+.vct-btn-action {
+	padding: 10px 18px;
+	letter-spacing: 0.01em;
 }
 
 .vct-btn-danger,
 .vct-edit-btn.delete {
-	color: #7f1d1d;
+	color: var(--vct-danger);
 }
 
 .vct-btn-danger:enabled:hover,
 .vct-edit-btn.delete:enabled:hover {
-	background: #fee2e2;
-	border-color: #fecaca;
-	color: #991b1b;
+	background: var(--vct-danger-soft);
+	border-color: #f1bdbd;
+	color: var(--vct-danger);
 }
 
 .vct-edit-button-container {
@@ -120,7 +138,7 @@ a.vct-btn-primary:hover {
 .metadata-panel-copy {
 	margin: 0;
 	font-size: 0.88rem;
-	color: #6b7280;
+	color: var(--vct-text-muted);
 }
 
 .vct-meta {
@@ -134,7 +152,7 @@ a.vct-btn-primary:hover {
 	flex-direction: column;
 	gap: 4px;
 	padding-bottom: 10px;
-	border-bottom: 1px solid #e5e7eb;
+	border-bottom: 1px solid var(--vct-border);
 }
 
 .metadata-stat:last-child {
@@ -152,14 +170,14 @@ a.vct-btn-primary:hover {
 	font-weight: 700;
 	letter-spacing: 0.05em;
 	text-transform: uppercase;
-	color: #64748b;
+	color: var(--vct-text-muted);
 }
 
 .metadata-stat-value {
 	margin: 0;
 	font-size: 0.95rem;
 	font-weight: 600;
-	color: #111827;
+	color: var(--vct-text);
 }
 
 .metadata-stat-description .metadata-stat-value {
@@ -178,6 +196,6 @@ a.vct-btn-primary:hover {
 	max-width: 240px;
 	height: auto;
 	border-radius: 10px;
-	border: 1px solid #e5e7eb;
-	background: #f8fafc;
+	border: 1px solid var(--vct-border);
+	background: #f3f8fa;
 }

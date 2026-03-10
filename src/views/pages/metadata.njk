@@ -18,7 +18,7 @@
   </div>
 
   <div id="vct-add" class="metadata-header-action">
-    <a id="vct-add-btn" class="vct-btn vct-edit-btn metadata-add-btn" href="add" hidden>Add new credential</a>
+    <a id="vct-add-btn" class="vct-btn vct-btn-outline vct-btn-action metadata-add-btn" href="add" hidden>Add new credential</a>
   </div>
 
   {% if metadataError %}
@@ -45,7 +45,7 @@
       <div id="vct-edit" class="vct-edit" {% if selectedVct == "__all__" %}hidden{% endif %}>
         <form id="vct-edit-form" method="GET" action="edit">
           <input id="vct-edit-value" type="hidden" name="vct" value="{{ selectedVct | urlencode }}">
-          <button id="vct-edit-btn" class="vct-btn vct-edit-btn metadata-edit-btn" type="submit" hidden>Edit credential</button>
+          <button id="vct-edit-btn" class="vct-btn vct-btn-outline vct-btn-action metadata-edit-btn" type="submit" hidden>Edit metadata</button>
         </form>
       </div>
     </div>
