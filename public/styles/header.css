@@ -6,7 +6,7 @@
 }
 
 .header-inner {
-	max-width: 960px;
+	max-width: 1070px;
 	margin: 0 auto;
 	display: grid;
 	grid-template-columns: 1fr auto 1fr;
