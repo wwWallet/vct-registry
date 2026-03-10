@@ -9,6 +9,12 @@
 	transition: border-color 0.15s ease;
 }
 
+.vct-select:focus {
+	outline: none;
+	border-color: #2563eb;
+	box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.25);
+}
+
 .vct-btn,
 .vct-edit-btn,
 .vct-auth-btn {
@@ -100,4 +106,78 @@ a.vct-btn-primary:hover {
 
 .vct-edit-btn.delete {
 	flex: 1;
+}
+
+.metadata-panel-header {
+	margin-bottom: 14px;
+}
+
+.metadata-panel-header h3 {
+	margin: 0 0 6px;
+	font-size: 1rem;
+}
+
+.metadata-panel-copy {
+	margin: 0;
+	font-size: 0.88rem;
+	color: #6b7280;
+}
+
+.vct-meta {
+	display: grid;
+	gap: 10px;
+	margin: 0;
+}
+
+.metadata-stat {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	padding-bottom: 10px;
+	border-bottom: 1px solid #e5e7eb;
+}
+
+.metadata-stat:last-child {
+	padding-bottom: 0;
+	border-bottom: 0;
+}
+
+.metadata-preview-stat {
+	gap: 8px;
+}
+
+.metadata-stat-label {
+	margin: 0;
+	font-size: 0.74rem;
+	font-weight: 700;
+	letter-spacing: 0.05em;
+	text-transform: uppercase;
+	color: #64748b;
+}
+
+.metadata-stat-value {
+	margin: 0;
+	font-size: 0.95rem;
+	font-weight: 600;
+	color: #111827;
+}
+
+.metadata-stat-description .metadata-stat-value {
+	font-weight: 500;
+	line-height: 1.45;
+}
+
+.metadata-stat-code code {
+	display: inline-block;
+	word-break: break-all;
+}
+
+.metadata-preview {
+	display: block;
+	width: 100%;
+	max-width: 240px;
+	height: auto;
+	border-radius: 10px;
+	border: 1px solid #e5e7eb;
+	background: #f8fafc;
 }

@@ -1,10 +1,11 @@
 import { Router } from "express";
-import type { Request } from "express";
+import type { Request, Response } from "express";
 import { authView, getSessionUsername } from "../middleware/auth";
 import { config } from "../../config";
 import { getAllVctMetadata } from "../db/vct";
 import { db } from "../server";
 import { getMetadataPreviewDataUri } from "../util/metadataPreview";
+import type { TypeMetadata } from "../schema/SdJwtVcTypeMetadataSchema";
 
 /** / */
 const viewsRouter = Router();
@@ -65,31 +66,43 @@ function reverseMetadataList<T>(items: T[]): T[] {
 	return items.slice().reverse();
 }
 
+function getBaseViewLocals(req: Request) {
+	return {
+		baseHref,
+		registryBaseUrl: getRegistryBaseUrl(req),
+		...getAuthViewState(req),
+	};
+}
+
+function renderView(
+	req: Request,
+	res: Response,
+	template: string,
+	options: Record<string, unknown>,
+) {
+	res.render(template, {
+		...getBaseViewLocals(req),
+		...options,
+	});
+}
+
 viewsRouter.get("/", async (req, res) => {
-	const registryBaseUrl = getRegistryBaseUrl(req);
-	const authState = getAuthViewState(req);
 	try {
 		const metadataList = reverseMetadataList(await getAllVctMetadata(db));
 		const metadataWithPreview = await Promise.all(
-			metadataList.map(async (metadata: any) => ({
+			metadataList.map(async (metadata: TypeMetadata) => ({
 				...metadata,
 				dataUri: await getMetadataPreviewDataUri(metadata),
 			})),
 		);
-		res.render("pages/home.njk", {
-			baseHref,
-			registryBaseUrl,
+		renderView(req, res, "pages/home.njk", {
 			currentPage: "home",
-			...authState,
 			metadataList: metadataWithPreview,
 			homeError: "",
 		});
 	} catch (err) {
-		res.render("pages/home.njk", {
-			baseHref,
-			registryBaseUrl,
+		renderView(req, res, "pages/home.njk", {
 			currentPage: "home",
-			...authState,
 			metadataList: [],
 			homeError: err instanceof Error ? err.message : "Failed to load metadata cards.",
 		});
@@ -97,9 +110,6 @@ viewsRouter.get("/", async (req, res) => {
 });
 
 viewsRouter.get("/metadata", async (req, res) => {
-	const registryBaseUrl = getRegistryBaseUrl(req);
-	const authState = getAuthViewState(req);
-
 	try {
 		const metadataList = reverseMetadataList(await getAllVctMetadata(db));
 		const queryVct = readQueryVct(req);
@@ -109,16 +119,14 @@ viewsRouter.get("/metadata", async (req, res) => {
 			: null;
 		const selectedVct = selectedMetadata ? selectedMetadata.vct : "__all__";
 		const selectedPayload = selectedVct === "__all__" ? metadataList : selectedMetadata;
+		const { registryBaseUrl } = getBaseViewLocals(req);
 		const sourceUrl = selectedVct === "__all__"
 			? `${registryBaseUrl}type-metadata/all`
 			: `${registryBaseUrl}type-metadata?vct=${encodeURIComponent(selectedVct)}`;
 
-		res.render("pages/metadata.njk", {
-			baseHref,
-			registryBaseUrl,
+		renderView(req, res, "pages/metadata.njk", {
 			currentPage: "metadata",
 			breadcrumbs: getBreadcrumbs("metadata"),
-			...authState,
 			metadataList,
 			selectedVct,
 			selectedMetadata,
@@ -128,12 +136,10 @@ viewsRouter.get("/metadata", async (req, res) => {
 			metadataError: "",
 		});
 	} catch (err) {
-		res.render("pages/metadata.njk", {
-			baseHref,
-			registryBaseUrl,
+		const { registryBaseUrl } = getBaseViewLocals(req);
+		renderView(req, res, "pages/metadata.njk", {
 			currentPage: "metadata",
 			breadcrumbs: getBreadcrumbs("metadata"),
-			...authState,
 			metadataList: [],
 			selectedVct: "__all__",
 			selectedMetadata: null,
@@ -156,32 +162,23 @@ viewsRouter.get("/vct-list", async (_req, res) => {
 });
 
 viewsRouter.get("/usage", (req, res) => {
-	res.render("pages/usage.njk", {
-		baseHref,
-		registryBaseUrl: getRegistryBaseUrl(req),
+	renderView(req, res, "pages/usage.njk", {
 		currentPage: "usage",
 		breadcrumbs: getBreadcrumbs("usage"),
-		...getAuthViewState(req),
 	});
 });
 
 viewsRouter.get("/add", authView, (req, res) => {
-	res.render("pages/add.njk", {
-		baseHref,
-		registryBaseUrl: getRegistryBaseUrl(req),
+	renderView(req, res, "pages/add.njk", {
 		currentPage: "metadata",
 		breadcrumbs: getBreadcrumbs("add"),
-		...getAuthViewState(req),
 	});
 });
 
 viewsRouter.get("/edit", authView, (req, res) => {
-	res.render("pages/edit.njk", {
-		baseHref,
-		registryBaseUrl: getRegistryBaseUrl(req),
+	renderView(req, res, "pages/edit.njk", {
 		currentPage: "metadata",
 		breadcrumbs: getBreadcrumbs("edit"),
-		...getAuthViewState(req),
 	});
 });
 
