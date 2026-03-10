@@ -22,7 +22,7 @@
   </div>
 
   {% if metadataError %}
-  <div id="vct-error" class="error">{{ metadataError }}</div>
+  <div class="error">{{ metadataError }}</div>
   {% elif metadataList and metadataList.length %}
   <section class="card page-card metadata-selection-panel">
     <div class="metadata-panel-header">
@@ -123,7 +123,7 @@
     <div id="vct-error" class="error" hidden></div>
   </div>
   {% else %}
-  <div id="vct-error" class="error">No VCT entries found.</div>
+  <div class="error">No VCT entries found.</div>
   {% endif %}
 </section>
 {% endblock %}

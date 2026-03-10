@@ -1,7 +1,3 @@
-export function clearEl(el) {
-	el.replaceChildren();
-}
-
 export async function fetchJson(url) {
 	const res = await fetch(url);
 	if (!res.ok) {
@@ -91,9 +87,7 @@ export function showSuccess(message) {
 export function showErrors(message, errors) {
 	const errorBox = document.getElementById("vct-error");
 	errorBox.hidden = false;
-	errorBox.textContent = `${message}.
-		The following errors were found:
-		${errors.message}`;
+	errorBox.textContent = `${message}\nThe following errors were found:\n${errors.message}`;
 
 	setTimeout(() => {
 		hideElement("vct-error");

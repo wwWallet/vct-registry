@@ -1,6 +1,5 @@
 /* Shared VCT UI components */
-.vct-select,
-.selected-vct {
+.vct-select {
 	padding: 8px 10px;
 	border-radius: 8px;
 	border: 1px solid #d1d5db;
@@ -76,12 +75,6 @@ a.vct-btn-primary:hover {
 	background: #fee2e2;
 	border-color: #fecaca;
 	color: #991b1b;
-}
-
-.vct-back-link {
-	font-size: 0.9rem;
-	color: #2563eb;
-	text-decoration: none;
 }
 
 .vct-edit-button-container {
