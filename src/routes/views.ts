@@ -23,6 +23,33 @@ function getAuthViewState(req: Request) {
 	};
 }
 
+function getBreadcrumbs(current: "metadata" | "usage" | "add" | "edit") {
+	switch (current) {
+		case "metadata":
+			return [
+				{ label: "Home", href: "./" },
+				{ label: "Metadata" },
+			];
+		case "usage":
+			return [
+				{ label: "Home", href: "./" },
+				{ label: "Usage" },
+			];
+		case "add":
+			return [
+				{ label: "Home", href: "./" },
+				{ label: "Metadata", href: "./metadata" },
+				{ label: "Add metadata" },
+			];
+		case "edit":
+			return [
+				{ label: "Home", href: "./" },
+				{ label: "Metadata", href: "./metadata" },
+				{ label: "Edit metadata" },
+			];
+	}
+}
+
 function readQueryVct(req: Request): string | undefined {
 	const vctParam = req.query.vct;
 	if (typeof vctParam !== "string") return undefined;
@@ -86,6 +113,7 @@ viewsRouter.get("/metadata", async (req, res) => {
 			baseHref,
 			registryBaseUrl,
 			currentPage: "metadata",
+			breadcrumbs: getBreadcrumbs("metadata"),
 			...authState,
 			metadataList,
 			selectedVct,
@@ -100,6 +128,7 @@ viewsRouter.get("/metadata", async (req, res) => {
 			baseHref,
 			registryBaseUrl,
 			currentPage: "metadata",
+			breadcrumbs: getBreadcrumbs("metadata"),
 			...authState,
 			metadataList: [],
 			selectedVct: "__all__",
@@ -127,6 +156,7 @@ viewsRouter.get("/usage", (req, res) => {
 		baseHref,
 		registryBaseUrl: getRegistryBaseUrl(req),
 		currentPage: "usage",
+		breadcrumbs: getBreadcrumbs("usage"),
 		...getAuthViewState(req),
 	});
 });
@@ -136,6 +166,7 @@ viewsRouter.get("/add", authView, (req, res) => {
 		baseHref,
 		registryBaseUrl: getRegistryBaseUrl(req),
 		currentPage: "metadata",
+		breadcrumbs: getBreadcrumbs("add"),
 		...getAuthViewState(req),
 	});
 });
@@ -145,6 +176,7 @@ viewsRouter.get("/edit", authView, (req, res) => {
 		baseHref,
 		registryBaseUrl: getRegistryBaseUrl(req),
 		currentPage: "metadata",
+		breadcrumbs: getBreadcrumbs("edit"),
 		...getAuthViewState(req),
 	});
 });

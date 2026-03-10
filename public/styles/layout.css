@@ -15,6 +15,49 @@
 	padding: 22px;
 }
 
+.breadcrumbs {
+	margin: 0 0 18px;
+}
+
+.breadcrumbs-list {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	font-size: 0.88rem;
+	color: #64748b;
+}
+
+.breadcrumbs-item {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.breadcrumbs-item:not(:last-child)::after {
+	content: "/";
+	color: #cbd5e1;
+}
+
+.breadcrumbs a {
+	color: #475569;
+	text-decoration: none;
+}
+
+.breadcrumbs a:hover {
+	color: #0f172a;
+	text-decoration: underline;
+	text-underline-offset: 3px;
+}
+
+.breadcrumbs [aria-current="page"] {
+	color: #111827;
+	font-weight: 600;
+}
+
 /* Generic content block */
 .card {
 	background: #ffffff;
