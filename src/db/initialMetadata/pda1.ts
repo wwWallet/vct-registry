@@ -1,5 +1,5 @@
-import { config } from "../../config";
-import { createSRI } from "../sriGenerator";
+import { config } from "../../../config";
+import { createSRI } from "../../sriGenerator";
 
 export const pda1Metadata = {
 	"vct": "urn:eudi:pda1:1",

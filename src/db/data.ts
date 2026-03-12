@@ -1,8 +1,8 @@
-import { diplomaMetadata } from "../typeMetadata/diploma";
-import { ehicMetadata } from "../typeMetadata/ehic";
-import { pda1Metadata } from "../typeMetadata/pda1";
-import { pidMetadata } from "../typeMetadata/pid";
-import { porMetadata } from "../typeMetadata/por";
+import { diplomaMetadata } from "./initialMetadata/diploma";
+import { ehicMetadata } from "./initialMetadata/ehic";
+import { pda1Metadata } from "./initialMetadata/pda1";
+import { pidMetadata } from "./initialMetadata/pid";
+import { porMetadata } from "./initialMetadata/por";
 
 export const initialDbContent = [
     {
