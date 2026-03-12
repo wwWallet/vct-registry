@@ -6,6 +6,7 @@ import { getAllVctMetadata } from "../db/vct";
 import { db } from "../server";
 import { getMetadataPreviewDataUri } from "../util/metadataPreview";
 import type { TypeMetadata } from "wallet-common";
+import { reverseList } from "../util";
 
 /** / */
 const viewsRouter = Router();
@@ -62,10 +63,6 @@ function readQueryVct(req: Request): string | undefined {
 	}
 }
 
-function reverseMetadataList<T>(items: T[]): T[] {
-	return items.slice().reverse();
-}
-
 function getBaseViewLocals(req: Request) {
 	return {
 		baseHref,
@@ -88,7 +85,7 @@ function renderView(
 
 viewsRouter.get("/", async (req, res) => {
 	try {
-		const metadataList = reverseMetadataList(await getAllVctMetadata(db));
+		const metadataList = reverseList(await getAllVctMetadata(db));
 		const metadataWithPreview = await Promise.all(
 			metadataList.map(async (metadata: TypeMetadata) => ({
 				...metadata,
@@ -111,7 +108,7 @@ viewsRouter.get("/", async (req, res) => {
 
 viewsRouter.get("/metadata", async (req, res) => {
 	try {
-		const metadataList = reverseMetadataList(await getAllVctMetadata(db));
+		const metadataList = reverseList(await getAllVctMetadata(db));
 		const queryVct = readQueryVct(req);
 		const selectedMetadata = queryVct ? metadataList.find((meta) => meta.vct === queryVct) : undefined;
 		const selectedMetadataPreview = selectedMetadata
@@ -149,16 +146,6 @@ viewsRouter.get("/metadata", async (req, res) => {
 			metadataError: err instanceof Error ? err.message : "Failed to load metadata.",
 		});
 	}
-});
-
-viewsRouter.get("/vct-list", async (_req, res) => {
-	const result = reverseMetadataList(await getAllVctMetadata(db));
-	const list = result.map((meta) => ({
-		vct: meta.vct,
-		name: meta.name,
-	}));
-
-	res.json(list);
 });
 
 viewsRouter.get("/usage", (req, res) => {

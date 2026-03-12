@@ -61,14 +61,14 @@ console.log(metadata);</code></pre>
 
     <h3>4. Optional: List Available VCTs (Name + VCT)</h3>
     <p class="usage-text">
-      Endpoint: <code>GET {{ registryBaseUrl }}vct-list</code>
+      Endpoint: <code>GET {{ registryBaseUrl }}api/vct-list</code>
     </p>
     <div class="copy-overlay-block">
       {% set copyTarget = "#usage-code-list" %}
       {% set copyLabel = "Copy example" %}
       {% set copyButtonClass = "usage-copy-btn" %}
       {% include "../partials/copy-button.njk" %}
-      <pre class="code-surface usage-code"><code id="usage-code-list">curl -s "{{ registryBaseUrl }}vct-list"</code></pre>
+      <pre class="code-surface usage-code"><code id="usage-code-list">curl -s "{{ registryBaseUrl }}api/vct-list"</code></pre>
     </div>
   </section>
 </section>

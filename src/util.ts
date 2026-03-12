@@ -22,3 +22,7 @@ export function decodeVct(vct: unknown): string | undefined | null {
 	}
 
 }
+
+export function reverseList<T>(items: T[]): T[] {
+	return items.slice().reverse();
+}
