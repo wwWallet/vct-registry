@@ -70,7 +70,13 @@
           </div>
           <div class="metadata-stat">
             <dt class="metadata-stat-label">Source</dt>
-            <dd class="metadata-stat-value metadata-stat-code"><code>GET {{ sourceUrl }}</code></dd>
+            <dd class="metadata-stat-value copy-inline-row metadata-stat-code">
+              <code id="metadata-source-value">GET {{ sourceUrl }}</code>
+              {% set copyTarget = "#metadata-source-value" %}
+              {% set copyLabel = "Copy source" %}
+              {% set copyButtonClass = "metadata-copy-btn" %}
+              {% include "../partials/copy-button.njk" %}
+            </dd>
           </div>
           {% elif selectedMetadata %}
           <div class="metadata-stat">
