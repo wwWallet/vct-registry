@@ -1,5 +1,5 @@
 import { Knex } from "knex";
-import { TypeMetadata } from "../schema/SdJwtVcTypeMetadataSchema";
+import { TypeMetadata } from "wallet-common";
 
 export async function initVctTable(knex: Knex) {
 	try {

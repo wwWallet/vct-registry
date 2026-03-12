@@ -1,8 +1,9 @@
 import { Router } from "express";
 import { decodeVct } from "../util";
 import { getAllVctMetadata, getVctByUrn } from "../db/vct";
-import { typeMetadataSchema } from "../schema/typeMetadataSchema";
 import { db } from "../server";
+import { TypeMetadata } from "wallet-common";
+import { zodToJsonSchema } from "zod-to-json-schema";
 
 /** /type-metadata */
 const typeMetadataRouter = Router();
@@ -52,9 +53,17 @@ typeMetadataRouter.get("/all", async (_req, res) => {
 
 /**
  * GET /type-metadata/schema
- * Returns the JSON schema for type metadata.
+ * Returns the JSON schema for type metadata,
+ * based on the Zod schema defined in wallet-common.
  */
 typeMetadataRouter.get("/schema", (_req, res) => {
+
+	const typeMetadataSchema = zodToJsonSchema(TypeMetadata as any, {
+		$refStrategy: "none",
+		target: "jsonSchema7"
+	});
+	delete (typeMetadataSchema as any).$schema;
+
 	res.json(typeMetadataSchema);
 });
 

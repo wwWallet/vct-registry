@@ -1,5 +1,5 @@
-import { config } from "../../config";
- import { createSRI } from "../sriGenerator";
+import { config } from "../../../config";
+import { createSRI } from "../../sriGenerator";
 
 export const pidMetadata = {
 	"vct": "urn:eudi:pid:1",

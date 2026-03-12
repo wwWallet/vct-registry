@@ -200,3 +200,53 @@ export const initialAddVctData = {
 		}
 	]
 }
+
+function updateMetadataDetails(metadata) {
+	const vctIdValue = document.querySelector("#add-vct-id-value code");
+	const vctNameValue = document.getElementById("add-vct-name-value");
+	const descriptionValue = document.getElementById("add-vct-description");
+
+	if (!vctIdValue || !vctNameValue || !descriptionValue) {
+		return;
+	}
+
+	vctIdValue.textContent = metadata?.vct || "";
+	vctNameValue.textContent = metadata?.name || "-";
+	descriptionValue.textContent =
+		metadata?.description || "No description provided.";
+}
+
+function renderPreview(dataUri) {
+	const previewImage = document.getElementById("metadata-preview-image");
+	const previewEmpty = document.getElementById("metadata-preview-empty");
+
+	if (dataUri) {
+		previewImage.src = dataUri;
+		previewImage.hidden = false;
+		previewEmpty.hidden = true;
+		return;
+	}
+
+	previewImage.hidden = true;
+	previewImage.removeAttribute("src");
+	previewEmpty.hidden = false;
+}
+
+function queuePreviewUpdate(metadata) {
+	let previewTimer;
+	clearTimeout(previewTimer);
+	previewTimer = setTimeout(async () => {
+		try {
+			const result = await requestMetadataPreview(metadata);
+			renderPreview(result.dataUri || null);
+		} catch (_error) {
+			renderPreview(null);
+		}
+	}, 180);
+}
+
+export function onEditorContentChange(metadata) {
+	updateMetadataDetails(metadata);
+	queuePreviewUpdate(metadata);
+}
+
