@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { TypeMetadata } from "../schema/SdJwtVcTypeMetadataSchema";
+import { TypeMetadata } from "wallet-common";
 import { db } from "../server";
 import { createVct, deleteVctByUrn, getVctByUrn, updateVctByUrn } from "../db/vct";
 import { decodeVct } from "../util";

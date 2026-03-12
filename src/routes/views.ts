@@ -5,7 +5,7 @@ import { config } from "../../config";
 import { getAllVctMetadata } from "../db/vct";
 import { db } from "../server";
 import { getMetadataPreviewDataUri } from "../util/metadataPreview";
-import type { TypeMetadata } from "../schema/SdJwtVcTypeMetadataSchema";
+import type { TypeMetadata } from "wallet-common";
 
 /** / */
 const viewsRouter = Router();

@@ -1,5 +1,5 @@
 import { CredentialRenderingService, CustomCredentialSvg, dataUriResolver, defaultHttpClient } from "wallet-common";
-import type { TypeMetadata } from "../schema/SdJwtVcTypeMetadataSchema";
+import type { TypeMetadata } from "wallet-common";
 
 const customRenderer = CustomCredentialSvg({ httpClient: defaultHttpClient });
 const sdJwtVcRenderer = CredentialRenderingService();
