@@ -75,15 +75,12 @@
           {% elif selectedMetadata %}
           <div class="metadata-stat">
             <dt class="metadata-stat-label">VCT</dt>
-            <dd class="metadata-stat-value metadata-stat-value-copy metadata-stat-code">
+            <dd class="metadata-stat-value copy-inline-row metadata-stat-code">
               <code id="metadata-vct-value">{{ selectedMetadata.vct }}</code>
-              <button type="button" class="copy-btn metadata-copy-btn" data-copy-target="#metadata-vct-value" aria-label="Copy VCT" title="Copy VCT">
-                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                  <rect x="9" y="9" width="10" height="10" rx="2"></rect>
-                  <rect x="5" y="5" width="10" height="10" rx="2"></rect>
-                </svg>
-                <span class="visually-hidden">Copy VCT</span>
-              </button>
+              {% set copyTarget = "#metadata-vct-value" %}
+              {% set copyLabel = "Copy VCT" %}
+              {% set copyButtonClass = "metadata-copy-btn" %}
+              {% include "../partials/copy-button.njk" %}
             </dd>
           </div>
           <div class="metadata-stat">
@@ -110,15 +107,12 @@
           {% endif %}
           <div class="metadata-stat">
             <dt class="metadata-stat-label">Source</dt>
-            <dd class="metadata-stat-value metadata-stat-value-copy metadata-stat-code">
+            <dd class="metadata-stat-value copy-inline-row metadata-stat-code">
               <code id="metadata-source-value">GET {{ sourceUrl }}</code>
-              <button type="button" class="copy-btn metadata-copy-btn" data-copy-target="#metadata-source-value" aria-label="Copy source" title="Copy source">
-                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                  <rect x="9" y="9" width="10" height="10" rx="2"></rect>
-                  <rect x="5" y="5" width="10" height="10" rx="2"></rect>
-                </svg>
-                <span class="visually-hidden">Copy source</span>
-              </button>
+              {% set copyTarget = "#metadata-source-value" %}
+              {% set copyLabel = "Copy source" %}
+              {% set copyButtonClass = "metadata-copy-btn" %}
+              {% include "../partials/copy-button.njk" %}
             </dd>
           </div>
           {% endif %}
@@ -133,15 +127,12 @@
     <section class="card page-card metadata-json-panel">
       <div class="metadata-panel-header metadata-json-header">
         <h3>Raw Metadata JSON</h3>
-        <button type="button" class="copy-btn metadata-copy-btn metadata-json-copy-btn" data-copy-target="#vct-data" aria-label="Copy raw metadata JSON" title="Copy raw metadata JSON">
-          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-            <rect x="9" y="9" width="10" height="10" rx="2"></rect>
-            <rect x="5" y="5" width="10" height="10" rx="2"></rect>
-          </svg>
-          <span class="visually-hidden">Copy raw metadata JSON</span>
-        </button>
+        {% set copyTarget = "#vct-data" %}
+        {% set copyLabel = "Copy raw metadata JSON" %}
+        {% set copyButtonClass = "metadata-copy-btn metadata-json-copy-btn" %}
+        {% include "../partials/copy-button.njk" %}
       </div>
-      <pre id="vct-data" class="vct-data">{{ metadataJson }}</pre>
+      <pre id="vct-data" class="code-surface vct-data">{{ metadataJson }}</pre>
     </section>
   </div>
   <div class="metadata-inline-error">

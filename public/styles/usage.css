@@ -10,11 +10,6 @@
 	font-size: 0.92rem;
 }
 
-.usage-code-block {
-	position: relative;
-	margin-bottom: 4px;
-}
-
 .usage-copy-btn {
 	position: absolute;
 	top: 7px;
@@ -25,13 +20,7 @@
 }
 
 .usage-code {
-	margin: 0;
-	width: 100%;
 	padding: 12px 48px 12px 12px;
-	border: 1px solid #e5e7eb;
-	border-radius: 10px;
-	background: #f8fafc;
-	overflow-x: auto;
 }
 
 .usage-code code {

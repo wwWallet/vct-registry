@@ -1,0 +1,13 @@
+<button
+  type="button"
+  class="copy-btn{% if copyButtonClass %} {{ copyButtonClass }}{% endif %}"
+  data-copy-target="{{ copyTarget }}"
+  aria-label="{{ copyLabel or 'Copy' }}"
+  title="{{ copyLabel or 'Copy' }}"
+>
+  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+    <rect x="9" y="9" width="10" height="10" rx="2"></rect>
+    <rect x="5" y="5" width="10" height="10" rx="2"></rect>
+  </svg>
+  <span class="visually-hidden">{{ copyLabel or 'Copy' }}</span>
+</button>

@@ -200,6 +200,28 @@ a.vct-btn-outline:hover {
 	background: #f3f8fa;
 }
 
+.copy-inline-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 10px;
+}
+
+.copy-overlay-block {
+	position: relative;
+	margin-bottom: 4px;
+}
+
+.code-surface {
+	margin: 0;
+	width: 100%;
+	padding: 12px;
+	border: 1px solid #e5e7eb;
+	border-radius: 10px;
+	background: #f8fafc;
+	overflow-x: auto;
+}
+
 .copy-btn {
 	display: inline-flex;
 	align-items: center;
