@@ -199,3 +199,46 @@ a.vct-btn-outline:hover {
 	border: 1px solid var(--vct-border);
 	background: #f3f8fa;
 }
+
+.copy-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 30px;
+	height: 30px;
+	flex: 0 0 auto;
+	padding: 0;
+	border: 1px solid var(--vct-border);
+	border-radius: 8px;
+	background: var(--vct-surface);
+	color: var(--vct-text-muted);
+	cursor: pointer;
+	transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease,
+		box-shadow 0.15s ease;
+}
+
+.copy-btn:hover {
+	color: var(--vct-text);
+	border-color: var(--vct-border-strong);
+	background: var(--vct-surface-alt);
+}
+
+.copy-btn:focus-visible {
+	outline: none;
+	box-shadow: 0 0 0 3px var(--vct-accent-ring);
+}
+
+.copy-btn.is-copied {
+	color: var(--vct-accent);
+	border-color: var(--vct-accent);
+}
+
+.copy-btn svg {
+	width: 16px;
+	height: 16px;
+	fill: none;
+	stroke: currentColor;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+	stroke-width: 1.7;
+}

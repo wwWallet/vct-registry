@@ -73,6 +73,47 @@ export async function requestMetadataPreview(metadata) {
 	return res.json();
 }
 
+export async function copyTextToClipboard(text) {
+	if (!navigator?.clipboard?.writeText) {
+		throw new Error("Clipboard is not available in this browser.");
+	}
+
+	await navigator.clipboard.writeText(text);
+}
+
+export function initializeCopyButtons(selector = "[data-copy-target]") {
+	const copyButtons = document.querySelectorAll(selector);
+
+	copyButtons.forEach((button) => {
+		button.addEventListener("click", async () => {
+			const targetSelector = button.getAttribute("data-copy-target");
+			const targetElement = targetSelector ? document.querySelector(targetSelector) : null;
+			const originalLabel = button.getAttribute("aria-label") || "Copy";
+
+			if (!(targetElement instanceof HTMLElement)) {
+				return;
+			}
+
+			try {
+				await copyTextToClipboard(targetElement.innerText.trimEnd());
+				button.classList.add("is-copied");
+				button.setAttribute("aria-label", "Copied");
+				button.setAttribute("title", "Copied");
+			} catch (_error) {
+				button.classList.remove("is-copied");
+				button.setAttribute("aria-label", "Copy failed");
+				button.setAttribute("title", "Copy failed");
+			}
+
+			window.setTimeout(() => {
+				button.classList.remove("is-copied");
+				button.setAttribute("aria-label", originalLabel);
+				button.setAttribute("title", originalLabel);
+			}, 1400);
+		});
+	});
+}
+
 
 export function showSuccess(message) {
 	const successBox = document.getElementById("vct-success");

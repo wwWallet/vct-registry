@@ -1,4 +1,4 @@
-import { showSuccess } from "./app.js";
+import { initializeCopyButtons, showSuccess } from "./app.js";
 
 const addBtn = document.getElementById("vct-add-btn");
 const editBtn = document.getElementById("vct-edit-btn");
@@ -62,6 +62,7 @@ async function deleteSelectedVct() {
 window.addEventListener("DOMContentLoaded", () => {
 	updateFromCurrentHeaderState();
 	checkSuccess();
+	initializeCopyButtons();
 
 	if (deleteBtn) {
 		deleteBtn.addEventListener("click", async () => {

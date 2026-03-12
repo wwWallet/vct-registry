@@ -19,45 +19,9 @@
 	position: absolute;
 	top: 7px;
 	right: 7px;
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
 	width: 32px;
 	height: 32px;
-	padding: 0;
-	border: 1px solid var(--vct-border);
-	border-radius: 8px;
 	background: color-mix(in srgb, var(--vct-surface) 92%, white 8%);
-	color: var(--vct-text-muted);
-	cursor: pointer;
-	transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease,
-		box-shadow 0.15s ease;
-}
-
-.usage-copy-btn:hover {
-	color: var(--vct-text);
-	border-color: var(--vct-border-strong);
-	background: var(--vct-surface);
-}
-
-.usage-copy-btn:focus-visible {
-	outline: none;
-	box-shadow: 0 0 0 3px var(--vct-accent-ring);
-}
-
-.usage-copy-btn.is-copied {
-	color: var(--vct-accent);
-	border-color: var(--vct-accent);
-}
-
-.usage-copy-btn svg {
-	width: 16px;
-	height: 16px;
-	fill: none;
-	stroke: currentColor;
-	stroke-linecap: round;
-	stroke-linejoin: round;
-	stroke-width: 1.7;
 }
 
 .usage-code {
@@ -77,16 +41,4 @@
 	font-size: 0.85rem;
 	line-height: 1.45;
 	white-space: pre;
-}
-
-.visually-hidden {
-	position: absolute;
-	width: 1px;
-	height: 1px;
-	padding: 0;
-	margin: -1px;
-	overflow: hidden;
-	clip: rect(0, 0, 0, 0);
-	white-space: nowrap;
-	border: 0;
 }

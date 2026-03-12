@@ -11,6 +11,13 @@
 	padding: 18px;
 }
 
+.metadata-json-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+}
+
 .metadata-selection-panel .metadata-panel-header {
 	margin-bottom: 10px;
 	text-align: center;
@@ -38,6 +45,13 @@
 	display: flex;
 	flex-direction: column;
 	gap: 12px;
+}
+
+.metadata-stat-value-copy {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 10px;
 }
 
 .select-label {
