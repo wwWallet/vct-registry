@@ -126,6 +126,11 @@ a.vct-btn-outline:hover {
 	flex: 1;
 }
 
+.vct-btn:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
 .metadata-panel-header {
 	margin-bottom: 14px;
 }
