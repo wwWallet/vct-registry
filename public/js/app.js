@@ -202,9 +202,9 @@ export const initialAddVctData = {
 }
 
 function updateMetadataDetails(metadata) {
-	const vctIdValue = document.querySelector("#add-vct-id-value code");
-	const vctNameValue = document.getElementById("add-vct-name-value");
-	const descriptionValue = document.getElementById("add-vct-description");
+	const vctIdValue = document.querySelector("#edit-vct-id-value code");
+	const vctNameValue = document.getElementById("edit-vct-name-value");
+	const descriptionValue = document.getElementById("edit-vct-description");
 
 	if (!vctIdValue || !vctNameValue || !descriptionValue) {
 		return;
