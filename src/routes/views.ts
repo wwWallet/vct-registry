@@ -10,7 +10,7 @@ import { reverseList } from "../util";
 
 /** / */
 const viewsRouter = Router();
-const baseHref = config.base_url.endsWith("/") ? config.base_url : `${config.base_url}/`;
+const baseHref = config.url.endsWith("/") ? config.url : `${config.url}/`;
 
 function getRegistryBaseUrl(req: Request): string {
 	const origin = `${req.protocol}://${req.get("host")}/`;

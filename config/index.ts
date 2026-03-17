@@ -17,6 +17,5 @@ export const config = {
 			database: process.env.DB_NAME || 'vct_registry',
 		},
 	},
-	base_url: process.env.STATIC_BASE_URL || "/",
 	max_vct_size: Number(process.env.MAX_VCT_SIZE) || 1 * 1024 * 100
 }
