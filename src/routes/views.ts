@@ -10,12 +10,6 @@ import { reverseList } from "../util";
 
 /** / */
 const viewsRouter = Router();
-const baseHref = config.url.endsWith("/") ? config.url : `${config.url}/`;
-
-function getRegistryBaseUrl(req: Request): string {
-	const origin = `${req.protocol}://${req.get("host")}/`;
-	return new URL(baseHref, origin).toString();
-}
 
 function getAuthViewState(req: Request) {
 	const username = getSessionUsername(req);
@@ -65,8 +59,7 @@ function readQueryVct(req: Request): string | undefined {
 
 function getBaseViewLocals(req: Request) {
 	return {
-		baseHref,
-		registryBaseUrl: getRegistryBaseUrl(req),
+		registryBaseUrl: config.url,
 		...getAuthViewState(req),
 	};
 }
@@ -118,8 +111,8 @@ viewsRouter.get("/metadata", async (req, res) => {
 		const selectedPayload = selectedVct === "__all__" ? metadataList : selectedMetadata;
 		const { registryBaseUrl } = getBaseViewLocals(req);
 		const sourceUrl = selectedVct === "__all__"
-			? `${registryBaseUrl}type-metadata/all`
-			: `${registryBaseUrl}type-metadata?vct=${encodeURIComponent(selectedVct)}`;
+			? `${registryBaseUrl}/type-metadata/all`
+			: `${registryBaseUrl}/type-metadata?vct=${encodeURIComponent(selectedVct)}`;
 
 		renderView(req, res, "pages/metadata.njk", {
 			currentPage: "metadata",
@@ -141,7 +134,7 @@ viewsRouter.get("/metadata", async (req, res) => {
 			selectedVct: "__all__",
 			selectedMetadata: null,
 			selectedMetadataPreview: null,
-			sourceUrl: `${registryBaseUrl}type-metadata/all`,
+			sourceUrl: `${registryBaseUrl}/type-metadata/all`,
 			metadataJson: "",
 			metadataError: err instanceof Error ? err.message : "Failed to load metadata.",
 		});
