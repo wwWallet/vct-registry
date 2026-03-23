@@ -26,12 +26,14 @@
     {% for metadata in metadataList %}
     <a class="home-metadata-card" href="metadata?vct={{ metadata.vct | urlencode }}">
       {% if metadata.dataUri %}
-      <img
-        class="home-preview"
-        src="{{ metadata.dataUri }}"
-        alt="{{ metadata.name or metadata.vct or 'Credential' }} preview"
-        loading="lazy"
-      />
+      <div class="home-preview-frame">
+        <img
+          class="home-preview"
+          src="{{ metadata.dataUri }}"
+          alt="{{ metadata.name or metadata.vct or 'Credential' }} preview"
+          loading="lazy"
+        />
+      </div>
       {% endif %}
       <h3>{{ metadata.name or metadata.vct or "Unnamed credential" }}</h3>
       <p class="home-vct">{{ metadata.vct or "" }}</p>
