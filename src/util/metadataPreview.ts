@@ -4,14 +4,37 @@ import type { TypeMetadata } from "wallet-common";
 const customRenderer = CustomCredentialSvg({ httpClient: defaultHttpClient });
 const sdJwtVcRenderer = CredentialRenderingService();
 
-export async function getMetadataPreviewDataUri(metadata: TypeMetadata): Promise<string | null> {
+const DEFAULT_LANGS = ["en-US"];
 
-	const resolve = dataUriResolver({
+type PreviewTemplateProperties = {
+	orientation?: "portrait" | "landscape";
+	color_scheme?: "light" | "dark";
+	contrast?: "normal" | "high";
+};
+
+export type MetadataPreviewOptions = {
+	preferredLangs?: string[];
+	preferredProperties?: PreviewTemplateProperties;
+};
+
+function createMetadataPreviewResolver(metadata: TypeMetadata) {
+	return dataUriResolver({
 		httpClient: defaultHttpClient,
 		sdJwtVcRenderer,
 		customRenderer,
 		credentialDisplayArray: metadata.display,
 	});
+}
 
-	return resolve(undefined, ["en-US"]);
+export async function getMetadataPreviewDataUri(
+	metadata: TypeMetadata,
+	options: MetadataPreviewOptions = {},
+): Promise<string | null> {
+	const resolve = createMetadataPreviewResolver(metadata);
+
+	return resolve(
+		undefined,
+		options.preferredLangs ?? DEFAULT_LANGS,
+		options.preferredProperties,
+	);
 }

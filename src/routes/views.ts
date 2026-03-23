@@ -89,7 +89,11 @@ viewsRouter.get("/", async (req, res) => {
 		const metadataWithPreview = await Promise.all(
 			metadataList.map(async (metadata: TypeMetadata) => ({
 				...metadata,
-				dataUri: await getMetadataPreviewDataUri(metadata),
+				dataUri: await getMetadataPreviewDataUri(metadata, {
+					preferredProperties: {
+						orientation: "landscape",
+					},
+				}),
 			})),
 		);
 		renderView(req, res, "pages/home.njk", {
