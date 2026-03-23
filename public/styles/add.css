@@ -25,6 +25,22 @@
 	margin-left: 0;
 }
 
+.metadata-preview-list {
+	display: grid;
+	gap: 12px;
+}
+
+.metadata-preview-item {
+	margin: 0;
+}
+
+.metadata-preview-caption {
+	margin-top: 6px;
+	font-size: 0.78rem;
+	color: #6b7280;
+	text-transform: capitalize;
+}
+
 @media (max-width: 860px) {
 	.editor-layout {
 		grid-template-columns: 1fr;

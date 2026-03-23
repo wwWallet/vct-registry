@@ -4,7 +4,7 @@ import { authView, getSessionUsername } from "../middleware/auth";
 import { config } from "../../config";
 import { getAllVctMetadata } from "../db/vct";
 import { db } from "../server";
-import { getMetadataPreviewDataUri } from "../util/metadataPreview";
+import { getMetadataPreviewDataUri, getMetadataPreviewSvgUris } from "../util/metadataPreview";
 import type { TypeMetadata } from "wallet-common";
 import { reverseList } from "../util";
 
@@ -115,9 +115,9 @@ viewsRouter.get("/metadata", async (req, res) => {
 		const metadataList = reverseList(await getAllVctMetadata(db));
 		const queryVct = readQueryVct(req);
 		const selectedMetadata = queryVct ? metadataList.find((meta) => meta.vct === queryVct) : undefined;
-		const selectedMetadataPreview = selectedMetadata
-			? await getMetadataPreviewDataUri(selectedMetadata)
-			: null;
+		const selectedMetadataPreviewSvgUris = selectedMetadata
+			? getMetadataPreviewSvgUris(selectedMetadata)
+			: [];
 		const selectedVct = selectedMetadata ? selectedMetadata.vct : "__all__";
 		const selectedPayload = selectedVct === "__all__" ? metadataList : selectedMetadata;
 		const { registryBaseUrl } = getBaseViewLocals(req);
@@ -131,7 +131,7 @@ viewsRouter.get("/metadata", async (req, res) => {
 			metadataList,
 			selectedVct,
 			selectedMetadata,
-			selectedMetadataPreview,
+			selectedMetadataPreviewSvgUris,
 			sourceUrl,
 			metadataJson: JSON.stringify(selectedPayload, null, 2),
 			metadataError: "",
@@ -144,7 +144,7 @@ viewsRouter.get("/metadata", async (req, res) => {
 			metadataList: [],
 			selectedVct: "__all__",
 			selectedMetadata: null,
-			selectedMetadataPreview: null,
+			selectedMetadataPreviewSvgUris: [],
 			sourceUrl: `${registryBaseUrl}type-metadata/all`,
 			metadataJson: "",
 			metadataError: err instanceof Error ? err.message : "Failed to load metadata.",

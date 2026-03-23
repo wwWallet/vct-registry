@@ -93,15 +93,28 @@
             <dt class="metadata-stat-label">Name</dt>
             <dd class="metadata-stat-value">{{ selectedMetadata.name }}</dd>
           </div>
-          {% if selectedMetadataPreview %}
+          {% if selectedMetadataPreviewSvgUris and selectedMetadataPreviewSvgUris.length %}
           <div class="metadata-stat metadata-preview-stat">
             <dt class="metadata-stat-label">Preview</dt>
             <dd class="metadata-stat-value">
-            <img
-              class="metadata-preview"
-              src="{{ selectedMetadataPreview }}"
-              alt="{{ selectedMetadata.name or selectedMetadata.vct or 'Credential' }} preview"
-            />
+            <div class="metadata-preview-list">
+              {% for preview in selectedMetadataPreviewSvgUris %}
+              <figure class="metadata-preview-item">
+                <img
+                  class="metadata-preview"
+                  src="{{ preview.uri }}"
+                  alt="{{ selectedMetadata.name or selectedMetadata.vct or 'Credential' }} preview"
+                />
+                {% if preview.properties %}
+                <figcaption class="metadata-preview-caption">
+                  {% if preview.properties.orientation %}{{ preview.properties.orientation }}{% endif %}
+                  {% if preview.properties.color_scheme %}{% if preview.properties.orientation %} · {% endif %}{{ preview.properties.color_scheme }}{% endif %}
+                  {% if preview.properties.contrast %}{% if preview.properties.orientation or preview.properties.color_scheme %} · {% endif %}{{ preview.properties.contrast }} contrast{% endif %}
+                </figcaption>
+                {% endif %}
+              </figure>
+              {% endfor %}
+            </div>
             </dd>
           </div>
           {% endif %}

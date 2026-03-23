@@ -216,37 +216,71 @@ function updateMetadataDetails(metadata) {
 		metadata?.description || "No description provided.";
 }
 
-function renderPreview(dataUri) {
-	const previewImage = document.getElementById("metadata-preview-image");
-	const previewEmpty = document.getElementById("metadata-preview-empty");
+function getMetadataPreviewTemplates(metadata) {
+	return (
+		metadata?.display?.flatMap((display) =>
+			display?.rendering?.svg_templates?.map((template) => ({
+				uri: template.uri,
+				properties: template.properties,
+			})) ?? [],
+		) ?? []
+	);
+}
 
-	if (dataUri) {
-		previewImage.src = dataUri;
-		previewImage.hidden = false;
+function formatPreviewProperties(properties) {
+	if (!properties) return "";
+
+	const parts = [];
+	if (properties.orientation) parts.push(properties.orientation);
+	if (properties.color_scheme) parts.push(properties.color_scheme);
+	if (properties.contrast) parts.push(`${properties.contrast} contrast`);
+
+	return parts.join(" · ");
+}
+
+function renderPreview(metadata) {
+	const previewList = document.getElementById("metadata-preview-list");
+	const previewEmpty = document.getElementById("metadata-preview-empty");
+	const previewTemplates = getMetadataPreviewTemplates(metadata);
+
+	if (!previewList || !previewEmpty) {
+		return;
+	}
+
+	if (previewTemplates.length) {
+		previewList.replaceChildren(
+			...previewTemplates.map((preview) => {
+				const figure = document.createElement("figure");
+				figure.className = "metadata-preview-item";
+
+				const image = document.createElement("img");
+				image.className = "metadata-preview";
+				image.src = preview.uri;
+				image.alt = `${metadata?.name || metadata?.vct || "Credential"} preview`;
+				figure.appendChild(image);
+
+				const captionText = formatPreviewProperties(preview.properties);
+				if (captionText) {
+					const caption = document.createElement("figcaption");
+					caption.className = "metadata-preview-caption";
+					caption.textContent = captionText;
+					figure.appendChild(caption);
+				}
+
+				return figure;
+			}),
+		);
+		previewList.hidden = false;
 		previewEmpty.hidden = true;
 		return;
 	}
 
-	previewImage.hidden = true;
-	previewImage.removeAttribute("src");
+	previewList.replaceChildren();
+	previewList.hidden = true;
 	previewEmpty.hidden = false;
-}
-
-function queuePreviewUpdate(metadata) {
-	let previewTimer;
-	clearTimeout(previewTimer);
-	previewTimer = setTimeout(async () => {
-		try {
-			const result = await requestMetadataPreview(metadata);
-			renderPreview(result.dataUri || null);
-		} catch (_error) {
-			renderPreview(null);
-		}
-	}, 180);
 }
 
 export function onEditorContentChange(metadata) {
 	updateMetadataDetails(metadata);
-	queuePreviewUpdate(metadata);
+	renderPreview(metadata);
 }
-

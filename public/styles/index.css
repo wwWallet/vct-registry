@@ -79,6 +79,22 @@
 	margin-top: -4px;
 }
 
+.metadata-preview-list {
+	display: grid;
+	gap: 12px;
+}
+
+.metadata-preview-item {
+	margin: 0;
+}
+
+.metadata-preview-caption {
+	margin-top: 6px;
+	font-size: 0.78rem;
+	color: #6b7280;
+	text-transform: capitalize;
+}
+
 .metadata-delete-action {
 	margin-top: 4px;
 }
