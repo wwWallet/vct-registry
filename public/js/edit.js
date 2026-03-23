@@ -5,6 +5,14 @@ let vctUrn;
 
 const container = document.getElementById("jsoneditor");
 
+function getMetadataViewUrl(vct) {
+	if (!vct) {
+		return "./metadata";
+	}
+
+	return `./metadata?vct=${encodeURIComponent(vct)}`;
+}
+
 async function initializeEditorAndLoadVct() {
 	editor = await initializeEditor(container, validateVct, undefined, onEditorContentChange);
 	await loadSelectedVct();
@@ -28,6 +36,11 @@ async function loadSelectedVct() {
 	const params = new URLSearchParams(window.location.search);
 	const value = params.get("vct"); // ?vct=urn:eudi:pid:1
 	vctUrn = value;
+
+	const cancelButton = document.getElementById("vct-cancel-btn");
+	if (cancelButton) {
+		cancelButton.href = getMetadataViewUrl(value);
+	}
 
 	const encoded = encodeURIComponent(value);
 	const fetchMetadataUrl = `type-metadata?vct=${encoded}`;
@@ -62,7 +75,9 @@ document
 		if (!res.ok) {
 			showErrors("Failed to save VC Type Metadata", result);
 		} else {
-			window.location.href = "./metadata?toast=edit-success";
+			const redirectUrl = new URL(getMetadataViewUrl(vctUrn), window.location.href);
+			redirectUrl.searchParams.set("toast", "edit-success");
+			window.location.href = redirectUrl.toString();
 		}
 	});
 

@@ -4,6 +4,14 @@ let editor;
 
 const container = document.getElementById("jsoneditor");
 
+function getMetadataViewUrl(vct) {
+	if (!vct) {
+		return "./metadata";
+	}
+
+	return `./metadata?vct=${encodeURIComponent(vct)}`;
+}
+
 async function initializeEditorAndLoadVct() {
 	editor = await initializeEditor(container, undefined, initialAddVctData, onEditorContentChange);
 	onEditorContentChange(initialAddVctData);
@@ -31,7 +39,9 @@ document
 		if (!res.ok) {
 			showErrors("Failed to create VC Type Metadata", result);
 		} else {
-			window.location.href = "./metadata?toast=add-success";
+			const redirectUrl = new URL(getMetadataViewUrl(editorData.vct), window.location.href);
+			redirectUrl.searchParams.set("toast", "add-success");
+			window.location.href = redirectUrl.toString();
 		}
 	});
 
