@@ -113,7 +113,7 @@ export function authView(req: Request, res: Response, next: NextFunction) {
     }
 
     // Do not provide Basic authentication
-    return res.redirect(config.base_url);
+    return res.redirect(config.url);
 }
 
 /**
