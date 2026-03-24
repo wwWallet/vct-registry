@@ -37,7 +37,7 @@
 }
 
 .metadata-select-form {
-	flex: 1 1 560px;
+	flex: 1 1 auto;
 	max-width: 560px;
 }
 
