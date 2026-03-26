@@ -1,17 +1,42 @@
 import { CredentialRenderingService, CustomCredentialSvg, dataUriResolver, defaultHttpClient } from "wallet-common";
-import type { TypeMetadata } from "wallet-common";
+import type { SvgTemplateEntry, SvgTemplateProperties, TypeMetadata } from "wallet-common";
 
 const customRenderer = CustomCredentialSvg({ httpClient: defaultHttpClient });
 const sdJwtVcRenderer = CredentialRenderingService();
 
-export async function getMetadataPreviewDataUri(metadata: TypeMetadata): Promise<string | null> {
+const DEFAULT_LANGS = ["en-US"];
 
-	const resolve = dataUriResolver({
+export type MetadataPreviewOptions = {
+	preferredLangs?: string[];
+	preferredProperties?: SvgTemplateProperties;
+};
+
+function createMetadataPreviewResolver(metadata: TypeMetadata) {
+	return dataUriResolver({
 		httpClient: defaultHttpClient,
 		sdJwtVcRenderer,
 		customRenderer,
 		credentialDisplayArray: metadata.display,
 	});
+}
 
-	return resolve(undefined, ["en-US"]);
+export async function getMetadataPreviewDataUri(
+	metadata: TypeMetadata,
+	options: MetadataPreviewOptions = {},
+): Promise<string | null> {
+	const resolve = createMetadataPreviewResolver(metadata);
+
+	return resolve(
+		undefined,
+		options.preferredLangs ?? DEFAULT_LANGS,
+		options.preferredProperties,
+	);
+}
+
+export function getMetadataPreviewSvgUris(metadata: TypeMetadata): SvgTemplateEntry[] {
+	return (
+		metadata.display?.flatMap((display) =>
+			display.rendering?.svg_templates ?? [],
+		) ?? []
+	);
 }

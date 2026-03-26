@@ -1,4 +1,4 @@
-import { initialAddVctData, initializeEditor, onEditorContentChange, requestMetadataPreview, showErrors } from "./app.js";
+import { getMetadataViewUrl, initialAddVctData, initializeEditor, onEditorContentChange, showErrors } from "./app.js";
 
 let editor;
 
@@ -31,7 +31,9 @@ document
 		if (!res.ok) {
 			showErrors("Failed to create VC Type Metadata", result);
 		} else {
-			window.location.href = "./metadata?toast=add-success";
+			const redirectUrl = new URL(getMetadataViewUrl(editorData.vct), window.location.href);
+			redirectUrl.searchParams.set("toast", "add-success");
+			window.location.href = redirectUrl.toString();
 		}
 	});
 

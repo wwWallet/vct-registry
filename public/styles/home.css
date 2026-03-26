@@ -37,12 +37,21 @@
 	transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
 }
 
+.home-preview-frame {
+	width: 100%;
+	aspect-ratio: 16 / 10;
+	overflow: hidden;
+	border-radius: 8px;
+	border: 1px solid var(--vct-border);
+	background: #f3f8fa;
+}
+
 .home-preview {
 	display: block;
 	width: 100%;
-	height: auto;
-	border-radius: 8px;
-	border: 1px solid var(--vct-border);
+	height: 100%;
+	object-fit: cover;
+	object-position: top;
 	background: #f3f8fa;
 }
 
