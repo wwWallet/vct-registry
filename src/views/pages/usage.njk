@@ -25,26 +25,26 @@
 
     <h3>1. Fetch All Metadata</h3>
     <p class="usage-text">
-      Endpoint: <code>GET {{ registryBaseUrl }}type-metadata/all</code>
+      Endpoint: <code>GET {{ registryBaseUrl }}/type-metadata/all</code>
     </p>
     <div class="copy-overlay-block">
       {% set copyTarget = "#usage-code-all" %}
       {% set copyLabel = "Copy example" %}
       {% set copyButtonClass = "usage-copy-btn" %}
       {% include "../partials/copy-button.njk" %}
-      <pre class="code-surface usage-code"><code id="usage-code-all">curl -s "{{ registryBaseUrl }}type-metadata/all"</code></pre>
+      <pre class="code-surface usage-code"><code id="usage-code-all">curl -s "{{ registryBaseUrl }}/type-metadata/all"</code></pre>
     </div>
 
     <h3>2. Fetch One Metadata Entry By VCT</h3>
     <p class="usage-text">
-      Endpoint: <code>GET {{ registryBaseUrl }}type-metadata?vct=&lt;vct-value&gt;</code>
+      Endpoint: <code>GET {{ registryBaseUrl }}/type-metadata?vct=&lt;vct-value&gt;</code>
     </p>
     <div class="copy-overlay-block">
       {% set copyTarget = "#usage-code-single" %}
       {% set copyLabel = "Copy example" %}
       {% set copyButtonClass = "usage-copy-btn" %}
       {% include "../partials/copy-button.njk" %}
-      <pre class="code-surface usage-code"><code id="usage-code-single">curl -s "{{ registryBaseUrl }}type-metadata?vct=urn:eudi:pid:1"</code></pre>
+      <pre class="code-surface usage-code"><code id="usage-code-single">curl -s "{{ registryBaseUrl }}/type-metadata?vct=urn:eudi:pid:1"</code></pre>
     </div>
 
     <h3>3. Browser Fetch Example</h3>
@@ -54,21 +54,21 @@
       {% set copyButtonClass = "usage-copy-btn" %}
       {% include "../partials/copy-button.njk" %}
       <pre class="code-surface usage-code"><code id="usage-code-browser">const vct = encodeURIComponent("urn:eudi:pid:1");
-const res = await fetch(`{{ registryBaseUrl }}type-metadata?vct=${vct}`);
+const res = await fetch(`{{ registryBaseUrl }}/type-metadata?vct=${vct}`);
 const metadata = await res.json();
 console.log(metadata);</code></pre>
     </div>
 
     <h3>4. Optional: List Available VCTs (Name + VCT)</h3>
     <p class="usage-text">
-      Endpoint: <code>GET {{ registryBaseUrl }}api/vct-list</code>
+      Endpoint: <code>GET {{ registryBaseUrl }}/api/vct-list</code>
     </p>
     <div class="copy-overlay-block">
       {% set copyTarget = "#usage-code-list" %}
       {% set copyLabel = "Copy example" %}
       {% set copyButtonClass = "usage-copy-btn" %}
       {% include "../partials/copy-button.njk" %}
-      <pre class="code-surface usage-code"><code id="usage-code-list">curl -s "{{ registryBaseUrl }}api/vct-list"</code></pre>
+      <pre class="code-surface usage-code"><code id="usage-code-list">curl -s "{{ registryBaseUrl }}/api/vct-list"</code></pre>
     </div>
   </section>
 </section>
