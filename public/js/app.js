@@ -25,6 +25,14 @@ export function decodeVct(rawVct) {
 	return decodedVct;
 }
 
+export function getMetadataViewUrl(vct) {
+	if (!vct) {
+		return "./metadata";
+	}
+
+	return `./metadata?vct=${encodeURIComponent(vct)}`;
+}
+
 export async function initializeEditor(container, validationFn, initialData, onContentChange) {
 
 	var schema = await fetchJson("type-metadata/schema");

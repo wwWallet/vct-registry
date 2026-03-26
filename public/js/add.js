@@ -1,16 +1,8 @@
-import { initialAddVctData, initializeEditor, onEditorContentChange, requestMetadataPreview, showErrors } from "./app.js";
+import { getMetadataViewUrl, initialAddVctData, initializeEditor, onEditorContentChange, showErrors } from "./app.js";
 
 let editor;
 
 const container = document.getElementById("jsoneditor");
-
-function getMetadataViewUrl(vct) {
-	if (!vct) {
-		return "./metadata";
-	}
-
-	return `./metadata?vct=${encodeURIComponent(vct)}`;
-}
 
 async function initializeEditorAndLoadVct() {
 	editor = await initializeEditor(container, undefined, initialAddVctData, onEditorContentChange);
