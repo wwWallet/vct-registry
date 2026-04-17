@@ -1,4 +1,11 @@
-import { getMetadataViewUrl, initialAddVctData, initializeEditor, onEditorContentChange, showErrors } from "./app.js";
+import { 
+	getMetadataViewUrl,
+	initialAddVctData,
+	initializeEditor,
+	onEditorContentChange,
+	showErrors
+} from "./app.js";
+import { addUriIntegrityToEditor } from "./uri-integrity.js";
 
 let editor;
 
@@ -35,6 +42,12 @@ document
 			redirectUrl.searchParams.set("toast", "add-success");
 			window.location.href = redirectUrl.toString();
 		}
+	});
+
+document
+	.getElementById("calculate-integrity-btn")
+	.addEventListener("click", async () => {
+		addUriIntegrityToEditor(editor);
 	});
 
 window.addEventListener("DOMContentLoaded", initializeEditorAndLoadVct);

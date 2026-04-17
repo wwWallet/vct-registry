@@ -43,6 +43,12 @@
           <dt class="metadata-stat-label">Description</dt>
           <dd id="edit-vct-description" class="metadata-stat-value">No description provided yet.</dd>
         </div>
+        <div class="metadata-stat">
+          <dt class="metadata-stat-label">URI Integrity Calculator</dt>
+          <p class="metadata-panel-copy">Calculate the SHA-256 integrity hash for all display image URIs in metadata.</p>
+          <p class="metadata-panel-copy">Warning: this will overwrite any existing URI integrity hashes.</p>
+          <button id="calculate-integrity-btn" type="button" class="vct-btn vct-edit-btn submit">Calculate</button>
+        </div>
       </dl>
     </section>
 
@@ -68,4 +74,5 @@
 {% block page_scripts %}
 <script src="https://cdn.jsdelivr.net/npm/jsoneditor@latest"></script>
 <script type="module" src="./js/add.js"></script>
+<script type="module" src="./js/uri-integrity.js"></script>
 {% endblock %}

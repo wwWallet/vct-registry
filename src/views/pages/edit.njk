@@ -46,18 +46,9 @@
         </div>
         <div class="metadata-stat">
           <dt class="metadata-stat-label">URI Integrity Calculator</dt>
-          <input id="uri-input" type="text" class="vct-uri-input" placeholder="Enter a URI to calculate integrity hash" />
-          <div class="integrity-btn-container">
-            <button id="clear-integrity-btn" type="button" class="vct-btn vct-btn-cancel" hidden>Clear</button>
-            <button id="calculate-integrity-btn" type="button" class="vct-btn vct-edit-btn submit">Calculate</button>
-          </div>
-          <dd id="uri-integrity-container" class="metadata-stat-value copy-inline-row metadata-stat-code" hidden>
-              <code id="uri-integrity"></code>
-              {% set copyTarget = "#uri-integrity" %}
-              {% set copyLabel = "Copy integrity hash" %}
-              {% set copyButtonClass = "metadata-copy-btn" %}
-              {% include "../partials/copy-button.njk" %}
-            </dd>
+          <p class="metadata-panel-copy">Calculate the SHA-256 integrity hash for all display image URIs in metadata.</p>
+          <p class="metadata-panel-copy">Warning: this will overwrite any existing URI integrity hashes.</p>
+          <button id="calculate-integrity-btn" type="button" class="vct-btn vct-edit-btn submit">Calculate</button>
         </div>
       </dl>
     </section>
@@ -84,4 +75,5 @@
 {% block page_scripts %}
 <script src="https://cdn.jsdelivr.net/npm/jsoneditor@latest"></script>
 <script type="module" src="./js/edit.js"></script>
+<script type="module" src="./js/uri-integrity.js"></script>
 {% endblock %}

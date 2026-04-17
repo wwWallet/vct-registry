@@ -1,5 +1,4 @@
 import {
-	calculateUriIntegrity,
 	decodeVct,
 	fetchJson,
 	getMetadataViewUrl,
@@ -8,6 +7,7 @@ import {
 	onEditorContentChange,
 	showErrors
 } from "./app.js";
+import { addUriIntegrityToEditor } from "./uri-integrity.js";
 
 let editor;
 let vctUrn;
@@ -85,28 +85,7 @@ document
 document
 	.getElementById("calculate-integrity-btn")
 	.addEventListener("click", async () => {
-		const uriInput = document.getElementById("uri-input");
-		const uri = uriInput.value.trim();
-		if (!uri) {
-			alert("Please enter a URI to calculate its integrity hash.");
-			return;
-		}
-		const integrity = await calculateUriIntegrity(uri, "sha256");
-		if (integrity) {
-			document.getElementById("uri-integrity")
-				.textContent = `"uri#integrity": "${integrity}",`;
-			document.getElementById("uri-integrity-container").hidden = false;
-			document.getElementById("clear-integrity-btn").hidden = false;
-		}
-	});
-
-document
-	.getElementById("clear-integrity-btn")
-	.addEventListener("click", () => {
-		document.getElementById("uri-input").value = "";
-		document.getElementById("uri-integrity").textContent = "";
-		document.getElementById("uri-integrity-container").hidden = true;
-		document.getElementById("clear-integrity-btn").hidden = true;
+		addUriIntegrityToEditor(editor);
 	});
 
 window.addEventListener("DOMContentLoaded", () => {

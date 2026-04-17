@@ -292,21 +292,3 @@ export function onEditorContentChange(metadata) {
 	updateMetadataDetails(metadata);
 	renderPreview(metadata);
 }
-
-export async function calculateUriIntegrity(
-	input,
-	algorithm
-) {
-	let buffer;
-	
-	const response = await fetch(input);
-	if (!response.ok) {
-		throw new Error(`Failed to fetch URL: ${response.statusText}`);
-	}
-	buffer = await response.arrayBuffer();
-
-	const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
-	const hashArray = Array.from(new Uint8Array(hashBuffer));
-	const hashBase64 = btoa(String.fromCharCode.apply(null, hashArray));
-	return `${algorithm}-${hashBase64}`;
-}

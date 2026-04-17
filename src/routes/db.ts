@@ -5,6 +5,7 @@ import { createVct, deleteVctByUrn, getVctByUrn, updateVctByUrn } from "../db/vc
 import { decodeVct } from "../util";
 import { config } from "../../config";
 import { getMetadataPreviewDataUri } from "../util/metadataPreview";
+import { verifyVctUriIntegrity } from "../util/uriIntegrity";
 
 /** /vct */
 const dbVctRouter = Router();
@@ -60,6 +61,14 @@ dbVctRouter.post("/create", async (req, res) => {
 		return res.status(400).json({
 			error: "vct_urn_mismatch",
 			message: `VCT name in content ("${parsedVctContent.vct}") does not match VCT name in query ("${vct}"). It is not possible to change the VCT urn.`,
+		});
+	}
+
+	const uriIntegrityResult = await verifyVctUriIntegrity(parsedVctContent);
+	if (!uriIntegrityResult.valid) {
+		return res.status(400).json({
+			error: "uri_integrity_mismatch",
+			message: `URI integrity verification failed: ${uriIntegrityResult.message}`,
 		});
 	}
 
@@ -132,8 +141,15 @@ dbVctRouter.post("/edit", async (req, res) => {
 		})
 	}
 
-	const result = await updateVctByUrn(db, vct, parsedVctContent);
+	const uriIntegrityResult = await verifyVctUriIntegrity(parsedVctContent);
+	if (!uriIntegrityResult.valid) {
+		return res.status(400).json({
+			error: "uri_integrity_mismatch",
+			message: `URI integrity verification failed: ${uriIntegrityResult.message}`,
+		});
+	}
 
+	const result = await updateVctByUrn(db, vct, parsedVctContent);
 	if (result === 0) {
 		return res.status(404).json({
 			error: "unknown_vct",
