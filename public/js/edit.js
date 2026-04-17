@@ -7,7 +7,7 @@ import {
 	onEditorContentChange,
 	showErrors
 } from "./app.js";
-import { addUriIntegrityToEditor } from "./uri-integrity.js";
+import { addUriIntegrityToEditor, getUriIntegrityPaths } from "./uri-integrity.js";
 
 let editor;
 let vctUrn;
@@ -27,6 +27,13 @@ function validateVct(value) {
 		errors.push({
         path: ["vct"],
         message: "Cannot edit the urn of a VCT."
+      });
+	}
+
+	for (const integrityPath of getUriIntegrityPaths(value)) {
+		errors.push({
+			path: integrityPath,
+			message: "Warning: URI Integrity values will be calculated on submission. This value will be overwritten."
       });
 	}
 
@@ -57,11 +64,19 @@ async function loadSelectedVct() {
 document
 	.getElementById("vct-submit-btn")
 	.addEventListener("click", async () => {
-		if (!confirm("Are you sure you want to edit this VC Type Metadata entry? This action is irreversible.")) {
+		if (!confirm("Are you sure you want to edit this VC Type Metadata entry? This action is irreversible. SHA-256 URI Integrity hashes will be added for all image links in the metadata, overwriting any existing integrity values.")) {
 			return;
 		}
 
 		const editorData = editor.get();
+
+		try {
+			await addUriIntegrityToEditor(editor);
+		} catch (error) {
+			console.error("Error calculating URI integrity:", error);
+			showErrors("Failed to calculate URI integrity", { message: error.message });
+			return;
+		}
 
 		const res = await fetch("vct/edit", {
 			method: "POST",
@@ -80,12 +95,6 @@ document
 			redirectUrl.searchParams.set("toast", "edit-success");
 			window.location.href = redirectUrl.toString();
 		}
-	});
-
-document
-	.getElementById("calculate-integrity-btn")
-	.addEventListener("click", async () => {
-		addUriIntegrityToEditor(editor);
 	});
 
 window.addEventListener("DOMContentLoaded", () => {

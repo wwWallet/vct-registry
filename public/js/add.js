@@ -5,25 +5,46 @@ import {
 	onEditorContentChange,
 	showErrors
 } from "./app.js";
-import { addUriIntegrityToEditor } from "./uri-integrity.js";
+import { addUriIntegrityToEditor, getUriIntegrityPaths } from "./uri-integrity.js";
 
 let editor;
 
 const container = document.getElementById("jsoneditor");
 
 async function initializeEditorAndLoadVct() {
-	editor = await initializeEditor(container, undefined, initialAddVctData, onEditorContentChange);
+	editor = await initializeEditor(container, validateVct, initialAddVctData, onEditorContentChange);
 	onEditorContentChange(initialAddVctData);
+}
+
+function validateVct(value) {
+	const errors = [];
+
+	for (const integrityPath of getUriIntegrityPaths(value)) {
+		errors.push({
+			path: integrityPath,
+			message: "Warning: URI Integrity values will be calculated on submission. This value will be overwritten."
+		});
+	}
+
+	return errors;
 }
 
 document
 	.getElementById("vct-submit-btn")
 	.addEventListener("click", async () => {
-		if (!confirm("Are you sure you want to create this VC Type Metadata entry?")) {
+		if (!confirm("Are you sure you want to create this VC Type Metadata entry? SHA-256 URI Integrity hashes will be added for all image links in the metadata, overwriting any existing integrity values.")) {
 			return;
 		}
 
 		const editorData = editor.get();
+
+		try {
+			await addUriIntegrityToEditor(editor);
+		} catch (error) {
+			console.error("Error calculating URI integrity:", error);
+			showErrors("Failed to calculate URI integrity", { message: error.message });
+			return;
+		}
 
 		const res = await fetch("vct/create", {
 			method: "POST",
@@ -42,12 +63,6 @@ document
 			redirectUrl.searchParams.set("toast", "add-success");
 			window.location.href = redirectUrl.toString();
 		}
-	});
-
-document
-	.getElementById("calculate-integrity-btn")
-	.addEventListener("click", async () => {
-		addUriIntegrityToEditor(editor);
 	});
 
 window.addEventListener("DOMContentLoaded", initializeEditorAndLoadVct);

@@ -104,3 +104,27 @@ export async function addUriIntegrityToEditor(editor) {
 
   editor.set(editorData);
 }
+
+export function getUriIntegrityPaths(obj, path = []) {
+  let results = [];
+
+  if (Array.isArray(obj)) {
+	obj.forEach((item, index) => {
+	  results = results.concat(
+		getUriIntegrityPaths(item, [...path, index])
+	  );
+	});
+  } else if (obj && typeof obj === "object") {
+	if ("uri#integrity" in obj) {
+	  results.push([...path, "uri#integrity"]);
+	}
+
+	Object.keys(obj).forEach((key) => {
+	  results = results.concat(
+		getUriIntegrityPaths(obj[key], [...path, key])
+	  );
+	});
+  }
+
+  return results;
+}

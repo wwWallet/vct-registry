@@ -43,7 +43,13 @@ export async function initializeEditor(container, validationFn, initialData, onC
 		statusBar: false,
 		schema: schema,
 		onValidate: validationFn,
-		onValidationError: function (errors) {
+		onValidationError: function (errorsAndWarnings) {
+
+			console.log(errorsAndWarnings)
+
+			const errors = errorsAndWarnings.filter(e => 
+				!(e.type === 'customValidation' && e.message.startsWith("Warning:")));
+
 			if (errors.length > 0) {
 				document.querySelector("#vct-submit-btn").disabled = true;
 			} else {
