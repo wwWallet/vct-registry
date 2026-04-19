@@ -56,6 +56,11 @@ export async function updateVctByUrn(
 	vctMetadata: object,
 ): Promise<number> {
 	try {
+		const parsedVct = vctMetadata as TypeMetadata;
+		if (parsedVct.vct !== vctUrn) {
+			throw new Error(`Cannot change VCT URN. Got vct value '${parsedVct.vct}' in metadata while editing vct '${vctUrn}'.`);
+		}
+
 		const result: number = await knex("vct")
 			.where("urn", vctUrn)
 			.update({
