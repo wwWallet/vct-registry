@@ -22,7 +22,7 @@ function validateVct(value) {
 	for (const integrityPath of getUriIntegrityPaths(value)) {
 		errors.push({
 			path: integrityPath,
-			message: "Warning: URI Integrity values will be calculated on submission. This value will be overwritten."
+			message: "URI Integrity values are calculated on submission. This value will be overwritten."
 		});
 	}
 
@@ -42,7 +42,7 @@ document
 			await addUriIntegrityToEditor(editor);
 		} catch (error) {
 			console.error("Error calculating URI integrity:", error);
-			showErrors("Failed to calculate URI integrity", { message: error.message });
+			showErrors("Failed to create VC Type Metadata", { message: `Failed to calculate URI integrity. ${error.message}` });
 			return;
 		}
 

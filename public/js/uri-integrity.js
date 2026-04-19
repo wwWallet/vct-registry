@@ -10,11 +10,15 @@ async function calculateUriIntegrity(
 ) {
 	let buffer;
 	
-	const response = await fetch(input);
-	if (!response.ok) {
-		throw new Error(`Failed to fetch URL: ${response.statusText}`);
+	try {
+		const response = await fetch(input);
+		if (!response.ok) {
+			throw new Error(response.statusText);
+		}
+		buffer = await response.arrayBuffer();
+	} catch (fetchError) {
+		throw new Error(`Error fetching URL '${input}': ${fetchError.message}`);
 	}
-	buffer = await response.arrayBuffer();
 
 	const hashBuffer = await crypto.subtle.digest(algoMap[algorithm], buffer);
 	const hashArray = Array.from(new Uint8Array(hashBuffer));
