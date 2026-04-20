@@ -23,10 +23,11 @@ document
 			return;
 		}
 
-		const editorData = editor.get();
+		let editorData = editor.get();
 
 		try {
 			await addUriIntegrityToEditor(editor);
+			editorData = editor.get();
 		} catch (error) {
 			console.error("Error calculating URI integrity:", error);
 			showErrors("Failed to create VC Type Metadata", { message: `Failed to calculate URI integrity. ${error.message}` });
