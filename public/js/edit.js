@@ -30,13 +30,6 @@ function validateVct(value) {
       });
 	}
 
-	for (const integrityPath of getUriIntegrityPaths(value)) {
-		errors.push({
-			path: integrityPath,
-			message: "URI Integrity values are calculated on submission. This value will be overwritten."
-      });
-	}
-
 	return errors;
 }
 
@@ -68,8 +61,7 @@ document
 			return;
 		}
 
-		const editorData = editor.get();
-
+		let editorData = editor.get();
 		if (editorData.vct !== decodeVct(vctUrn)) {
 			showErrors("Failed to save VC Type Metadata", { message: "The 'vct' URN value in the VC Type metadata cannot be changed." });
 			return;
@@ -77,6 +69,7 @@ document
 
 		try {
 			await addUriIntegrityToEditor(editor);
+			editorData = editor.get();
 		} catch (error) {
 			console.error("Error calculating URI integrity:", error);
 			showErrors("Failed to save VC Type Metadata", { message: `Failed to calculate URI integrity. ${error.message}` });

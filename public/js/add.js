@@ -12,21 +12,8 @@ let editor;
 const container = document.getElementById("jsoneditor");
 
 async function initializeEditorAndLoadVct() {
-	editor = await initializeEditor(container, validateVct, initialAddVctData, onEditorContentChange);
+	editor = await initializeEditor(container, undefined, initialAddVctData, onEditorContentChange);
 	onEditorContentChange(initialAddVctData);
-}
-
-function validateVct(value) {
-	const errors = [];
-
-	for (const integrityPath of getUriIntegrityPaths(value)) {
-		errors.push({
-			path: integrityPath,
-			message: "URI Integrity values are calculated on submission. This value will be overwritten."
-		});
-	}
-
-	return errors;
 }
 
 document

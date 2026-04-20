@@ -1,12 +1,16 @@
 const algoMap = {
-		sha256: 'SHA-256',
-		sha384: 'SHA-384',
-		sha512: 'SHA-512',
-	};
+	sha256: 'SHA-256',
+	sha384: 'SHA-384',
+	sha512: 'SHA-512',
+};
+
+function isBase64Uri(uri) {
+	return typeof uri === "string" && uri.startsWith("data:") && uri.includes(";base64,");
+}
 
 async function calculateUriIntegrity(
 	input,
-	algorithm
+	algorithm = "sha256"
 ) {
 	let buffer;
 	
@@ -102,7 +106,27 @@ export async function addUriIntegrityToEditor(editor) {
 	const uriValue = getValueAtPath(editorData, [...uriPath, "uri"]);
 	if (!uriValue) continue;
 
-	const integrityValue = await calculateUriIntegrity(uriValue, "sha256");
+	if(isBase64Uri(uriValue)) continue;
+
+	let integrityAlgorithm = "sha256";
+
+	const existingIntegrity = getValueAtPath(editorData, [...uriPath, "uri#integrity"]);
+	if (existingIntegrity) {
+		try {
+			integrityAlgorithm = existingIntegrity.split("-")[0];
+			const calculatedIntegrity = await calculateUriIntegrity(uriValue, integrityAlgorithm);
+			if (calculatedIntegrity === existingIntegrity) {
+				continue;
+			}
+			else {
+				console.log(`URI integrity value for '${uriValue}' does not match. Value will be recalculated and updated.`);	
+			}
+		} catch (error) {
+			console.log(`Error verifying URI integrity for '${uriValue}': ${error.message}. Value will be recalculated and updated.`);
+		}
+	}
+
+	const integrityValue = await calculateUriIntegrity(uriValue, integrityAlgorithm);
 	setValueAtPath(editorData, [...uriPath, "uri#integrity"], integrityValue);
   }
 

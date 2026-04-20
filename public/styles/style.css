@@ -21,8 +21,13 @@
 	--vct-text-muted: color-mix(in srgb, var(--vct-text) 58%, white);
 	--vct-danger: #9f2f2f;
 	--vct-danger-soft: #fff1f1;
+	--vct-danger-border: #f1bdbd;
 	--vct-success: #17603f;
 	--vct-success-soft: #eef9f1;
+	--vct-success-border: #b7dec4;
+	--vct-primary: #0f4ab1;
+	--vct-primary-soft: #f1f5f3;
+	--vct-primary-border: #b7d0f1;
 	--vct-shadow: 0 10px 30px rgba(29, 42, 34, 0.06);
 }
 
