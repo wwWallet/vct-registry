@@ -28,8 +28,8 @@
 }
 
 .info {
-	background: var(--vct-primary-soft);
-	color: var(--vct-primary);
-	border-color: var(--vct-primary-border);
-	border-left-color: var(--vct-primary);
+	background: var(--vct-accent-soft);
+	color: var(--vct-accent);
+	border-color: var(--vct-accent-border);
+	border-left-color: var(--vct-accent);
 }

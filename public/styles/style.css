@@ -12,6 +12,7 @@
 	--vct-accent-faint: color-mix(in srgb, var(--vct-accent) 5%, white);
 	--vct-accent-ring: color-mix(in srgb, var(--vct-accent) 22%, transparent);
 	--vct-accent-ring-soft: color-mix(in srgb, var(--vct-accent) 16%, transparent);
+	--vct-accent-border: color-mix(in srgb, var(--vct-accent) 24%, white);
 	--vct-bg: color-mix(in srgb, var(--vct-accent) 6%, white);
 	--vct-surface: #ffffff;
 	--vct-surface-alt: color-mix(in srgb, var(--vct-accent) 4%, white);
@@ -25,9 +26,6 @@
 	--vct-success: #17603f;
 	--vct-success-soft: #eef9f1;
 	--vct-success-border: #b7dec4;
-	--vct-primary: #0f4ab1;
-	--vct-primary-soft: #f1f5f3;
-	--vct-primary-border: #b7d0f1;
 	--vct-shadow: 0 10px 30px rgba(29, 42, 34, 0.06);
 }
 
