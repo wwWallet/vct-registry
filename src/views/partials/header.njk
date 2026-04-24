@@ -17,10 +17,22 @@
     <div class="vct-auth-button-container">
       <div class="vct-auth-actions">
         <button id="vct-login-btn" type="button" class="vct-btn vct-auth-btn login" {% if isAuthenticated %}hidden disabled{% endif %}>Login</button>
-        <span id="username-container" class="vct-user-indicator" {% if not isAuthenticated %}hidden{% endif %} {% if isAuthenticated %}data-username="{{ username }}"{% endif %} aria-label="{% if isAuthenticated %}Logged in as {{ username }}{% else %}Logged in user{% endif %}" tabindex="0">
-          <span class="vct-user-avatar" aria-hidden="true"></span>
-        </span>
-        <button id="vct-logout-btn" type="button" class="vct-btn vct-auth-btn logout" {% if not isAuthenticated %}hidden disabled{% endif %}>Logout</button>
+        <div id="vct-auth-dropdown-wrapper" class="avatar-menu" {% if not isAuthenticated %}hidden{% endif %}>
+          <div id="username-container" class="avatar vct-user-indicator vct-auth-dropdown-toggle" {% if isAuthenticated %}data-username="{{ username }}"{% endif %} aria-label="{% if isAuthenticated %}Logged in as {{ username }}{% else %}Logged in user{% endif %}" role="button" aria-haspopup="true" aria-expanded="false" tabindex="0">
+            <span class="vct-user-avatar" aria-hidden="true"></span>
+          </div>
+
+          <div id="vct-auth-dropdown" class="dropdown" role="menu" aria-labelledby="username-container" hidden>
+            <div class="user-info">
+              <div class="label">Signed in as</div>
+              <div id="vct-auth-dropdown-username" class="username"></div>
+            </div>
+
+            <div class="divider"></div>
+
+            <button id="vct-logout-btn" type="button" class="menu-item logout" role="menuitem">Log out</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
