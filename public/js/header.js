@@ -54,12 +54,30 @@ function closeAuthDropdown() {
 	usernameContainer.setAttribute("aria-expanded", "false");
 }
 
-function openAuthDropdown() {
+function getAuthMenuItems() {
+	return Array.from(authDropdown.querySelectorAll('[role="menuitem"]'));
+}
+
+function focusAuthMenuItem(index) {
+	const menuItems = getAuthMenuItems();
+	if (!menuItems.length) {
+		return;
+	}
+
+	const nextIndex = (index + menuItems.length) % menuItems.length;
+	menuItems[nextIndex].focus();
+}
+
+function openAuthDropdown({ focusMenu = false } = {}) {
 	if (!authDropdown) {
 		return;
 	}
 	authDropdown.hidden = false;
 	usernameContainer.setAttribute("aria-expanded", "true");
+
+	if (focusMenu) {
+		focusAuthMenuItem(0);
+	}
 }
 
 function toggleAuthDropdown() {
@@ -143,12 +161,33 @@ async function initializeHeaderAuth() {
 	usernameContainer.addEventListener("keydown", (event) => {
 		if (event.key === "ArrowDown") {
 			event.preventDefault();
+			openAuthDropdown({ focusMenu: true });
+		}
+
+		if (event.key === "ArrowUp") {
+			event.preventDefault();
 			openAuthDropdown();
-			logoutBtn.focus();
+			focusAuthMenuItem(-1);
 		}
 
 		if (event.key === "Escape") {
 			closeAuthDropdown();
+		}
+	});
+
+	authDropdown.addEventListener("keydown", (event) => {
+		if (event.key === "Escape") {
+			event.preventDefault();
+			closeAuthDropdown();
+			usernameContainer.focus();
+			return;
+		}
+
+		if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+			event.preventDefault();
+			const menuItems = getAuthMenuItems();
+			const currentIndex = menuItems.indexOf(document.activeElement);
+			focusAuthMenuItem(currentIndex + (event.key === "ArrowDown" ? 1 : -1));
 		}
 	});
 
@@ -159,6 +198,13 @@ async function initializeHeaderAuth() {
 
 		if (!authDropdown.contains(event.target) && !usernameContainer.contains(event.target)) {
 			closeAuthDropdown();
+		}
+	});
+
+	document.addEventListener("keydown", (event) => {
+		if (event.key === "Escape" && authDropdown && !authDropdown.hidden) {
+			closeAuthDropdown();
+			usernameContainer.focus();
 		}
 	});
 
