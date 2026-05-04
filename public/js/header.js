@@ -3,6 +3,9 @@ import { getAuthState, login, logout } from "./app.js";
 const loginBtn = document.getElementById("vct-login-btn");
 const logoutBtn = document.getElementById("vct-logout-btn");
 const usernameContainer = document.getElementById("username-container");
+const authDropdownWrapper = document.getElementById("vct-auth-dropdown-wrapper");
+const authDropdown = document.getElementById("vct-auth-dropdown");
+const authDropdownUsername = document.getElementById("vct-auth-dropdown-username");
 const loginDialog = document.getElementById("vct-login-dialog");
 const loginForm = document.getElementById("vct-login-form");
 const loginCancelBtn = document.getElementById("vct-login-cancel-btn");
@@ -43,30 +46,79 @@ function closeLoginDialog() {
 	}
 }
 
+function closeAuthDropdown() {
+	if (!authDropdown) {
+		return;
+	}
+	authDropdown.hidden = true;
+	usernameContainer.setAttribute("aria-expanded", "false");
+}
+
+function getAuthMenuItems() {
+	return Array.from(authDropdown.querySelectorAll('[role="menuitem"]'));
+}
+
+function focusAuthMenuItem(index) {
+	const menuItems = getAuthMenuItems();
+	if (!menuItems.length) {
+		return;
+	}
+
+	const nextIndex = (index + menuItems.length) % menuItems.length;
+	menuItems[nextIndex].focus();
+}
+
+function openAuthDropdown({ focusMenu = false } = {}) {
+	if (!authDropdown) {
+		return;
+	}
+	authDropdown.hidden = false;
+	usernameContainer.setAttribute("aria-expanded", "true");
+
+	if (focusMenu) {
+		focusAuthMenuItem(0);
+	}
+}
+
+function toggleAuthDropdown() {
+	if (!authDropdown) {
+		return;
+	}
+
+	if (authDropdown.hidden) {
+		openAuthDropdown();
+	} else {
+		closeAuthDropdown();
+	}
+}
+
 async function refreshHeaderAuthState() {
 	const authState = await getAuthState();
 
 	if (authState.loggedIn) {
 		loginBtn.hidden = true;
 		loginBtn.disabled = true;
-		logoutBtn.hidden = false;
-		logoutBtn.disabled = false;
 		usernameContainer.hidden = false;
+		authDropdownWrapper.hidden = false;
+		authDropdown.hidden = true;
 		usernameContainer.dataset.username = authState.username;
-		usernameContainer.title = "";
-		usernameContainer.setAttribute("aria-label", `Logged in as ${authState.username}`);
+		authDropdownUsername.textContent = authState.username;
+		usernameContainer.title = "Open user menu";
+		usernameContainer.setAttribute("aria-label", "Open user menu");
+		usernameContainer.setAttribute("aria-expanded", "false");
 		document.dispatchEvent(new CustomEvent("auth:changed", { detail: authState }));
 		return;
 	}
 
 	loginBtn.hidden = false;
 	loginBtn.disabled = false;
-	logoutBtn.hidden = true;
-	logoutBtn.disabled = true;
 	usernameContainer.hidden = true;
+	authDropdownWrapper.hidden = true;
 	usernameContainer.removeAttribute("data-username");
-	usernameContainer.title = "";
-	usernameContainer.setAttribute("aria-label", "Logged in user");
+	authDropdown.hidden = true;
+	usernameContainer.title = "Open user menu";
+	usernameContainer.setAttribute("aria-label", "Open user menu");
+	usernameContainer.setAttribute("aria-expanded", "false");
 	document.dispatchEvent(new CustomEvent("auth:changed", { detail: authState }));
 }
 
@@ -102,12 +154,74 @@ async function initializeHeaderAuth() {
 		}
 	});
 
+	usernameContainer.addEventListener("click", () => {
+		toggleAuthDropdown();
+	});
+
+	usernameContainer.addEventListener("keydown", (event) => {
+		if (event.key === "ArrowDown") {
+			event.preventDefault();
+			openAuthDropdown({ focusMenu: true });
+		}
+
+		if (event.key === "ArrowUp") {
+			event.preventDefault();
+			openAuthDropdown();
+			focusAuthMenuItem(-1);
+		}
+
+		if (event.key === "Escape") {
+			closeAuthDropdown();
+		}
+	});
+
+	authDropdown.addEventListener("keydown", (event) => {
+		if (event.key === "Escape") {
+			event.preventDefault();
+			closeAuthDropdown();
+			usernameContainer.focus();
+			return;
+		}
+
+		if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+			event.preventDefault();
+			const menuItems = getAuthMenuItems();
+			const currentIndex = menuItems.indexOf(document.activeElement);
+			focusAuthMenuItem(currentIndex + (event.key === "ArrowDown" ? 1 : -1));
+		}
+	});
+
+	document.addEventListener("click", (event) => {
+		if (!authDropdown || authDropdown.hidden) {
+			return;
+		}
+
+		if (!authDropdown.contains(event.target) && !usernameContainer.contains(event.target)) {
+			closeAuthDropdown();
+		}
+	});
+
+	document.addEventListener("keydown", (event) => {
+		if (event.key === "Escape" && authDropdown && !authDropdown.hidden) {
+			closeAuthDropdown();
+			usernameContainer.focus();
+		}
+	});
+
 	logoutBtn.addEventListener("click", async () => {
 		await logout();
+		closeAuthDropdown();
 		await refreshHeaderAuthState();
 	});
 
-	dispatchCurrentAuthStateFromDom();
+	logoutBtn.addEventListener("keydown", (event) => {
+		if (event.key === "Escape") {
+			closeAuthDropdown();
+			usernameContainer.focus();
+		}
+	});
+
+	await refreshHeaderAuthState();
 }
 
 window.addEventListener("DOMContentLoaded", initializeHeaderAuth);
