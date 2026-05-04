@@ -128,27 +128,40 @@
 	cursor: pointer;
 	background: var(--vct-surface-alt);
 	border: 1px solid var(--vct-border);
+	color: var(--vct-text);
+	font: inherit;
+	padding: 0;
+	transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+	-webkit-appearance: none;
+	appearance: none;
+}
+
+.avatar:hover {
+	background: var(--vct-surface);
+	border-color: var(--vct-border-strong);
+	transform: translateY(-1px);
 }
 
 .dropdown {
 	position: absolute;
 	right: 0;
 	top: calc(100% + 8px);
-	width: 240px;
+	width: min(260px, calc(100vw - 28px));
 	background: var(--vct-surface);
-	border-radius: 12px;
-	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+	border: 1px solid var(--vct-border);
+	border-radius: 8px;
+	box-shadow: 0 16px 32px rgba(29, 42, 34, 0.14);
 	padding: 8px 0;
 	z-index: 20;
 }
 
 .user-info {
-	padding: 12px 16px;
+	padding: 12px 14px;
 }
 
 .label {
 	font-size: 12px;
-	color: #6b7280;
+	color: var(--vct-text-muted);
 }
 
 .username {
@@ -156,17 +169,18 @@
 	font-weight: 600;
 	color: var(--vct-text);
 	margin-top: 2px;
+	overflow-wrap: anywhere;
 }
 
 .divider {
 	height: 1px;
-	background: #eee;
+	background: var(--vct-border);
 	margin: 8px 0;
 }
 
 .menu-item {
 	width: 100%;
-	padding: 10px 16px;
+	padding: 10px 14px;
 	background: none;
 	border: none;
 	text-align: left;
@@ -177,7 +191,7 @@
 
 .menu-item:hover,
 .menu-item:focus-visible {
-	background: #f3f4f6;
+	background: var(--vct-surface-alt);
 	outline: none;
 }
 
@@ -191,6 +205,8 @@
 
 .vct-auth-dropdown-toggle[aria-expanded="true"] {
 	box-shadow: 0 0 0 3px var(--vct-accent-ring-soft);
+	background: var(--vct-surface);
+	border-color: var(--vct-accent);
 }
 
 .vct-auth-btn:enabled:hover {
@@ -205,9 +221,9 @@
 
 .vct-user-indicator {
 	position: relative;
-	flex: 0 0 34px;
-	width: 34px;
-	height: 34px;
+	flex: 0 0 40px;
+	width: 40px;
+	height: 40px;
 	border-radius: 999px;
 	border: 1px solid var(--vct-border);
 	background: var(--vct-surface-alt);
@@ -219,10 +235,10 @@
 }
 
 .vct-user-indicator::after {
-	content: attr(data-username);
+	content: attr(title);
 	position: absolute;
 	left: 50%;
-	bottom: calc(100% - 70px);
+	top: calc(100% + 10px);
 	transform: translateX(-50%) translateY(4px);
 	background: var(--vct-text);
 	color: #ffffff;
@@ -236,8 +252,8 @@
 	transition: opacity 0.15s ease, transform 0.15s ease;
 }
 
-.vct-user-indicator[data-username]:not([data-username=""]):hover::after,
-.vct-user-indicator[data-username]:not([data-username=""]):focus-visible::after {
+.vct-user-indicator[aria-expanded="false"][title]:not([title=""]):hover::after,
+.vct-user-indicator[aria-expanded="false"][title]:not([title=""]):focus-visible::after {
 	opacity: 1;
 	transform: translateX(-50%) translateY(0);
 }
@@ -245,7 +261,7 @@
 .vct-user-avatar::before {
 	content: "";
 	position: absolute;
-	top: 5px;
+	top: 8px;
 	left: 50%;
 	width: 10px;
 	height: 10px;
@@ -258,7 +274,7 @@
 	content: "";
 	position: absolute;
 	left: 50%;
-	bottom: 6px;
+	bottom: 8px;
 	width: 16px;
 	height: 9px;
 	border-radius: 9px 9px 6px 6px;

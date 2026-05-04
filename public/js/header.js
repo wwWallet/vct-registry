@@ -54,12 +54,24 @@ function closeAuthDropdown() {
 	usernameContainer.setAttribute("aria-expanded", "false");
 }
 
+function openAuthDropdown() {
+	if (!authDropdown) {
+		return;
+	}
+	authDropdown.hidden = false;
+	usernameContainer.setAttribute("aria-expanded", "true");
+}
+
 function toggleAuthDropdown() {
 	if (!authDropdown) {
 		return;
 	}
-	authDropdown.hidden = !authDropdown.hidden;
-	usernameContainer.setAttribute("aria-expanded", String(!authDropdown.hidden));
+
+	if (authDropdown.hidden) {
+		openAuthDropdown();
+	} else {
+		closeAuthDropdown();
+	}
 }
 
 async function refreshHeaderAuthState() {
@@ -73,8 +85,8 @@ async function refreshHeaderAuthState() {
 		authDropdown.hidden = true;
 		usernameContainer.dataset.username = authState.username;
 		authDropdownUsername.textContent = authState.username;
-		usernameContainer.title = "";
-		usernameContainer.setAttribute("aria-label", `Logged in as ${authState.username}`);
+		usernameContainer.title = "Open user menu";
+		usernameContainer.setAttribute("aria-label", "Open user menu");
 		usernameContainer.setAttribute("aria-expanded", "false");
 		document.dispatchEvent(new CustomEvent("auth:changed", { detail: authState }));
 		return;
@@ -86,8 +98,8 @@ async function refreshHeaderAuthState() {
 	authDropdownWrapper.hidden = true;
 	usernameContainer.removeAttribute("data-username");
 	authDropdown.hidden = true;
-	usernameContainer.title = "";
-	usernameContainer.setAttribute("aria-label", "Logged in user");
+	usernameContainer.title = "Open user menu";
+	usernameContainer.setAttribute("aria-label", "Open user menu");
 	usernameContainer.setAttribute("aria-expanded", "false");
 	document.dispatchEvent(new CustomEvent("auth:changed", { detail: authState }));
 }
@@ -129,9 +141,14 @@ async function initializeHeaderAuth() {
 	});
 
 	usernameContainer.addEventListener("keydown", (event) => {
-		if (event.key === "Enter" || event.key === " ") {
+		if (event.key === "ArrowDown") {
 			event.preventDefault();
-			toggleAuthDropdown();
+			openAuthDropdown();
+			logoutBtn.focus();
+		}
+
+		if (event.key === "Escape") {
+			closeAuthDropdown();
 		}
 	});
 
@@ -149,6 +166,13 @@ async function initializeHeaderAuth() {
 		await logout();
 		closeAuthDropdown();
 		await refreshHeaderAuthState();
+	});
+
+	logoutBtn.addEventListener("keydown", (event) => {
+		if (event.key === "Escape") {
+			closeAuthDropdown();
+			usernameContainer.focus();
+		}
 	});
 
 	await refreshHeaderAuthState();
