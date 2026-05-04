@@ -1,6 +1,7 @@
 /* Generic feedback messages */
 .error,
-.success {
+.success,
+.info {
 	position: relative;
 	margin: 12px 0;
 	padding: 12px 14px 12px 16px;
@@ -15,13 +16,20 @@
 .error {
 	background: var(--vct-danger-soft);
 	color: var(--vct-danger);
-	border-color: #f1bdbd;
+	border-color: var(--vct-danger-border);
 	border-left-color: var(--vct-danger);
 }
 
 .success {
 	background: var(--vct-success-soft);
 	color: var(--vct-success);
-	border-color: #b7dec4;
+	border-color: var(--vct-success-border);
 	border-left-color: var(--vct-success);
+}
+
+.info {
+	background: var(--vct-accent-soft);
+	color: var(--vct-accent);
+	border-color: var(--vct-accent-border);
+	border-left-color: var(--vct-accent);
 }

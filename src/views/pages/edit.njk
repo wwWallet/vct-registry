@@ -4,6 +4,7 @@
 
 {% block page_styles %}
 <link rel="stylesheet" href="./styles/add.css" />
+<link rel="stylesheet" href="./styles/edit.css" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jsoneditor@latest/dist/jsoneditor.min.css" />
 <link rel="stylesheet" href="./styles/jsoneditor.css" />
 {% endblock %}
@@ -51,7 +52,8 @@
         <h3>Metadata JSON</h3>
         <p class="metadata-panel-copy">Update the full type metadata document directly.</p>
       </div>
-
+      <div id="vct-info" class="info">URI integrity values will be calculated on submission using SHA-256.
+        Existing integrity values will be tested and replaced if they do not match the metadata content.</div>
       <div id="jsoneditor" class="jsoneditor-host"></div>
       <div class="vct-edit-button-container">
         <a id="vct-cancel-btn" class="vct-btn vct-btn-cancel" href="./metadata">Cancel</a>
@@ -68,4 +70,5 @@
 {% block page_scripts %}
 <script src="https://cdn.jsdelivr.net/npm/jsoneditor@latest"></script>
 <script type="module" src="./js/edit.js"></script>
+<script type="module" src="./js/uri-integrity.js"></script>
 {% endblock %}

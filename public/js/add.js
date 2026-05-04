@@ -1,4 +1,11 @@
-import { getMetadataViewUrl, initialAddVctData, initializeEditor, onEditorContentChange, showErrors } from "./app.js";
+import { 
+	getMetadataViewUrl,
+	initialAddVctData,
+	initializeEditor,
+	onEditorContentChange,
+	showErrors
+} from "./app.js";
+import { addUriIntegrityToEditor, getUriIntegrityPaths } from "./uri-integrity.js";
 
 let editor;
 
@@ -12,11 +19,20 @@ async function initializeEditorAndLoadVct() {
 document
 	.getElementById("vct-submit-btn")
 	.addEventListener("click", async () => {
-		if (!confirm("Are you sure you want to create this VC Type Metadata entry?")) {
+		if (!confirm("Are you sure you want to create this VC Type Metadata entry? SHA-256 URI Integrity hashes will be added for all image links in the metadata, overwriting any existing integrity values.")) {
 			return;
 		}
 
-		const editorData = editor.get();
+		let editorData = editor.get();
+
+		try {
+			await addUriIntegrityToEditor(editor);
+			editorData = editor.get();
+		} catch (error) {
+			console.error("Error calculating URI integrity:", error);
+			showErrors("Failed to create VC Type Metadata", { message: `Failed to calculate URI integrity. ${error.message}` });
+			return;
+		}
 
 		const res = await fetch("vct/create", {
 			method: "POST",

@@ -1,4 +1,13 @@
-import { decodeVct, fetchJson, getMetadataViewUrl, initializeEditor, onEditorContentChange, showErrors } from "./app.js";
+import {
+	decodeVct,
+	fetchJson,
+	getMetadataViewUrl,
+	initializeCopyButtons,
+	initializeEditor,
+	onEditorContentChange,
+	showErrors
+} from "./app.js";
+import { addUriIntegrityToEditor, getUriIntegrityPaths } from "./uri-integrity.js";
 
 let editor;
 let vctUrn;
@@ -48,11 +57,24 @@ async function loadSelectedVct() {
 document
 	.getElementById("vct-submit-btn")
 	.addEventListener("click", async () => {
-		if (!confirm("Are you sure you want to edit this VC Type Metadata entry? This action is irreversible.")) {
+		if (!confirm("Are you sure you want to edit this VC Type Metadata entry? This action is irreversible. SHA-256 URI Integrity hashes will be added for all image links in the metadata, overwriting any existing integrity values.")) {
 			return;
 		}
 
-		const editorData = editor.get();
+		let editorData = editor.get();
+		if (editorData.vct !== decodeVct(vctUrn)) {
+			showErrors("Failed to save VC Type Metadata", { message: "The 'vct' URN value in the VC Type metadata cannot be changed." });
+			return;
+		}
+
+		try {
+			await addUriIntegrityToEditor(editor);
+			editorData = editor.get();
+		} catch (error) {
+			console.error("Error calculating URI integrity:", error);
+			showErrors("Failed to save VC Type Metadata", { message: `Failed to calculate URI integrity. ${error.message}` });
+			return;
+		}
 
 		const res = await fetch("vct/edit", {
 			method: "POST",
@@ -73,4 +95,7 @@ document
 		}
 	});
 
-window.addEventListener("DOMContentLoaded", initializeEditorAndLoadVct);
+window.addEventListener("DOMContentLoaded", () => {
+	initializeEditorAndLoadVct();
+	initializeCopyButtons();
+});
