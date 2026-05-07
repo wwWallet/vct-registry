@@ -53,7 +53,7 @@ export const porMetadata = {
 		},
 		{
 			"path": [
-				"cnh"
+				"cnf"
 			],
 			"mandatory": true,
 			"sd": "never",

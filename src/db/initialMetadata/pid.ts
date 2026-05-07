@@ -59,7 +59,7 @@ export const pidMetadata = {
 		},
 		{
 			"path": [
-				"cnh"
+				"cnf"
 			],
 			"mandatory": true,
 			"sd": "never",
