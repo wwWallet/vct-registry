@@ -6,7 +6,6 @@ import { config } from "../config";
 import knexConfig from "../knexfile";
 import { auth } from "./middleware/auth";
 import { knex } from "knex";
-import { initVctTable } from "./db/vct";
 import apiRouter from "./routes/api";
 import typeMetadataRouter from "./routes/typeMetadata";
 import dbVctRouter from "./routes/db";
@@ -25,7 +24,6 @@ app.use(express.json({
 }));
 
 export const db = knex(knexConfig);
-initVctTable(db);
 
 const publicPath = path.join(__dirname, "../public");
 export const viewsPath = path.join(__dirname, "views");
