@@ -5,6 +5,7 @@ export const config = {
 	url: process.env.URL || "http://localhost:8097",
 	port: process.env.PORT || "8097",
 	https: process.env.HTTPS === "true",
+	issuer_name: process.env.ISSUER_NAME || "wwWallet",
 	users: {
 		[process.env.ADMIN_USERNAME || "admin"]: process.env.ADMIN_PASSWORD || "admin",
 	},
