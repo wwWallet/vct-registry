@@ -1,22 +1,22 @@
 import { app } from "../../src/server";
 import request from "supertest";
 import { config } from "../../config";
-import { describe, it } from "vitest";
+import { describe, expect, it } from "vitest";
 
 describe("Frontend Authentication", () => {
-	it("GET /edit returns 401 when not authenticated", async () => {
+	it("GET /edit redirects to the registry when not authenticated", async () => {
 		await request(app)
 			.get("/edit")
 			.expect(302)
-			.expect("Location", "/");
+			.expect("Location", config.url);
 	});
 
-	it("GET /edit returns 401 with wrong credentials", async () => {
+	it("GET /edit redirects to the registry with wrong credentials", async () => {
 		await request(app)
 			.get("/edit")
 			.auth("fake_user", "wrong_password")
 			.expect(302)
-			.expect("Location", "/");
+			.expect("Location", config.url);
 	});
 
 	it("GET /edit returns 200 when authenticated properly", async () => {
@@ -31,9 +31,13 @@ describe("Frontend Authentication", () => {
 			.auth(username, password)
 			.expect(200);
 
-		await agent
+		const response = await agent
 			.get("/edit")
 			.expect(200);
+
+		expect(response.text).toContain(`<a class="header-brand" href="${config.url}">`);
+		expect(response.text).toContain(`alt="${config.wallet_name} logo"`);
+		expect(response.text).toContain(`<p class="header-kicker">${config.wallet_name}</p>`);
 	});
 });
 

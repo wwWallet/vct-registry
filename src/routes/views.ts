@@ -60,6 +60,7 @@ function readQueryVct(req: Request): string | undefined {
 function getBaseViewLocals(req: Request) {
 	return {
 		registryBaseUrl: config.url,
+		walletName: config.wallet_name,
 		...getAuthViewState(req),
 	};
 }
