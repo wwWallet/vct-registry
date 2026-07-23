@@ -38,6 +38,8 @@ describe("Frontend Authentication", () => {
 		expect(response.text).toContain(`<a class="header-brand" href="${config.url}">`);
 		expect(response.text).toContain(`alt="${config.wallet_name} logo"`);
 		expect(response.text).toContain(`<p class="header-kicker">${config.wallet_name}</p>`);
+		expect(response.text).toContain(`<title>${config.wallet_name} VCT Registry</title>`);
+		expect(response.text).toContain(`<h1>VCT Registry</h1>`);
 	});
 });
 
