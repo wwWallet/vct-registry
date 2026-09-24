@@ -2,7 +2,7 @@
 	"name": "vct-registry",
 	"version": "1.0.0",
 	"main": "index.js",
-	"license": "MIT",
+	"license": "BSD-2-Clause",
 	"dependencies": {
 		"cookie-parser": "^1.4.7",
 		"cors": "^2.8.5",
