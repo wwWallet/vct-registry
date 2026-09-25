@@ -27,6 +27,9 @@
 		"typescript": "^5.9.3",
 		"vitest": "^4.0.18"
 	},
+	"engines": {
+		"node": ">=24"
+	},
 	"scripts": {
 		"dev": "ts-node-dev --respawn --transpile-only --watch src/views src/server.ts",
 		"build": "rm -rf dist && tsc && cp -R public dist/public && cp -R src/views dist/src/views",
