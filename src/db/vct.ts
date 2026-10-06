@@ -39,7 +39,7 @@ export async function getVctByUrn(
 			.where("urn", vctUrn)
 			.select("metadata")
 			.first();
-		return result ? (JSON.parse(result.metadata) as TypeMetadata) : result;
+		return result ? parseMetadata(result.metadata) : undefined;
 	} catch (error) {
 		console.error("Error fetching VCT: ", error);
 		return undefined;
@@ -112,9 +112,17 @@ export async function getAllVctMetadata(knex: Knex): Promise<TypeMetadata[]> {
 	try {
 		const result: Array<{ metadata: string }> =
 			await knex("vct").select("metadata");
-		return result.map((row) => JSON.parse(row.metadata) as TypeMetadata);
+		return result.map((row) => parseMetadata(row.metadata));
 	} catch (error) {
 		console.error("Error fetching VCTs:", error);
 		return [];
 	}
+}
+
+function parseMetadata(value: unknown): TypeMetadata {
+	if (typeof value === "string") {
+		return JSON.parse(value) as TypeMetadata;
+	}
+
+	return value as TypeMetadata;
 }
