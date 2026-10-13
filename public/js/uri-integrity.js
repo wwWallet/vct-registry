@@ -13,7 +13,7 @@ async function calculateUriIntegrity(
 	algorithm = "sha256"
 ) {
 	let buffer;
-	
+
 	try {
 		const response = await fetch(input);
 		if (!response.ok) {
@@ -31,78 +31,78 @@ async function calculateUriIntegrity(
 }
 
 function getUriPaths(obj, path = []) {
-  let results = [];
+	let results = [];
 
-  if (Array.isArray(obj)) {
+	if (Array.isArray(obj)) {
 	obj.forEach((item, index) => {
-	  results = results.concat(
+		results = results.concat(
 		getUriPaths(item, [...path, index])
-	  );
+		);
 	});
-  } else if (obj && typeof obj === "object") {
+	} else if (obj && typeof obj === "object") {
 	if ("uri" in obj) {
-	  results.push([...path]);
+		results.push([...path]);
 	}
 
 	Object.keys(obj).forEach((key) => {
-	  results = results.concat(
+		results = results.concat(
 		getUriPaths(obj[key], [...path, key])
-	  );
+		);
 	});
-  }
+	}
 
-  return results;
+	return results;
 }
 
 function getValueAtPath(obj, path) {
-  return path.reduce((current, key) => {
+	return path.reduce((current, key) => {
 	if (current && typeof current === "object") {
-	  return current[key];
+		return current[key];
 	}
 	return undefined;
-  }, obj);
+	}, obj);
 }
 
 function setValueAtPath(obj, path, value) {
-  const lastKey = path[path.length - 1];
-  const parent = path.slice(0, -1).reduce((current, key) => {
+	const lastKey = path[path.length - 1];
+	const parent = path.slice(0, -1).reduce((current, key) => {
 	if (current && typeof current === "object") {
-	  return current[key];
+		return current[key];
 	}
 	return undefined;
-  }, obj);
+	}, obj);
 
-  if (!parent || typeof parent !== "object") {
+	if (!parent || typeof parent !== "object") {
 	return;
-  }
+	}
 
-  if (lastKey === "uri#integrity" && "uri" in parent) {
+	if (lastKey === "uri#integrity" && "uri" in parent) {
 	if (lastKey in parent) {
-	  parent[lastKey] = value;
-	  return;
+		parent[lastKey] = value;
+		return;
 	}
 
 	const ordered = {};
 	for (const [key, existingValue] of Object.entries(parent)) {
-	  ordered[key] = existingValue;
-	  if (key === "uri") {
+		ordered[key] = existingValue;
+		if (key === "uri") {
 		ordered[lastKey] = value;
-	  }
+		}
 	}
 
 	Object.keys(parent).forEach((key) => delete parent[key]);
 	Object.assign(parent, ordered);
 	return;
-  }
+	}
 
-  parent[lastKey] = value;
+	parent[lastKey] = value;
 }
 
 export async function addUriIntegrityToEditor(editor) {
-  const editorData = editor.get();
-  const uriPaths = getUriPaths(editorData);
+	const editorData = editor.get();
+	const uriPaths = getUriPaths(editorData);
 
-  for (const uriPath of uriPaths) {
+	for (const uriPath of uriPaths) {
 	const uriValue = getValueAtPath(editorData, [...uriPath, "uri"]);
 	if (!uriValue) continue;
 
@@ -119,7 +119,7 @@ export async function addUriIntegrityToEditor(editor) {
 				continue;
 			}
 			else {
-				console.log(`URI integrity value for '${uriValue}' does not match. Value will be recalculated and updated.`);	
+				console.log(`URI integrity value for '${uriValue}' does not match. Value will be recalculated and updated.`);
 			}
 		} catch (error) {
 			console.log(`Error verifying URI integrity for '${uriValue}': ${error.message}. Value will be recalculated and updated.`);
@@ -128,31 +128,31 @@ export async function addUriIntegrityToEditor(editor) {
 
 	const integrityValue = await calculateUriIntegrity(uriValue, integrityAlgorithm);
 	setValueAtPath(editorData, [...uriPath, "uri#integrity"], integrityValue);
-  }
+	}
 
-  editor.set(editorData);
+	editor.set(editorData);
 }
 
 export function getUriIntegrityPaths(obj, path = []) {
-  let results = [];
+	let results = [];
 
-  if (Array.isArray(obj)) {
+	if (Array.isArray(obj)) {
 	obj.forEach((item, index) => {
-	  results = results.concat(
+		results = results.concat(
 		getUriIntegrityPaths(item, [...path, index])
-	  );
+		);
 	});
-  } else if (obj && typeof obj === "object") {
+	} else if (obj && typeof obj === "object") {
 	if ("uri#integrity" in obj) {
-	  results.push([...path, "uri#integrity"]);
+		results.push([...path, "uri#integrity"]);
 	}
 
 	Object.keys(obj).forEach((key) => {
-	  results = results.concat(
+		results = results.concat(
 		getUriIntegrityPaths(obj[key], [...path, key])
-	  );
+		);
 	});
-  }
+	}
 
-  return results;
+	return results;
 }

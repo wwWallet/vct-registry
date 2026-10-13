@@ -1,4 +1,4 @@
-import { 
+import {
 	getMetadataViewUrl,
 	initialAddVctData,
 	initializeEditor,

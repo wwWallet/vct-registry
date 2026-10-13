@@ -29,8 +29,8 @@ const publicPath = path.join(__dirname, "../public");
 export const viewsPath = path.join(__dirname, "views");
 
 nunjucks.configure(viewsPath, {
-    autoescape: true,
-    express: app
+	autoescape: true,
+	express: app
 });
 app.set("view engine", "njk");
 
