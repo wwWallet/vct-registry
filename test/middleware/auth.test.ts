@@ -4,19 +4,19 @@ import { config } from "../../config";
 import { describe, it } from "vitest";
 
 describe("Frontend Authentication", () => {
-	it("GET /edit returns 401 when not authenticated", async () => {
+	it("GET /edit redirects to the configured URL when not authenticated", async () => {
 		await request(app)
 			.get("/edit")
 			.expect(302)
-			.expect("Location", "/");
+			.expect("Location", config.url);
 	});
 
-	it("GET /edit returns 401 with wrong credentials", async () => {
+	it("GET /edit redirects to the configured URL with wrong credentials", async () => {
 		await request(app)
 			.get("/edit")
 			.auth("fake_user", "wrong_password")
 			.expect(302)
-			.expect("Location", "/");
+			.expect("Location", config.url);
 	});
 
 	it("GET /edit returns 200 when authenticated properly", async () => {
