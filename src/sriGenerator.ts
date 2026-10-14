@@ -15,7 +15,7 @@ export function createSRI(
 	algorithm: Algorithm = 'sha256'
 ): string {
 	let buffer: Buffer;
-	
+
 	if (typeof input === 'string') {
 		const fullPath = path.join(__dirname, "../public/images/", input);
 		// Treat as file path

@@ -25,9 +25,9 @@ function validateVct(value) {
 
 	if (value && vctUrn && value.vct != decodeVct(vctUrn)) {
 		errors.push({
-        path: ["vct"],
-        message: "Cannot edit the urn of a VCT."
-      });
+			path: ["vct"],
+			message: "Cannot edit the urn of a VCT."
+		});
 	}
 
 	return errors;

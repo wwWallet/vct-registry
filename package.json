@@ -1,43 +1,43 @@
 {
-	"name": "vct-registry",
-	"version": "1.0.0",
-	"main": "index.js",
-	"license": "BSD-2-Clause",
-	"dependencies": {
-		"cookie-parser": "^1.4.7",
-		"cors": "^2.8.5",
-		"dotenv": "^17.2.3",
-		"express": "^5.2.1",
-		"knex": "^3.3.0",
-		"mysql2": "^3.24.5",
-		"nunjucks": "^3.2.4",
-		"wallet-common": "git+https://github.com/wwWallet/wallet-common.git#v1.0.0",
-		"zod": "^3.24.1",
-		"zod-to-json-schema": "^3.25.1"
-	},
-	"devDependencies": {
-		"@types/cookie-parser": "^1",
-		"@types/cors": "^2.8.19",
-		"@types/express": "^5.0.6",
-		"@types/node": "^24.10.1",
-		"@types/nunjucks": "^3.2.6",
-		"@types/supertest": "^6.0.3",
-		"supertest": "^7.3.0",
-		"ts-node-dev": "^2.0.0",
-		"typescript": "^5.9.3",
-		"vitest": "^4.1.11"
-	},
-	"engines": {
-		"node": ">=24"
-	},
-	"scripts": {
-		"dev": "ts-node-dev --respawn --transpile-only --watch src/views src/server.ts",
-		"build": "rm -rf dist && tsc && cp -R public dist/public && cp -R src/views dist/src/views",
-		"start": "node dist/src/server.js",
-		"test": "vitest",
-		"test:run": "vitest run",
-		"test:watch": "vitest watch",
-		"migration:run": "knex migrate:latest",
-		"migration:revert": "knex migrate:rollback"
-	}
+  "name": "vct-registry",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "BSD-2-Clause",
+  "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "knex": "^3.3.0",
+    "mysql2": "^3.24.5",
+    "nunjucks": "^3.2.4",
+    "wallet-common": "git+https://github.com/wwWallet/wallet-common.git#v1.0.0",
+    "zod": "^3.24.1",
+    "zod-to-json-schema": "^3.25.1"
+  },
+  "devDependencies": {
+    "@types/cookie-parser": "^1",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/node": "^24.10.1",
+    "@types/nunjucks": "^3.2.6",
+    "@types/supertest": "^6.0.3",
+    "supertest": "^7.3.0",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.11"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "dev": "ts-node-dev --respawn --transpile-only --watch src/views src/server.ts",
+    "build": "rm -rf dist && tsc && cp -R public dist/public && cp -R src/views dist/src/views",
+    "start": "node dist/src/server.js",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:watch": "vitest watch",
+    "migration:run": "knex migrate:latest",
+    "migration:revert": "knex migrate:rollback"
+  }
 }
