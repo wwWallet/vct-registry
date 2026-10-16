@@ -163,7 +163,7 @@ dbVctRouter.post("/edit", async (req, res) => {
 			message: `More than one VCT with name "${vct}" was found. All have been updated, which is unexpected.`,
 		});
 	}
-	res.json({ message: "VCT Updated successfully", data: result[0] });
+	res.json({ message: "VCT Updated successfully", data: result });
 });
 
 dbVctRouter.post("/delete", async (req, res) => {

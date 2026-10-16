@@ -33,6 +33,7 @@
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only --watch src/views src/server.ts",
     "build": "rm -rf dist && tsc && cp -R public dist/public && cp -R src/views dist/src/views",
+    "typecheck": "tsc --noEmit",
     "start": "node dist/src/server.js",
     "test": "vitest",
     "test:run": "vitest run",

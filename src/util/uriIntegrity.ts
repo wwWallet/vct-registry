@@ -6,7 +6,7 @@ export type Algorithm = 'sha256' | 'sha384' | 'sha512';
 
 type UriWithIntegrity = {
 	uri: string;
-	integrity?: string;
+	'uri#integrity'?: string;
 }
 
 /**
@@ -45,9 +45,9 @@ async function getImageFromInput(input: URL | RequestInfo | string): Promise<Buf
 function getAllUriValues(vctContent: TypeMetadata): UriWithIntegrity[] {
 	const integrityValues: UriWithIntegrity[] = [];
 
-	const addIfUriExists = (object: unknown) => {
-		if (object && typeof object === 'object' && object['uri']) {
-			integrityValues.push({ uri: object['uri'], integrity: object['uri#integrity'] });
+	const addIfUriExists = (object: UriWithIntegrity | undefined) => {
+		if (object?.uri) {
+			integrityValues.push(object);
 		}
 	};
 
@@ -75,7 +75,10 @@ export async function verifyVctUriIntegrity(vctContent: z.infer<typeof TypeMetad
 
 	const uriValues = getAllUriValues(vctContent);
 
-	for (const { uri, integrity } of uriValues) {
+	for (const uriValue of uriValues) {
+		const uri = uriValue.uri;
+		const integrity = uriValue['uri#integrity'];
+
 		if (!integrity) {
 			continue;
 		}
