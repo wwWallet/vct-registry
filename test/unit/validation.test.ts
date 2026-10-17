@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { testVCTypeMetadata } from "../typeMetadata/testVct";
+import { testVCTypeMetadata } from "../typeMetadata/testvct";
 import { invalidTestVCTypeMetadata } from "../typeMetadata/invalidVct";
 import { TypeMetadata } from "wallet-common";
 
