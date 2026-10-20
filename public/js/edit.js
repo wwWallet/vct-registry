@@ -7,7 +7,7 @@ import {
 	onEditorContentChange,
 	showErrors,
 } from './app.js';
-import { addUriIntegrityToEditor, getUriIntegrityPaths } from './uri-integrity.js';
+import { addUriIntegrityToEditor } from './uri-integrity.js';
 
 let editor;
 let vctUrn;

@@ -53,7 +53,9 @@ export async function initializeEditor(container, validationFn, initialData, onC
 			if (typeof onContentChange === 'function') {
 				try {
 					onContentChange(editor.get());
-				} catch (_error) {}
+				} catch {
+					// Ignore transient invalid editor content while the user is typing.
+				}
 			}
 		},
 	};
@@ -106,7 +108,7 @@ export function initializeCopyButtons(selector = '[data-copy-target]') {
 				button.classList.add('is-copied');
 				button.setAttribute('aria-label', 'Copied');
 				button.setAttribute('title', 'Copied');
-			} catch (_error) {
+			} catch {
 				button.classList.remove('is-copied');
 				button.setAttribute('aria-label', 'Copy failed');
 				button.setAttribute('title', 'Copy failed');
@@ -169,7 +171,9 @@ export async function login(username, password) {
 export async function logout() {
 	try {
 		await fetch('auth/logout', { credentials: 'include' });
-	} catch (err) {}
+	} catch {
+		// Keep logout idempotent when the session or network is unavailable.
+	}
 }
 
 export async function getAuthState() {
@@ -184,7 +188,7 @@ export async function getAuthState() {
 			loggedIn: true,
 			username: body?.username ?? '',
 		};
-	} catch (_err) {
+	} catch {
 		return { loggedIn: false, username: '' };
 	}
 }

@@ -14,18 +14,6 @@ const loginUsernameInput = document.getElementById('vct-login-username');
 const loginPasswordInput = document.getElementById('vct-login-password');
 const loginError = document.getElementById('vct-login-error');
 
-function dispatchCurrentAuthStateFromDom() {
-	const loggedIn = !usernameContainer.hidden;
-	document.dispatchEvent(
-		new CustomEvent('auth:changed', {
-			detail: {
-				loggedIn,
-				username: loggedIn ? usernameContainer.dataset.username || '' : '',
-			},
-		}),
-	);
-}
-
 function openLoginDialog() {
 	loginError.hidden = true;
 	loginError.textContent = '';
