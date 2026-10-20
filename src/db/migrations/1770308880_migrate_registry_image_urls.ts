@@ -1,25 +1,22 @@
-import { Knex } from "knex";
+import { Knex } from 'knex';
 
 const legacyRegistryUrlPrefix = /^https:\/\/([a-z0-9-]+)\.wwwallet\.org\/vct-registry\//i;
 
 function migrateImageUrls(value: unknown, reverse = false): unknown {
-	if (typeof value === "string") {
+	if (typeof value === 'string') {
 		return reverse
 			? value.replace(
 					/^https:\/\/([a-z0-9-]+)-registry\.wwwallet\.org\//i,
-					"https://$1.wwwallet.org/vct-registry/",
+					'https://$1.wwwallet.org/vct-registry/',
 				)
-			: value.replace(
-					legacyRegistryUrlPrefix,
-					"https://$1-registry.wwwallet.org/",
-				);
+			: value.replace(legacyRegistryUrlPrefix, 'https://$1-registry.wwwallet.org/');
 	}
 
 	if (Array.isArray(value)) {
 		return value.map((item) => migrateImageUrls(item, reverse));
 	}
 
-	if (value !== null && typeof value === "object") {
+	if (value !== null && typeof value === 'object') {
 		return Object.fromEntries(
 			Object.entries(value).map(([key, item]) => [key, migrateImageUrls(item, reverse)]),
 		);
@@ -29,16 +26,18 @@ function migrateImageUrls(value: unknown, reverse = false): unknown {
 }
 
 async function migrateRows(knex: Knex, reverse = false): Promise<void> {
-	const rows = await knex("vct").select("urn", "metadata");
+	const rows = await knex('vct').select('urn', 'metadata');
 
 	for (const row of rows) {
-		const metadata = typeof row.metadata === "string" ? JSON.parse(row.metadata) : row.metadata;
+		const metadata = typeof row.metadata === 'string' ? JSON.parse(row.metadata) : row.metadata;
 		const migratedMetadata = migrateImageUrls(metadata, reverse);
 
 		if (JSON.stringify(metadata) !== JSON.stringify(migratedMetadata)) {
-			await knex("vct").where("urn", row.urn).update({
-				metadata: JSON.stringify(migratedMetadata),
-			});
+			await knex('vct')
+				.where('urn', row.urn)
+				.update({
+					metadata: JSON.stringify(migratedMetadata),
+				});
 		}
 	}
 }

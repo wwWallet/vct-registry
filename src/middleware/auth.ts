@@ -1,9 +1,9 @@
-import { Request, Response, NextFunction } from "express";
-import crypto from "crypto";
-import { config } from "../../config";
+import { Request, Response, NextFunction } from 'express';
+import crypto from 'crypto';
+import { config } from '../../config';
 
 const USERS = config.users;
-const COOKIE_NAME = "vctRegistrySessionId"
+const COOKIE_NAME = 'vctRegistrySessionId';
 const COOKIE_MAX_AGE = 30 * 60 * 1000; // 30 minutes
 
 const SESSIONS = new Map<string, { username: string; expires: number }>();
@@ -19,7 +19,7 @@ function generateSessionId() {
  * Middleware that performs basic authentication.
  */
 function basicAuth(req: Request, res: Response, next: NextFunction) {
-	const isProgrammaticLogin = req.get("X-Requested-With") === "XMLHttpRequest";
+	const isProgrammaticLogin = req.get('X-Requested-With') === 'XMLHttpRequest';
 	const authHeader = req.headers['authorization'];
 	if (!authHeader || !authHeader.startsWith('Basic ')) {
 		if (!isProgrammaticLogin) {
@@ -63,7 +63,6 @@ export function getSessionUsername(req: Request): string | null {
  * If not present, it falls back to basic authentication and issues a session cookie.
  */
 export function login(req: Request, res: Response, next: NextFunction) {
-
 	const username = getSessionUsername(req);
 	if (username) {
 		(req as any).username = username;
@@ -79,7 +78,7 @@ export function login(req: Request, res: Response, next: NextFunction) {
 			httpOnly: true,
 			secure: config.https,
 			sameSite: 'lax',
-			maxAge: COOKIE_MAX_AGE
+			maxAge: COOKIE_MAX_AGE,
 		});
 
 		return next();
@@ -90,7 +89,6 @@ export function login(req: Request, res: Response, next: NextFunction) {
  * Middleware that checks for a valid session cookie without falling back to basic authentication.
  */
 export function auth(req: Request, res: Response, next: NextFunction) {
-
 	const username = getSessionUsername(req);
 	if (username) {
 		(req as any).username = username;
@@ -105,7 +103,6 @@ export function auth(req: Request, res: Response, next: NextFunction) {
  * Middleware that checks for a valid session cookie without falling back to basic authentication.
  */
 export function authView(req: Request, res: Response, next: NextFunction) {
-
 	const username = getSessionUsername(req);
 	if (username) {
 		(req as any).username = username;

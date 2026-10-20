@@ -5,7 +5,6 @@
  * @returns a decoded VCT string, undefined if no vct given or null if input is invalid
  */
 export function decodeVct(vct: unknown): string | undefined | null {
-
 	if (!vct) {
 		return undefined;
 	}
@@ -20,7 +19,6 @@ export function decodeVct(vct: unknown): string | undefined | null {
 		console.warn(`Error decoding VCT ${vct}: ${decodingError}`);
 		return null;
 	}
-
 }
 
 export function reverseList<T>(items: T[]): T[] {

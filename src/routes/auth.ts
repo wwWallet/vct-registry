@@ -1,12 +1,12 @@
-import { Router } from "express";
-import { auth, login, logout } from "../middleware/auth";
+import { Router } from 'express';
+import { auth, login, logout } from '../middleware/auth';
 
 /** /auth */
 const authRouter = Router();
 
 authRouter.get('/', auth, (req, res) => {
 	res.send({
-		username: (req as any).username
+		username: (req as any).username,
 	});
 });
 

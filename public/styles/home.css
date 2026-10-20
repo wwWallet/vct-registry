@@ -34,7 +34,10 @@
 	text-decoration: none;
 	color: inherit;
 	box-shadow: 0 8px 24px rgba(29, 42, 34, 0.04);
-	transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+	transition:
+		border-color 0.15s ease,
+		transform 0.15s ease,
+		box-shadow 0.15s ease;
 }
 
 .home-preview-frame {
@@ -74,7 +77,9 @@
 
 .home-vct {
 	margin: 0;
-	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+	font-family:
+		ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
+		monospace;
 	font-size: 0.8rem;
 	color: var(--vct-text-muted);
 	word-break: break-all;

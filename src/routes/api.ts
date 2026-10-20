@@ -1,29 +1,29 @@
-import { Router } from "express";
-import type { Request, Response } from "express";
-import { getAllVctMetadata } from "../db/vct";
-import { db } from "../server";
-import { reverseList } from "../util";
+import { Router } from 'express';
+import type { Request, Response } from 'express';
+import { getAllVctMetadata } from '../db/vct';
+import { db } from '../server';
+import { reverseList } from '../util';
 
 /** /api */
 const apiRouter = Router();
 
-apiRouter.get("/health", (_req, res) => {
+apiRouter.get('/health', (_req, res) => {
 	res.json({
-		status: "ok",
+		status: 'ok',
 		uptime: process.uptime(),
 		timestamp: new Date().toISOString(),
 	});
 });
 
-apiRouter.get("/info", (_req, res) => {
+apiRouter.get('/info', (_req, res) => {
 	res.json({
-		name: "vct-registry",
-		version: "1.0.0",
-		description: "Express + TypeScript app for local VCT registry metadata.",
+		name: 'vct-registry',
+		version: '1.0.0',
+		description: 'Express + TypeScript app for local VCT registry metadata.',
 	});
 });
 
-apiRouter.get("/time", (_req, res) => {
+apiRouter.get('/time', (_req, res) => {
 	res.json({
 		now: new Date().toISOString(),
 		timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
@@ -44,6 +44,6 @@ async function getVctList(_req: Request, res: Response) {
 	res.json(list);
 }
 
-apiRouter.get("/vct-list", getVctList);
+apiRouter.get('/vct-list', getVctList);
 
 export default apiRouter;

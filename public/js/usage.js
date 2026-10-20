@@ -1,3 +1,3 @@
-import { initializeCopyButtons } from "./app.js";
+import { initializeCopyButtons } from './app.js';
 
 initializeCopyButtons();

@@ -38,7 +38,7 @@
 }
 
 .breadcrumbs-item:not(:last-child)::after {
-	content: "/";
+	content: '/';
 	color: var(--vct-border-strong);
 }
 
@@ -53,7 +53,7 @@
 	text-underline-offset: 3px;
 }
 
-.breadcrumbs [aria-current="page"] {
+.breadcrumbs [aria-current='page'] {
 	color: var(--vct-text);
 	font-weight: 600;
 }

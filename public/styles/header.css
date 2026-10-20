@@ -10,7 +10,7 @@
 	max-width: 1070px;
 	margin: 0 auto;
 	display: grid;
-	grid-template-areas: "brand nav auth";
+	grid-template-areas: 'brand nav auth';
 	grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
 	align-items: center;
 	gap: 12px;
@@ -84,7 +84,7 @@
 }
 
 .header-nav a::after {
-	content: "";
+	content: '';
 	position: absolute;
 	right: 4px;
 	bottom: 3px;
@@ -94,7 +94,9 @@
 	background: var(--vct-border-strong);
 	transform: scaleX(0);
 	transform-origin: center;
-	transition: background 0.15s ease, transform 0.15s ease;
+	transition:
+		background 0.15s ease,
+		transform 0.15s ease;
 }
 
 .header-nav a:hover {
@@ -112,24 +114,24 @@
 }
 
 .header-nav a.is-active,
-.header-nav a[aria-current="page"] {
+.header-nav a[aria-current='page'] {
 	color: var(--vct-text);
 	font-weight: 600;
 }
 
 .header-nav a.is-active::after,
-.header-nav a[aria-current="page"]::after {
+.header-nav a[aria-current='page']::after {
 	background: var(--vct-accent);
 	transform: scaleX(1);
 }
 
 .header-nav a.is-active:hover,
-.header-nav a[aria-current="page"]:hover {
+.header-nav a[aria-current='page']:hover {
 	color: var(--vct-text);
 }
 
 .header-nav a.is-active:hover::after,
-.header-nav a[aria-current="page"]:hover::after {
+.header-nav a[aria-current='page']:hover::after {
 	background: var(--vct-accent-strong);
 }
 
@@ -170,7 +172,11 @@
 	color: var(--vct-text);
 	font: inherit;
 	padding: 0;
-	transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+	transition:
+		background 0.15s ease,
+		border-color 0.15s ease,
+		box-shadow 0.15s ease,
+		transform 0.15s ease;
 	-webkit-appearance: none;
 	appearance: none;
 }
@@ -251,7 +257,7 @@
 	cursor: pointer;
 }
 
-.vct-auth-dropdown-toggle[aria-expanded="true"] {
+.vct-auth-dropdown-toggle[aria-expanded='true'] {
 	box-shadow: 0 0 0 3px var(--vct-accent-ring-soft);
 	background: var(--vct-surface);
 	border-color: var(--vct-accent);
@@ -283,7 +289,7 @@
 }
 
 .vct-user-avatar::before {
-	content: "";
+	content: '';
 	position: absolute;
 	top: 8px;
 	left: 50%;
@@ -295,7 +301,7 @@
 }
 
 .vct-user-avatar::after {
-	content: "";
+	content: '';
 	position: absolute;
 	left: 50%;
 	bottom: 8px;
@@ -373,8 +379,8 @@
 
 	.header-inner {
 		grid-template-areas:
-			"brand auth"
-			"nav nav";
+			'brand auth'
+			'nav nav';
 		grid-template-columns: minmax(0, 1fr) auto;
 		row-gap: 10px;
 	}
@@ -388,7 +394,6 @@
 	.vct-auth-button-container {
 		justify-self: end;
 	}
-
 }
 
 @media (max-width: 520px) {
