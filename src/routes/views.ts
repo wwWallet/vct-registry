@@ -54,6 +54,7 @@ function readQueryVct(req: Request): string | undefined {
 function getBaseViewLocals(req: Request) {
 	return {
 		registryBaseUrl: config.url,
+		issuerName: config.issuer_name,
 		...getAuthViewState(req),
 	};
 }
