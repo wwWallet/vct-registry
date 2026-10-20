@@ -1,5 +1,4 @@
 {
-	"Exclude": [
-		"^(node_modules|assets|dist|build|public/images)/"
-	]
+  "SpacesAfterTabs": true,
+  "Exclude": ["^(node_modules|assets|dist|build|public/images)/"]
 }

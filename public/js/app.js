@@ -17,8 +17,8 @@ export function decodeVct(rawVct) {
 	try {
 		decodedVct = decodeURIComponent(rawVct);
 	} catch (decodingError) {
-		console.warn("Error decoding VCT:", decodingError);
-		console.warn("Using raw VCT string as-is.");
+		console.warn('Error decoding VCT:', decodingError);
+		console.warn('Using raw VCT string as-is.');
 		decodedVct = rawVct;
 	}
 
@@ -27,34 +27,35 @@ export function decodeVct(rawVct) {
 
 export function getMetadataViewUrl(vct) {
 	if (!vct) {
-		return "./metadata";
+		return './metadata';
 	}
 
 	return `./metadata?vct=${encodeURIComponent(vct)}`;
 }
 
 export async function initializeEditor(container, validationFn, initialData, onContentChange) {
-
-	var schema = await fetchJson("type-metadata/schema");
+	var schema = await fetchJson('type-metadata/schema');
 
 	const options = {
-		mode: "code",
+		mode: 'code',
 		mainMenuBar: false,
 		statusBar: false,
 		schema: schema,
 		onValidate: validationFn,
 		onValidationError: function (errors) {
 			if (errors.length > 0) {
-				document.querySelector("#vct-submit-btn").disabled = true;
+				document.querySelector('#vct-submit-btn').disabled = true;
 			} else {
-				document.querySelector("#vct-submit-btn").disabled = false;
+				document.querySelector('#vct-submit-btn').disabled = false;
 			}
 		},
 		onChange() {
-			if (typeof onContentChange === "function") {
+			if (typeof onContentChange === 'function') {
 				try {
 					onContentChange(editor.get());
-				} catch (_error) { }
+				} catch {
+					// Ignore transient invalid editor content while the user is typing.
+				}
 			}
 		},
 	};
@@ -67,15 +68,15 @@ export async function initializeEditor(container, validationFn, initialData, onC
 }
 
 export async function requestMetadataPreview(metadata) {
-	const res = await fetch("vct/preview", {
-		method: "POST",
-		headers: { "Content-Type": "application/json" },
+	const res = await fetch('vct/preview', {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({ metadata }),
 	});
 
 	if (!res.ok) {
 		const body = await res.json().catch(() => ({}));
-		throw new Error(body?.message || "Failed to generate preview.");
+		throw new Error(body?.message || 'Failed to generate preview.');
 	}
 
 	return res.json();
@@ -83,20 +84,20 @@ export async function requestMetadataPreview(metadata) {
 
 export async function copyTextToClipboard(text) {
 	if (!navigator?.clipboard?.writeText) {
-		throw new Error("Clipboard is not available in this browser.");
+		throw new Error('Clipboard is not available in this browser.');
 	}
 
 	await navigator.clipboard.writeText(text);
 }
 
-export function initializeCopyButtons(selector = "[data-copy-target]") {
+export function initializeCopyButtons(selector = '[data-copy-target]') {
 	const copyButtons = document.querySelectorAll(selector);
 
 	copyButtons.forEach((button) => {
-		button.addEventListener("click", async () => {
-			const targetSelector = button.getAttribute("data-copy-target");
+		button.addEventListener('click', async () => {
+			const targetSelector = button.getAttribute('data-copy-target');
 			const targetElement = targetSelector ? document.querySelector(targetSelector) : null;
-			const originalLabel = button.getAttribute("aria-label") || "Copy";
+			const originalLabel = button.getAttribute('aria-label') || 'Copy';
 
 			if (!(targetElement instanceof HTMLElement)) {
 				return;
@@ -104,42 +105,41 @@ export function initializeCopyButtons(selector = "[data-copy-target]") {
 
 			try {
 				await copyTextToClipboard(targetElement.innerText.trimEnd());
-				button.classList.add("is-copied");
-				button.setAttribute("aria-label", "Copied");
-				button.setAttribute("title", "Copied");
-			} catch (_error) {
-				button.classList.remove("is-copied");
-				button.setAttribute("aria-label", "Copy failed");
-				button.setAttribute("title", "Copy failed");
+				button.classList.add('is-copied');
+				button.setAttribute('aria-label', 'Copied');
+				button.setAttribute('title', 'Copied');
+			} catch {
+				button.classList.remove('is-copied');
+				button.setAttribute('aria-label', 'Copy failed');
+				button.setAttribute('title', 'Copy failed');
 			}
 
 			window.setTimeout(() => {
-				button.classList.remove("is-copied");
-				button.setAttribute("aria-label", originalLabel);
-				button.setAttribute("title", originalLabel);
+				button.classList.remove('is-copied');
+				button.setAttribute('aria-label', originalLabel);
+				button.setAttribute('title', originalLabel);
 			}, 1400);
 		});
 	});
 }
 
-
 export function showSuccess(message) {
-	const successBox = document.getElementById("vct-success");
+	const successBox = document.getElementById('vct-success');
 	successBox.hidden = false;
 	successBox.textContent = message;
 
 	setTimeout(() => {
-		hideElement("vct-success");
+		hideElement('vct-success');
 	}, 5000);
 }
 
 export function showErrors(message, errors) {
-	const errorBox = document.getElementById("vct-error");
+	const errorBox = document.getElementById('vct-error');
 	errorBox.hidden = false;
 	errorBox.textContent = `${message}\nThe following errors were found:\n${errors.message}`;
 
 	setTimeout(() => {
-		hideElement("vct-error");
+		hideElement('vct-error');
 	}, 5000);
 }
 
@@ -155,100 +155,97 @@ export async function login(username, password) {
 		headers.Authorization = `Basic ${btoa(`${username}:${password}`)}`;
 	}
 
-	const res = await fetch("auth/login", {
-		credentials: "include",
+	const res = await fetch('auth/login', {
+		credentials: 'include',
 		headers: {
 			...headers,
-			"X-Requested-With": "XMLHttpRequest",
+			'X-Requested-With': 'XMLHttpRequest',
 		},
 	});
 
 	if (!res.ok) {
-		throw new Error("Invalid username or password.");
+		throw new Error('Invalid username or password.');
 	}
 }
 
 export async function logout() {
 	try {
 		await fetch('auth/logout', { credentials: 'include' });
-	} catch (err) { }
+	} catch {
+		// Keep logout idempotent when the session or network is unavailable.
+	}
 }
 
 export async function getAuthState() {
 	try {
-		const res = await fetch("auth", { credentials: "include" });
+		const res = await fetch('auth', { credentials: 'include' });
 		if (!res.ok) {
-			return { loggedIn: false, username: "" };
+			return { loggedIn: false, username: '' };
 		}
 
 		const body = await res.json();
 		return {
 			loggedIn: true,
-			username: body?.username ?? "",
+			username: body?.username ?? '',
 		};
-	} catch (_err) {
-		return { loggedIn: false, username: "" };
+	} catch {
+		return { loggedIn: false, username: '' };
 	}
 }
 
 export const initialAddVctData = {
-	"vct": "",
-	"name": "",
-	"display": [
+	vct: '',
+	name: '',
+	display: [{}],
+	claims: [
 		{
-		}
+			path: ['vct'],
+			mandatory: true,
+			sd: 'never',
+		},
 	],
-	"claims": [
-		{
-			"path": [
-				"vct"
-			],
-			"mandatory": true,
-			"sd": "never"
-		}
-	]
-}
+};
 
 function updateMetadataDetails(metadata) {
-	const vctIdValue = document.querySelector("#edit-vct-id-value code");
-	const vctNameValue = document.getElementById("edit-vct-name-value");
-	const descriptionValue = document.getElementById("edit-vct-description");
+	const vctIdValue = document.querySelector('#edit-vct-id-value code');
+	const vctNameValue = document.getElementById('edit-vct-name-value');
+	const descriptionValue = document.getElementById('edit-vct-description');
 
 	if (!vctIdValue || !vctNameValue || !descriptionValue) {
 		return;
 	}
 
-	vctIdValue.textContent = metadata?.vct || "";
-	vctNameValue.textContent = metadata?.name || "-";
-	descriptionValue.textContent =
-		metadata?.description || "No description provided.";
+	vctIdValue.textContent = metadata?.vct || '';
+	vctNameValue.textContent = metadata?.name || '-';
+	descriptionValue.textContent = metadata?.description || 'No description provided.';
 }
 
 function getMetadataPreviewTemplates(metadata) {
 	return (
-		metadata?.display?.flatMap((display) =>
-			display?.rendering?.svg_templates?.map((template) => ({
-				uri: template.uri,
-				properties: template.properties,
-			})) ?? [],
+		metadata?.display?.flatMap(
+			(display) =>
+				display?.rendering?.svg_templates?.map((template) => ({
+					uri: template.uri,
+					properties: template.properties,
+				})) ?? [],
 		) ?? []
 	);
 }
 
 function formatPreviewProperties(properties) {
-	if (!properties) return "";
+	if (!properties) return '';
 
 	const parts = [];
 	if (properties.orientation) parts.push(properties.orientation);
 	if (properties.color_scheme) parts.push(properties.color_scheme);
 	if (properties.contrast) parts.push(`${properties.contrast} contrast`);
 
-	return parts.join(" · ");
+	return parts.join(' · ');
 }
 
 function renderPreview(metadata) {
-	const previewList = document.getElementById("metadata-preview-list");
-	const previewEmpty = document.getElementById("metadata-preview-empty");
+	const previewList = document.getElementById('metadata-preview-list');
+	const previewEmpty = document.getElementById('metadata-preview-empty');
 	const previewTemplates = getMetadataPreviewTemplates(metadata);
 
 	if (!previewList || !previewEmpty) {
@@ -258,19 +255,19 @@ function renderPreview(metadata) {
 	if (previewTemplates.length) {
 		previewList.replaceChildren(
 			...previewTemplates.map((preview) => {
-				const figure = document.createElement("figure");
-				figure.className = "metadata-preview-item";
+				const figure = document.createElement('figure');
+				figure.className = 'metadata-preview-item';
 
-				const image = document.createElement("img");
-				image.className = "metadata-preview";
+				const image = document.createElement('img');
+				image.className = 'metadata-preview';
 				image.src = preview.uri;
-				image.alt = `${metadata?.name || metadata?.vct || "Credential"} preview`;
+				image.alt = `${metadata?.name || metadata?.vct || 'Credential'} preview`;
 				figure.appendChild(image);
 
 				const captionText = formatPreviewProperties(preview.properties);
 				if (captionText) {
-					const caption = document.createElement("figcaption");
-					caption.className = "metadata-preview-caption";
+					const caption = document.createElement('figcaption');
+					caption.className = 'metadata-preview-caption';
 					caption.textContent = captionText;
 					figure.appendChild(caption);
 				}

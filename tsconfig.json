@@ -5,14 +5,9 @@
     "rootDir": ".",
     "outDir": "dist",
     "esModuleInterop": true,
-    "strict": false,
+    "strict": true,
     "resolveJsonModule": true,
-    "types": [
-      "node"
-    ]
+    "types": ["node"]
   },
-  "include": [
-    "src",
-    "config"
-  ]
+  "include": ["src", "config"]
 }

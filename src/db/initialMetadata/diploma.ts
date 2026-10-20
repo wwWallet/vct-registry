@@ -1,109 +1,110 @@
-import { config } from "../../../config";
-import { createSRI } from "../../sriGenerator";
+import { config } from '../../../config';
+import { createSRI } from '../../sriGenerator';
 
 export const diplomaMetadata = {
-	"vct": 'urn:credential:diploma',
-	"name": "Diploma VC Type Metadata",
-	"description": "This is a Bachelor Diploma verifiable credential",
-	"display": [
+	vct: 'urn:credential:diploma',
+	name: 'Diploma VC Type Metadata',
+	description: 'This is a Bachelor Diploma verifiable credential',
+	display: [
 		{
-			"locale": "en-US",
-			"name": "Diploma",
-			"description": "Bachelor Diploma SD-JWT VC",
-			"rendering": {
-				"simple": {
-					"logo": {
-						"uri": config.url + "/images/diploma-logo.png",
-						"uri#integrity": createSRI("diploma-logo.png"),
-						"alt_text": "Diploma Logo"
+			locale: 'en-US',
+			name: 'Diploma',
+			description: 'Bachelor Diploma SD-JWT VC',
+			rendering: {
+				simple: {
+					logo: {
+						uri: config.url + '/images/diploma-logo.png',
+						'uri#integrity': createSRI('diploma-logo.png'),
+						alt_text: 'Diploma Logo',
 					},
-					"background_color": "#b1d3ff",
-					"text_color": "#050708"
+					background_color: '#b1d3ff',
+					text_color: '#050708',
 				},
-				"svg_templates": [
+				svg_templates: [
 					{
-						"uri": config.url + "/images/diploma-svg-template.svg",
-						"uri#integrity": createSRI("diploma-svg-template.svg"),
-					}
+						uri: config.url + '/images/diploma-svg-template.svg',
+						'uri#integrity': createSRI('diploma-svg-template.svg'),
+					},
 				],
-			}
-		}
+			},
+		},
 	],
-	"claims": [
+	claims: [
 		{
-			"path": ["given_name"],
-			"display": [
+			path: ['given_name'],
+			display: [
 				{
-					"locale": "en-US",
-					"label": "Given Name",
-					"description": "The given name of the Diploma Holder"
-				}
+					locale: 'en-US',
+					label: 'Given Name',
+					description: 'The given name of the Diploma Holder',
+				},
 			],
-			"svg_id": "given_name"
+			svg_id: 'given_name',
 		},
 		{
-			"path": ["family_name"],
-			"display": [
+			path: ['family_name'],
+			display: [
 				{
-					"locale": "en-US",
-					"label": "Family Name",
-					"description": "The family name of the Diploma Holder"
-				}
+					locale: 'en-US',
+					label: 'Family Name',
+					description: 'The family name of the Diploma Holder',
+				},
 			],
-			"svg_id": "family_name"
+			svg_id: 'family_name',
 		},
 		{
-			"path": ["title"],
-			"display": [
+			path: ['title'],
+			display: [
 				{
-					"locale": "en-US",
-					"label": "Diploma Title",
-					"description": "The title of the Diploma"
-				}
+					locale: 'en-US',
+					label: 'Diploma Title',
+					description: 'The title of the Diploma',
+				},
 			],
-			"svg_id": "title"
+			svg_id: 'title',
 		},
 		{
-			"path": ["grade"],
-			"display": [
+			path: ['grade'],
+			display: [
 				{
-					"locale": "en-US",
-					"label": "Grade",
-					"description": "Graduate's grade (0-10)"
-				}
-			],
-		},
-		{
-			"path": ["eqf_level"],
-			"display": [
-				{
-					"locale": "en-US",
-					"label": "EQF Level",
-					"description": "The EQF level of the diploma according to https://europass.europa.eu/en/description-eight-eqf-levels"
-				}
+					locale: 'en-US',
+					label: 'Grade',
+					description: "Graduate's grade (0-10)",
+				},
 			],
 		},
 		{
-			"path": ["graduation_date"],
-			"display": [
+			path: ['eqf_level'],
+			display: [
 				{
-					"locale": "en-US",
-					"label": "Graduation Date",
-					"description": "The graduation data"
-				}
+					locale: 'en-US',
+					label: 'EQF Level',
+					description:
+						'The EQF level of the diploma according to https://europass.europa.eu/en/description-eight-eqf-levels',
+				},
 			],
-			"svg_id": "graduation_date"
 		},
 		{
-			"path": ["expiry_date"],
-			"display": [
+			path: ['graduation_date'],
+			display: [
 				{
-					"locale": "en-US",
-					"label": "Expiry Date",
-					"description": "The date and time expired this credential"
-				}
+					locale: 'en-US',
+					label: 'Graduation Date',
+					description: 'The graduation data',
+				},
 			],
-			"svg_id": "expiry_date"
-		}
+			svg_id: 'graduation_date',
+		},
+		{
+			path: ['expiry_date'],
+			display: [
+				{
+					locale: 'en-US',
+					label: 'Expiry Date',
+					description: 'The date and time expired this credential',
+				},
+			],
+			svg_id: 'expiry_date',
+		},
 	],
-}
+};

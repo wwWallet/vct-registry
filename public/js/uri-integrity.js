@@ -5,13 +5,10 @@ const algoMap = {
 };
 
 function isBase64Uri(uri) {
-	return typeof uri === "string" && uri.startsWith("data:") && uri.includes(";base64,");
+	return typeof uri === 'string' && uri.startsWith('data:') && uri.includes(';base64,');
 }
 
-async function calculateUriIntegrity(
-	input,
-	algorithm = "sha256"
-) {
+async function calculateUriIntegrity(input, algorithm = 'sha256') {
 	let buffer;
 
 	try {
@@ -34,21 +31,17 @@ function getUriPaths(obj, path = []) {
 	let results = [];
 
 	if (Array.isArray(obj)) {
-	obj.forEach((item, index) => {
-		results = results.concat(
-		getUriPaths(item, [...path, index])
-		);
-	});
-	} else if (obj && typeof obj === "object") {
-	if ("uri" in obj) {
-		results.push([...path]);
-	}
+		obj.forEach((item, index) => {
+			results = results.concat(getUriPaths(item, [...path, index]));
+		});
+	} else if (obj && typeof obj === 'object') {
+		if ('uri' in obj) {
+			results.push([...path]);
+		}
 
-	Object.keys(obj).forEach((key) => {
-		results = results.concat(
-		getUriPaths(obj[key], [...path, key])
-		);
-	});
+		Object.keys(obj).forEach((key) => {
+			results = results.concat(getUriPaths(obj[key], [...path, key]));
+		});
 	}
 
 	return results;
@@ -56,43 +49,43 @@ function getUriPaths(obj, path = []) {
 
 function getValueAtPath(obj, path) {
 	return path.reduce((current, key) => {
-	if (current && typeof current === "object") {
-		return current[key];
-	}
-	return undefined;
+		if (current && typeof current === 'object') {
+			return current[key];
+		}
+		return undefined;
 	}, obj);
 }
 
 function setValueAtPath(obj, path, value) {
 	const lastKey = path[path.length - 1];
 	const parent = path.slice(0, -1).reduce((current, key) => {
-	if (current && typeof current === "object") {
-		return current[key];
-	}
-	return undefined;
+		if (current && typeof current === 'object') {
+			return current[key];
+		}
+		return undefined;
 	}, obj);
 
-	if (!parent || typeof parent !== "object") {
-	return;
-	}
-
-	if (lastKey === "uri#integrity" && "uri" in parent) {
-	if (lastKey in parent) {
-		parent[lastKey] = value;
+	if (!parent || typeof parent !== 'object') {
 		return;
 	}
 
-	const ordered = {};
-	for (const [key, existingValue] of Object.entries(parent)) {
-		ordered[key] = existingValue;
-		if (key === "uri") {
-		ordered[lastKey] = value;
+	if (lastKey === 'uri#integrity' && 'uri' in parent) {
+		if (lastKey in parent) {
+			parent[lastKey] = value;
+			return;
 		}
-	}
 
-	Object.keys(parent).forEach((key) => delete parent[key]);
-	Object.assign(parent, ordered);
-	return;
+		const ordered = {};
+		for (const [key, existingValue] of Object.entries(parent)) {
+			ordered[key] = existingValue;
+			if (key === 'uri') {
+				ordered[lastKey] = value;
+			}
+		}
+
+		Object.keys(parent).forEach((key) => delete parent[key]);
+		Object.assign(parent, ordered);
+		return;
 	}
 
 	parent[lastKey] = value;
@@ -103,31 +96,37 @@ export async function addUriIntegrityToEditor(editor) {
 	const uriPaths = getUriPaths(editorData);
 
 	for (const uriPath of uriPaths) {
-	const uriValue = getValueAtPath(editorData, [...uriPath, "uri"]);
-	if (!uriValue) continue;
+		const uriValue = getValueAtPath(editorData, [...uriPath, 'uri']);
+		if (!uriValue) continue;
 
-	if(isBase64Uri(uriValue)) continue;
+		if (isBase64Uri(uriValue)) continue;
 
-	let integrityAlgorithm = "sha256";
+		let integrityAlgorithm = 'sha256';
 
-	const existingIntegrity = getValueAtPath(editorData, [...uriPath, "uri#integrity"]);
-	if (existingIntegrity) {
-		try {
-			integrityAlgorithm = existingIntegrity.split("-")[0];
-			const calculatedIntegrity = await calculateUriIntegrity(uriValue, integrityAlgorithm);
-			if (calculatedIntegrity === existingIntegrity) {
-				continue;
+		const existingIntegrity = getValueAtPath(editorData, [...uriPath, 'uri#integrity']);
+		if (existingIntegrity) {
+			try {
+				integrityAlgorithm = existingIntegrity.split('-')[0];
+				const calculatedIntegrity = await calculateUriIntegrity(
+					uriValue,
+					integrityAlgorithm,
+				);
+				if (calculatedIntegrity === existingIntegrity) {
+					continue;
+				} else {
+					console.log(
+						`URI integrity value for '${uriValue}' does not match. Value will be recalculated and updated.`,
+					);
+				}
+			} catch (error) {
+				console.log(
+					`Error verifying URI integrity for '${uriValue}': ${error.message}. Value will be recalculated and updated.`,
+				);
 			}
-			else {
-				console.log(`URI integrity value for '${uriValue}' does not match. Value will be recalculated and updated.`);
-			}
-		} catch (error) {
-			console.log(`Error verifying URI integrity for '${uriValue}': ${error.message}. Value will be recalculated and updated.`);
 		}
-	}
 
-	const integrityValue = await calculateUriIntegrity(uriValue, integrityAlgorithm);
-	setValueAtPath(editorData, [...uriPath, "uri#integrity"], integrityValue);
+		const integrityValue = await calculateUriIntegrity(uriValue, integrityAlgorithm);
+		setValueAtPath(editorData, [...uriPath, 'uri#integrity'], integrityValue);
 	}
 
 	editor.set(editorData);
@@ -137,21 +136,17 @@ export function getUriIntegrityPaths(obj, path = []) {
 	let results = [];
 
 	if (Array.isArray(obj)) {
-	obj.forEach((item, index) => {
-		results = results.concat(
-		getUriIntegrityPaths(item, [...path, index])
-		);
-	});
-	} else if (obj && typeof obj === "object") {
-	if ("uri#integrity" in obj) {
-		results.push([...path, "uri#integrity"]);
-	}
+		obj.forEach((item, index) => {
+			results = results.concat(getUriIntegrityPaths(item, [...path, index]));
+		});
+	} else if (obj && typeof obj === 'object') {
+		if ('uri#integrity' in obj) {
+			results.push([...path, 'uri#integrity']);
+		}
 
-	Object.keys(obj).forEach((key) => {
-		results = results.concat(
-		getUriIntegrityPaths(obj[key], [...path, key])
-		);
-	});
+		Object.keys(obj).forEach((key) => {
+			results = results.concat(getUriIntegrityPaths(obj[key], [...path, key]));
+		});
 	}
 
 	return results;

@@ -1,9 +1,9 @@
-import { Router } from "express";
-import { decodeVct } from "../util";
-import { getAllVctMetadata, getVctByUrn } from "../db/vct";
-import { db } from "../server";
-import { TypeMetadata } from "wallet-common";
-import { zodToJsonSchema } from "zod-to-json-schema";
+import { Router } from 'express';
+import { decodeVct } from '../util';
+import { getAllVctMetadata, getVctByUrn } from '../db/vct';
+import { db } from '../server';
+import { TypeMetadata } from 'wallet-common';
+import { zodToJsonSchema } from 'zod-to-json-schema';
 
 /** /type-metadata */
 const typeMetadataRouter = Router();
@@ -13,8 +13,7 @@ const typeMetadataRouter = Router();
  * Returns the metadata object whose .vct matches the query.
  * Also acts as database getter for vct records.
  */
-typeMetadataRouter.get("/", async (req, res) => {
-
+typeMetadataRouter.get('/', async (req, res) => {
 	const vct = decodeVct(req.query.vct);
 
 	if (vct == undefined) {
@@ -35,7 +34,7 @@ typeMetadataRouter.get("/", async (req, res) => {
 
 	if (!metadata) {
 		return res.status(404).json({
-			error: "unknown_vct",
+			error: 'unknown_vct',
 			message: `No metadata found for vct "${vct}"`,
 		});
 	}
@@ -47,7 +46,7 @@ typeMetadataRouter.get("/", async (req, res) => {
  * GET /type-metadata/all
  * Returns an array of all metadata objects.
  */
-typeMetadataRouter.get("/all", async (_req, res) => {
+typeMetadataRouter.get('/all', async (_req, res) => {
 	res.json(await getAllVctMetadata(db));
 });
 
@@ -56,11 +55,10 @@ typeMetadataRouter.get("/all", async (_req, res) => {
  * Returns the JSON schema for type metadata,
  * based on the Zod schema defined in wallet-common.
  */
-typeMetadataRouter.get("/schema", (_req, res) => {
-
+typeMetadataRouter.get('/schema', (_req, res) => {
 	const typeMetadataSchema = zodToJsonSchema(TypeMetadata as any, {
-		$refStrategy: "none",
-		target: "jsonSchema7"
+		$refStrategy: 'none',
+		target: 'jsonSchema7',
 	});
 	delete (typeMetadataSchema as any).$schema;
 

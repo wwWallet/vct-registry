@@ -22,9 +22,16 @@
     "@types/node": "^24.10.1",
     "@types/nunjucks": "^3.2.6",
     "@types/supertest": "^6.0.3",
+    "@typescript-eslint/eslint-plugin": "^8.53.0",
+    "@typescript-eslint/parser": "^8.53.0",
+    "eslint": "^9.39.5",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^16.0.0",
+    "prettier": "^3.8.0",
     "supertest": "^7.3.0",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.9.3",
+    "typescript-eslint": "^8.53.0",
     "vitest": "^4.1.11"
   },
   "engines": {
@@ -33,6 +40,10 @@
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only --watch src/views src/server.ts",
     "build": "rm -rf dist && tsc && cp -R public dist/public && cp -R src/views dist/src/views",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --max-warnings=0",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check",
     "start": "node dist/src/server.js",
     "test": "vitest",
     "test:run": "vitest run",

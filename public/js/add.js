@@ -3,54 +3,58 @@ import {
 	initialAddVctData,
 	initializeEditor,
 	onEditorContentChange,
-	showErrors
-} from "./app.js";
-import { addUriIntegrityToEditor, getUriIntegrityPaths } from "./uri-integrity.js";
+	showErrors,
+} from './app.js';
+import { addUriIntegrityToEditor } from './uri-integrity.js';
 
 let editor;
 
-const container = document.getElementById("jsoneditor");
+const container = document.getElementById('jsoneditor');
 
 async function initializeEditorAndLoadVct() {
 	editor = await initializeEditor(container, undefined, initialAddVctData, onEditorContentChange);
 	onEditorContentChange(initialAddVctData);
 }
 
-document
-	.getElementById("vct-submit-btn")
-	.addEventListener("click", async () => {
-		if (!confirm("Are you sure you want to create this VC Type Metadata entry? SHA-256 URI Integrity hashes will be added for all image links in the metadata, overwriting any existing integrity values.")) {
-			return;
-		}
+document.getElementById('vct-submit-btn').addEventListener('click', async () => {
+	if (
+		!confirm(
+			'Are you sure you want to create this VC Type Metadata entry? SHA-256 URI Integrity hashes will be added for all image links in the metadata, overwriting any existing integrity values.',
+		)
+	) {
+		return;
+	}
 
-		let editorData = editor.get();
+	let editorData = editor.get();
 
-		try {
-			await addUriIntegrityToEditor(editor);
-			editorData = editor.get();
-		} catch (error) {
-			console.error("Error calculating URI integrity:", error);
-			showErrors("Failed to create VC Type Metadata", { message: `Failed to calculate URI integrity. ${error.message}` });
-			return;
-		}
-
-		const res = await fetch("vct/create", {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({
-				vct: editorData.vct,
-				metadata: editorData,
-			}),
+	try {
+		await addUriIntegrityToEditor(editor);
+		editorData = editor.get();
+	} catch (error) {
+		console.error('Error calculating URI integrity:', error);
+		showErrors('Failed to create VC Type Metadata', {
+			message: `Failed to calculate URI integrity. ${error.message}`,
 		});
+		return;
+	}
 
-		const result = await res.json();
-		if (!res.ok) {
-			showErrors("Failed to create VC Type Metadata", result);
-		} else {
-			const redirectUrl = new URL(getMetadataViewUrl(editorData.vct), window.location.href);
-			redirectUrl.searchParams.set("toast", "add-success");
-			window.location.href = redirectUrl.toString();
-		}
+	const res = await fetch('vct/create', {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify({
+			vct: editorData.vct,
+			metadata: editorData,
+		}),
 	});
 
-window.addEventListener("DOMContentLoaded", initializeEditorAndLoadVct);
+	const result = await res.json();
+	if (!res.ok) {
+		showErrors('Failed to create VC Type Metadata', result);
+	} else {
+		const redirectUrl = new URL(getMetadataViewUrl(editorData.vct), window.location.href);
+		redirectUrl.searchParams.set('toast', 'add-success');
+		window.location.href = redirectUrl.toString();
+	}
+});
+
+window.addEventListener('DOMContentLoaded', initializeEditorAndLoadVct);

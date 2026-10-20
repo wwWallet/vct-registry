@@ -1,19 +1,18 @@
-import { Router } from "express";
-import { TypeMetadata } from "wallet-common";
-import { db } from "../server";
-import { createVct, deleteVctByUrn, getVctByUrn, updateVctByUrn } from "../db/vct";
-import { decodeVct } from "../util";
-import { config } from "../../config";
-import { getMetadataPreviewDataUri } from "../util/metadataPreview";
-import { verifyVctUriIntegrity } from "../util/uriIntegrity";
+import { Router } from 'express';
+import { TypeMetadata } from 'wallet-common';
+import { db } from '../server';
+import { createVct, deleteVctByUrn, getVctByUrn, updateVctByUrn } from '../db/vct';
+import { decodeVct } from '../util';
+import { config } from '../../config';
+import { getMetadataPreviewDataUri } from '../util/metadataPreview';
+import { verifyVctUriIntegrity } from '../util/uriIntegrity';
 
 /** /vct */
 const dbVctRouter = Router();
 
 /** NO GET /vct/get?vct=urn:... endpoint - this is handled by GET /type-metadata?. */
 
-dbVctRouter.post("/create", async (req, res) => {
-
+dbVctRouter.post('/create', async (req, res) => {
 	const vct = decodeVct(req.body.vct);
 
 	if (vct == undefined) {
@@ -39,9 +38,9 @@ dbVctRouter.post("/create", async (req, res) => {
 	}
 
 	const metadata = req.body.metadata;
-	if (!metadata || typeof metadata !== "object") {
+	if (!metadata || typeof metadata !== 'object') {
 		return res.status(400).json({
-			error: "missing_vct_content",
+			error: 'missing_vct_content',
 			message: 'Body parameter "metadata" (object) is required',
 		});
 	}
@@ -49,9 +48,9 @@ dbVctRouter.post("/create", async (req, res) => {
 	const zodVctValidationResult = TypeMetadata.safeParse(metadata);
 	if (!zodVctValidationResult.success) {
 		return res.status(400).json({
-			error: "invalid_metadata",
+			error: 'invalid_metadata',
 			message:
-				"Metadata zod validation failed. Errors: " +
+				'Metadata zod validation failed. Errors: ' +
 				JSON.stringify(zodVctValidationResult.error),
 		});
 	}
@@ -59,7 +58,7 @@ dbVctRouter.post("/create", async (req, res) => {
 	const parsedVctContent = zodVctValidationResult.data;
 	if (parsedVctContent.vct !== vct) {
 		return res.status(400).json({
-			error: "vct_urn_mismatch",
+			error: 'vct_urn_mismatch',
 			message: `VCT name in content ("${parsedVctContent.vct}") does not match VCT name in query ("${vct}"). It is not possible to change the VCT urn.`,
 		});
 	}
@@ -67,7 +66,7 @@ dbVctRouter.post("/create", async (req, res) => {
 	const uriIntegrityResult = await verifyVctUriIntegrity(parsedVctContent);
 	if (!uriIntegrityResult.valid) {
 		return res.status(400).json({
-			error: "uri_integrity_mismatch",
+			error: 'uri_integrity_mismatch',
 			message: `URI integrity verification failed: ${uriIntegrityResult.message}`,
 		});
 	}
@@ -75,23 +74,22 @@ dbVctRouter.post("/create", async (req, res) => {
 	const contentSize = Buffer.byteLength(JSON.stringify(parsedVctContent));
 	if (contentSize > config.max_vct_size) {
 		return res.status(413).json({
-			error: "vct_too_large",
-			message: `VCT JSON content is too large. Maximum allowed content size is ${config.max_vct_size}B.`
-		})
+			error: 'vct_too_large',
+			message: `VCT JSON content is too large. Maximum allowed content size is ${config.max_vct_size}B.`,
+		});
 	}
 
 	const result = await createVct(db, vct, parsedVctContent);
 	if (result !== 1) {
 		return res.status(500).json({
-			error: "creation_failed",
+			error: 'creation_failed',
 			message: `VCT "${vct}" could not be created.`,
 		});
 	}
-	res.json({ message: "VCT Created successfully", data: result });
+	res.json({ message: 'VCT Created successfully', data: result });
 });
 
-dbVctRouter.post("/edit", async (req, res) => {
-
+dbVctRouter.post('/edit', async (req, res) => {
 	const vct = decodeVct(req.body.vct);
 
 	if (vct == undefined) {
@@ -109,9 +107,9 @@ dbVctRouter.post("/edit", async (req, res) => {
 	}
 
 	const metadata = req.body.metadata;
-	if (!metadata || typeof metadata !== "object") {
+	if (!metadata || typeof metadata !== 'object') {
 		return res.status(400).json({
-			error: "missing_vct_content",
+			error: 'missing_vct_content',
 			message: 'Body parameter "metadata" (object) is required',
 		});
 	}
@@ -119,16 +117,16 @@ dbVctRouter.post("/edit", async (req, res) => {
 	const zodVctValidationResult = TypeMetadata.safeParse(metadata);
 	if (!zodVctValidationResult.success) {
 		return res.status(400).json({
-			error: "invalid_metadata",
+			error: 'invalid_metadata',
 			message:
-				"Metadata zod validation failed. Errors: " +
+				'Metadata zod validation failed. Errors: ' +
 				JSON.stringify(zodVctValidationResult.error),
 		});
 	}
 	const parsedVctContent = zodVctValidationResult.data;
 	if (parsedVctContent.vct !== vct) {
 		return res.status(400).json({
-			error: "vct_urn_mismatch",
+			error: 'vct_urn_mismatch',
 			message: `VCT name in content ("${parsedVctContent.vct}") does not match VCT name in query ("${vct}"). It is not possible to change the VCT urn.`,
 		});
 	}
@@ -136,15 +134,15 @@ dbVctRouter.post("/edit", async (req, res) => {
 	const contentSize = Buffer.byteLength(JSON.stringify(parsedVctContent));
 	if (contentSize > config.max_vct_size) {
 		return res.status(413).json({
-			error: "vct_too_large",
-			message: `VCT JSON content is too large. Maximum allowed content size is ${config.max_vct_size}B.`
-		})
+			error: 'vct_too_large',
+			message: `VCT JSON content is too large. Maximum allowed content size is ${config.max_vct_size}B.`,
+		});
 	}
 
 	const uriIntegrityResult = await verifyVctUriIntegrity(parsedVctContent);
 	if (!uriIntegrityResult.valid) {
 		return res.status(400).json({
-			error: "uri_integrity_mismatch",
+			error: 'uri_integrity_mismatch',
 			message: `URI integrity verification failed: ${uriIntegrityResult.message}`,
 		});
 	}
@@ -152,21 +150,21 @@ dbVctRouter.post("/edit", async (req, res) => {
 	const result = await updateVctByUrn(db, vct, parsedVctContent);
 	if (result === 0) {
 		return res.status(404).json({
-			error: "unknown_vct",
+			error: 'unknown_vct',
 			message: `VCT with urn "${vct}" not found. Updating failed.`,
 		});
 	}
 
 	if (result > 1) {
 		return res.status(400).json({
-			error: "many_vct_updated",
+			error: 'many_vct_updated',
 			message: `More than one VCT with name "${vct}" was found. All have been updated, which is unexpected.`,
 		});
 	}
-	res.json({ message: "VCT Updated successfully", data: result[0] });
+	res.json({ message: 'VCT Updated successfully', data: result });
 });
 
-dbVctRouter.post("/delete", async (req, res) => {
+dbVctRouter.post('/delete', async (req, res) => {
 	const vct = decodeVct(req.body.vct);
 
 	if (vct == undefined) {
@@ -187,26 +185,26 @@ dbVctRouter.post("/delete", async (req, res) => {
 
 	if (!result) {
 		return res.status(404).json({
-			error: "unknown_vct",
+			error: 'unknown_vct',
 			message: `VCT with urn "${vct}" not found. Deleting failed.`,
 		});
 	}
 
 	if (result > 1) {
 		return res.status(400).json({
-			error: "many_vct_deleted",
+			error: 'many_vct_deleted',
 			message: `More than one VCT with name "${vct}" was found. All have been deleted, which is unexpected.`,
 		});
 	}
-	res.json({ message: "VCT Deleted successfully" });
+	res.json({ message: 'VCT Deleted successfully' });
 });
 
-dbVctRouter.post("/preview", async (req, res) => {
+dbVctRouter.post('/preview', async (req, res) => {
 	const metadata = req.body?.metadata;
 
-	if (!metadata || typeof metadata !== "object") {
+	if (!metadata || typeof metadata !== 'object') {
 		return res.status(400).json({
-			error: "missing_vct_content",
+			error: 'missing_vct_content',
 			message: 'Body parameter "metadata" (object) is required',
 		});
 	}
@@ -216,8 +214,8 @@ dbVctRouter.post("/preview", async (req, res) => {
 		res.json({ dataUri });
 	} catch (error) {
 		return res.status(400).json({
-			error: "preview_generation_failed",
-			message: error instanceof Error ? error.message : "Failed to generate preview.",
+			error: 'preview_generation_failed',
+			message: error instanceof Error ? error.message : 'Failed to generate preview.',
 		});
 	}
 });

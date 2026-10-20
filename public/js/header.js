@@ -1,48 +1,38 @@
-import { getAuthState, login, logout } from "./app.js";
+import { getAuthState, login, logout } from './app.js';
 
-const loginBtn = document.getElementById("vct-login-btn");
-const logoutBtn = document.getElementById("vct-logout-btn");
-const usernameContainer = document.getElementById("username-container");
-const authDropdownWrapper = document.getElementById("vct-auth-dropdown-wrapper");
-const authDropdown = document.getElementById("vct-auth-dropdown");
-const authDropdownUsername = document.getElementById("vct-auth-dropdown-username");
-const loginDialog = document.getElementById("vct-login-dialog");
-const loginForm = document.getElementById("vct-login-form");
-const loginCancelBtn = document.getElementById("vct-login-cancel-btn");
-const loginSubmitBtn = document.getElementById("vct-login-submit-btn");
-const loginUsernameInput = document.getElementById("vct-login-username");
-const loginPasswordInput = document.getElementById("vct-login-password");
-const loginError = document.getElementById("vct-login-error");
-
-function dispatchCurrentAuthStateFromDom() {
-	const loggedIn = !usernameContainer.hidden;
-	document.dispatchEvent(new CustomEvent("auth:changed", {
-		detail: {
-			loggedIn,
-			username: loggedIn ? (usernameContainer.dataset.username || "") : "",
-		},
-	}));
-}
+const loginBtn = document.getElementById('vct-login-btn');
+const logoutBtn = document.getElementById('vct-logout-btn');
+const usernameContainer = document.getElementById('username-container');
+const authDropdownWrapper = document.getElementById('vct-auth-dropdown-wrapper');
+const authDropdown = document.getElementById('vct-auth-dropdown');
+const authDropdownUsername = document.getElementById('vct-auth-dropdown-username');
+const loginDialog = document.getElementById('vct-login-dialog');
+const loginForm = document.getElementById('vct-login-form');
+const loginCancelBtn = document.getElementById('vct-login-cancel-btn');
+const loginSubmitBtn = document.getElementById('vct-login-submit-btn');
+const loginUsernameInput = document.getElementById('vct-login-username');
+const loginPasswordInput = document.getElementById('vct-login-password');
+const loginError = document.getElementById('vct-login-error');
 
 function openLoginDialog() {
 	loginError.hidden = true;
-	loginError.textContent = "";
+	loginError.textContent = '';
 	loginForm.reset();
 
-	if (typeof loginDialog.showModal === "function") {
+	if (typeof loginDialog.showModal === 'function') {
 		loginDialog.showModal();
 	} else {
-		loginDialog.setAttribute("open", "");
+		loginDialog.setAttribute('open', '');
 	}
 
 	loginUsernameInput.focus();
 }
 
 function closeLoginDialog() {
-	if (typeof loginDialog.close === "function") {
+	if (typeof loginDialog.close === 'function') {
 		loginDialog.close();
 	} else {
-		loginDialog.removeAttribute("open");
+		loginDialog.removeAttribute('open');
 	}
 }
 
@@ -51,7 +41,7 @@ function closeAuthDropdown() {
 		return;
 	}
 	authDropdown.hidden = true;
-	usernameContainer.setAttribute("aria-expanded", "false");
+	usernameContainer.setAttribute('aria-expanded', 'false');
 }
 
 function getAuthMenuItems() {
@@ -73,7 +63,7 @@ function openAuthDropdown({ focusMenu = false } = {}) {
 		return;
 	}
 	authDropdown.hidden = false;
-	usernameContainer.setAttribute("aria-expanded", "true");
+	usernameContainer.setAttribute('aria-expanded', 'true');
 
 	if (focusMenu) {
 		focusAuthMenuItem(0);
@@ -103,10 +93,10 @@ async function refreshHeaderAuthState() {
 		authDropdown.hidden = true;
 		usernameContainer.dataset.username = authState.username;
 		authDropdownUsername.textContent = authState.username;
-		usernameContainer.title = "Open user menu";
-		usernameContainer.setAttribute("aria-label", "Open user menu");
-		usernameContainer.setAttribute("aria-expanded", "false");
-		document.dispatchEvent(new CustomEvent("auth:changed", { detail: authState }));
+		usernameContainer.title = 'Open user menu';
+		usernameContainer.setAttribute('aria-label', 'Open user menu');
+		usernameContainer.setAttribute('aria-expanded', 'false');
+		document.dispatchEvent(new CustomEvent('auth:changed', { detail: authState }));
 		return;
 	}
 
@@ -114,24 +104,24 @@ async function refreshHeaderAuthState() {
 	loginBtn.disabled = false;
 	usernameContainer.hidden = true;
 	authDropdownWrapper.hidden = true;
-	usernameContainer.removeAttribute("data-username");
+	usernameContainer.removeAttribute('data-username');
 	authDropdown.hidden = true;
-	usernameContainer.title = "Open user menu";
-	usernameContainer.setAttribute("aria-label", "Open user menu");
-	usernameContainer.setAttribute("aria-expanded", "false");
-	document.dispatchEvent(new CustomEvent("auth:changed", { detail: authState }));
+	usernameContainer.title = 'Open user menu';
+	usernameContainer.setAttribute('aria-label', 'Open user menu');
+	usernameContainer.setAttribute('aria-expanded', 'false');
+	document.dispatchEvent(new CustomEvent('auth:changed', { detail: authState }));
 }
 
 async function initializeHeaderAuth() {
-	loginBtn.addEventListener("click", () => {
+	loginBtn.addEventListener('click', () => {
 		openLoginDialog();
 	});
 
-	loginCancelBtn.addEventListener("click", () => {
+	loginCancelBtn.addEventListener('click', () => {
 		closeLoginDialog();
 	});
 
-	loginForm.addEventListener("submit", async (event) => {
+	loginForm.addEventListener('submit', async (event) => {
 		event.preventDefault();
 		loginSubmitBtn.disabled = true;
 		loginError.hidden = true;
@@ -141,57 +131,57 @@ async function initializeHeaderAuth() {
 			closeLoginDialog();
 			await refreshHeaderAuthState();
 		} catch (err) {
-			loginError.textContent = err.message || "Login failed.";
+			loginError.textContent = err.message || 'Login failed.';
 			loginError.hidden = false;
 		} finally {
 			loginSubmitBtn.disabled = false;
 		}
 	});
 
-	loginDialog.addEventListener("click", (event) => {
+	loginDialog.addEventListener('click', (event) => {
 		if (event.target === loginDialog) {
 			closeLoginDialog();
 		}
 	});
 
-	usernameContainer.addEventListener("click", () => {
+	usernameContainer.addEventListener('click', () => {
 		toggleAuthDropdown();
 	});
 
-	usernameContainer.addEventListener("keydown", (event) => {
-		if (event.key === "ArrowDown") {
+	usernameContainer.addEventListener('keydown', (event) => {
+		if (event.key === 'ArrowDown') {
 			event.preventDefault();
 			openAuthDropdown({ focusMenu: true });
 		}
 
-		if (event.key === "ArrowUp") {
+		if (event.key === 'ArrowUp') {
 			event.preventDefault();
 			openAuthDropdown();
 			focusAuthMenuItem(-1);
 		}
 
-		if (event.key === "Escape") {
+		if (event.key === 'Escape') {
 			closeAuthDropdown();
 		}
 	});
 
-	authDropdown.addEventListener("keydown", (event) => {
-		if (event.key === "Escape") {
+	authDropdown.addEventListener('keydown', (event) => {
+		if (event.key === 'Escape') {
 			event.preventDefault();
 			closeAuthDropdown();
 			usernameContainer.focus();
 			return;
 		}
 
-		if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+		if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
 			event.preventDefault();
 			const menuItems = getAuthMenuItems();
 			const currentIndex = menuItems.indexOf(document.activeElement);
-			focusAuthMenuItem(currentIndex + (event.key === "ArrowDown" ? 1 : -1));
+			focusAuthMenuItem(currentIndex + (event.key === 'ArrowDown' ? 1 : -1));
 		}
 	});
 
-	document.addEventListener("click", (event) => {
+	document.addEventListener('click', (event) => {
 		if (!authDropdown || authDropdown.hidden) {
 			return;
 		}
@@ -201,21 +191,21 @@ async function initializeHeaderAuth() {
 		}
 	});
 
-	document.addEventListener("keydown", (event) => {
-		if (event.key === "Escape" && authDropdown && !authDropdown.hidden) {
+	document.addEventListener('keydown', (event) => {
+		if (event.key === 'Escape' && authDropdown && !authDropdown.hidden) {
 			closeAuthDropdown();
 			usernameContainer.focus();
 		}
 	});
 
-	logoutBtn.addEventListener("click", async () => {
+	logoutBtn.addEventListener('click', async () => {
 		await logout();
 		closeAuthDropdown();
 		await refreshHeaderAuthState();
 	});
 
-	logoutBtn.addEventListener("keydown", (event) => {
-		if (event.key === "Escape") {
+	logoutBtn.addEventListener('keydown', (event) => {
+		if (event.key === 'Escape') {
 			closeAuthDropdown();
 			usernameContainer.focus();
 		}
@@ -224,4 +214,4 @@ async function initializeHeaderAuth() {
 	await refreshHeaderAuthState();
 }
 
-window.addEventListener("DOMContentLoaded", initializeHeaderAuth);
+window.addEventListener('DOMContentLoaded', initializeHeaderAuth);
