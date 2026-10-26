@@ -26,10 +26,6 @@ export default defineConfig(
 				...globals.vitest,
 			},
 		},
-		rules: {
-			'@typescript-eslint/no-explicit-any': 'off',
-			'no-undef': 'off',
-		},
 	},
 	{
 		files: browserFiles,

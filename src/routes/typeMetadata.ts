@@ -56,11 +56,12 @@ typeMetadataRouter.get('/all', async (_req, res) => {
  * based on the Zod schema defined in wallet-common.
  */
 typeMetadataRouter.get('/schema', (_req, res) => {
-	const typeMetadataSchema = zodToJsonSchema(TypeMetadata as any, {
+	const schema = TypeMetadata as unknown as Parameters<typeof zodToJsonSchema>[0];
+	const typeMetadataSchema = zodToJsonSchema(schema, {
 		$refStrategy: 'none',
 		target: 'jsonSchema7',
 	});
-	delete (typeMetadataSchema as any).$schema;
+	delete typeMetadataSchema.$schema;
 
 	res.json(typeMetadataSchema);
 });

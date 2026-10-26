@@ -6,12 +6,12 @@ const authRouter = Router();
 
 authRouter.get('/', auth, (req, res) => {
 	res.send({
-		username: (req as any).username,
+		username: req.username,
 	});
 });
 
 authRouter.get('/login', login, (req, res) => {
-	res.send(`Logged in as ${(req as any).username}.`);
+	res.send(`Logged in as ${req.username}.`);
 });
 
 authRouter.get('/logout', (req, res) => {
