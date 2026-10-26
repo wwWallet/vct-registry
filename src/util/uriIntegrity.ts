@@ -1,6 +1,5 @@
 import * as crypto from 'crypto';
-import { TypeMetadata } from 'wallet-common';
-import z from 'zod';
+import type { TypeMetadata } from 'wallet-common';
 
 export type Algorithm = 'sha256' | 'sha384' | 'sha512';
 
@@ -68,7 +67,7 @@ function getAllUriValues(vctContent: TypeMetadata): UriWithIntegrity[] {
 }
 
 export async function verifyVctUriIntegrity(
-	vctContent: z.infer<typeof TypeMetadata>,
+	vctContent: TypeMetadata,
 ): Promise<{ valid: boolean; message?: string }> {
 	let valid: boolean = true;
 	const errors: string[] = [];
