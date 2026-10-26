@@ -33,7 +33,7 @@ function basicAuth(req: Request, res: Response, next: NextFunction) {
 	const [username, password] = credentials.split(':');
 
 	if (USERS[username] && USERS[username] === password) {
-		req.username = username;
+		req.auth = { username };
 		next();
 	} else {
 		if (!isProgrammaticLogin) {
@@ -65,18 +65,18 @@ export function getSessionUsername(req: Request): string | null {
 export function login(req: Request, res: Response, next: NextFunction) {
 	const username = getSessionUsername(req);
 	if (username) {
-		req.username = username;
+		req.auth = { username };
 		return next();
 	}
 
 	basicAuth(req, res, () => {
-		if (!req.username) {
+		if (!req.auth) {
 			return res.status(401).send('Authentication required.');
 		}
 
 		const newSessionId = generateSessionId();
 		const expires = Date.now() + COOKIE_MAX_AGE;
-		SESSIONS.set(newSessionId, { username: req.username, expires });
+		SESSIONS.set(newSessionId, { username: req.auth.username, expires });
 
 		res.cookie(COOKIE_NAME, newSessionId, {
 			httpOnly: true,
@@ -95,7 +95,7 @@ export function login(req: Request, res: Response, next: NextFunction) {
 export function auth(req: Request, res: Response, next: NextFunction) {
 	const username = getSessionUsername(req);
 	if (username) {
-		req.username = username;
+		req.auth = { username };
 		return next();
 	}
 
@@ -109,7 +109,7 @@ export function auth(req: Request, res: Response, next: NextFunction) {
 export function authView(req: Request, res: Response, next: NextFunction) {
 	const username = getSessionUsername(req);
 	if (username) {
-		req.username = username;
+		req.auth = { username };
 		return next();
 	}
 

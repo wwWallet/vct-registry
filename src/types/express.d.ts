@@ -1,7 +1,11 @@
-declare module 'express-serve-static-core' {
-	interface Request {
-		username?: string;
+export {};
+
+declare global {
+	namespace Express {
+		interface Request {
+			auth?: {
+				username: string;
+			};
+		}
 	}
 }
-
-export {};
