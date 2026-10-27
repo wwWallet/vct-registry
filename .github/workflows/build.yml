@@ -1,0 +1,63 @@
+# This name is shown in status badges
+name: build
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches-ignore:
+      - 'tmp**'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  # Cancel superseded PR runs; let every master run finish
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  build:
+    name: Build application
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: yarn
+
+      - name: Install dependencies
+        env:
+          YARN_NETWORK_CONCURRENCY: '1'
+        run: yarn install --frozen-lockfile
+
+      - name: Build application
+        run: yarn build
+
+  test:
+    name: Run tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: yarn
+
+      - name: Install dependencies
+        env:
+          YARN_NETWORK_CONCURRENCY: '1'
+        run: yarn install --frozen-lockfile
+
+      - name: Run tests
+        run: yarn test:run
