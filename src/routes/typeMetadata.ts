@@ -58,7 +58,7 @@ typeMetadataRouter.get('/all', async (_req, res) => {
 typeMetadataRouter.get('/schema', (_req, res) => {
 	const typeMetadataSchema = z.toJSONSchema(TypeMetadata, {
 		target: 'draft-07',
-		io: 'input',
+		io: 'output',
 	});
 	delete typeMetadataSchema.$schema;
 
