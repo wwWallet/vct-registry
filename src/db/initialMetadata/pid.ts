@@ -142,7 +142,7 @@ export const pidMetadata = {
 		},
 		{
 			path: ['nationalities', null],
-			sd: 'always',
+			sd: 'never',
 			display: [
 				{
 					locale: 'en-US',
