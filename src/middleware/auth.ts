@@ -104,20 +104,6 @@ export function auth(req: Request, res: Response, next: NextFunction) {
 }
 
 /**
- * Middleware that checks for a valid session cookie without falling back to basic authentication.
- */
-export function authView(req: Request, res: Response, next: NextFunction) {
-	const username = getSessionUsername(req);
-	if (username) {
-		req.auth = { username };
-		return next();
-	}
-
-	// Do not provide Basic authentication
-	return res.redirect(config.url);
-}
-
-/**
  * Clear auth cookie to logout.
  */
 export function logout(req: Request, res: Response) {

@@ -15,6 +15,8 @@ describe('Type Metadata JSON Schema', () => {
 			expect(schema.properties).toHaveProperty(key);
 		});
 
-		expect(schema).not.toHaveProperty('additionalProperties');
+		expect(schema.additionalProperties).toBe(false);
+		expect(schema.properties.display.items.additionalProperties).toBe(false);
+		expect(schema.properties.claims.items.additionalProperties).toBe(false);
 	});
 });
