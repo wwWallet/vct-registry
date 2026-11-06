@@ -5,6 +5,7 @@
 .npmrc
 .npmrc.template
 .vscode
+.DS_Store
 README.md
 dist
 node_modules

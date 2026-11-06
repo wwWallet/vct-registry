@@ -6,6 +6,7 @@ yarn-error.log*
 
 # Build output
 dist/
+public/react/
 
 # TS cache
 *.tsbuildinfo
@@ -16,5 +17,8 @@ dist/
 # Logs
 logs/
 *.log
+
+# Local frontend environment overrides
+.env*.local
 .env
 .env.test

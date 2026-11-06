@@ -32,6 +32,18 @@ Run in dev mode
 yarn run dev
 ```
 
+This starts the frontend and backend development servers:
+
+- React development UI: `http://localhost:8098/`
+- Express API backend: `http://localhost:8097/`
+
+During development, Vite proxies React API requests to Express. The production build is served by
+Express at `/`, with API routes retaining their existing paths.
+
+The React development proxy targets `http://localhost:8097` by default. To use a different
+backend, copy `frontend/.env.template` to `frontend/.env`, change
+`VITE_REGISTRY_API_URL`, and restart the React development server.
+
 ## Storage
 
 VC Type Metadata entries are stored in a database, in table `vct`, containing columns `urn` (VCT urn identifier, the primary key) and `metadata` (a JSON object containing the VC Type Metadata).
@@ -44,11 +56,12 @@ Editing Type Metadata is protected using Basic authentication. The username and 
 
 ## API
 
-| Method | Endpoint                 | Description                          |
-| ------ | ------------------------ | ------------------------------------ |
-| GET    | `/type-metadata/all`     | Retrieve all registered metadata     |
-| GET    | `/type-metadata?vct=...` | Retrieve metadata for a specific VCT |
-| GET    | `/api/vct-list`          | List available VCTs                  |
+| Method | Endpoint                   | Description                          |
+| ------ | -------------------------- | ------------------------------------ |
+| GET    | `/type-metadata/all`       | Retrieve all registered metadata     |
+| GET    | `/type-metadata?vct=...`   | Retrieve metadata for a specific VCT |
+| GET    | `/api/vct-list`            | List available VCTs                  |
+| GET    | `/api/vct-preview?vct=...` | Render a stored VCT preview          |
 
 ### Example
 

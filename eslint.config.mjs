@@ -4,8 +4,8 @@ import globals from 'globals';
 import tseslint from 'typescript-eslint';
 import prettierConfig from 'eslint-config-prettier/flat';
 
-const typescriptFiles = ['{config,src,test}/**/*.ts', '*.ts'];
-const browserFiles = ['public/js/**/*.js'];
+const typescriptFiles = ['{config,src,test}/**/*.ts', 'frontend/**/*.{ts,tsx}', '*.{ts,mts}'];
+const browserFiles = ['frontend/**/*.{ts,tsx}'];
 
 export default defineConfig(
 	{
@@ -32,7 +32,6 @@ export default defineConfig(
 		languageOptions: {
 			globals: {
 				...globals.browser,
-				JSONEditor: 'readonly',
 			},
 		},
 	},
