@@ -24,6 +24,7 @@ Install dependencies
 
 ```
 yarn install
+yarn --cwd frontend install
 ```
 
 Run in dev mode
