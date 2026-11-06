@@ -63,6 +63,29 @@ function getAllUriValues(vctContent: TypeMetadata): UriWithIntegrity[] {
 	return integrityValues;
 }
 
+/**
+ * Returns a cloned metadata document with fresh integrity values for remote image URIs.
+ * Data URIs are embedded already and do not need an integrity value.
+ */
+export async function addVctUriIntegrity(vctContent: TypeMetadata): Promise<TypeMetadata> {
+	const metadata = structuredClone(vctContent);
+	const uriValues = getAllUriValues(metadata);
+
+	for (const uriValue of uriValues) {
+		if (uriValue.uri.startsWith('data:')) continue;
+
+		const existingAlgorithm = uriValue['uri#integrity']?.split('-')[0];
+		const algorithm = existingAlgorithm ?? 'sha256';
+		if (!['sha256', 'sha384', 'sha512'].includes(algorithm)) {
+			throw new Error(`Unsupported algorithm "${algorithm}" for URI "${uriValue.uri}".`);
+		}
+
+		uriValue['uri#integrity'] = await calculateImageSRI(uriValue.uri, algorithm as Algorithm);
+	}
+
+	return metadata;
+}
+
 export async function verifyVctUriIntegrity(
 	vctContent: TypeMetadata,
 ): Promise<{ valid: boolean; message?: string }> {
