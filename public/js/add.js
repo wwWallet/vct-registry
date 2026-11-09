@@ -1,6 +1,7 @@
 import {
 	getMetadataViewUrl,
 	initialSdJwtVcMetadata,
+	initialAddMdocData,
 	initializeEditor,
 	onEditorContentChange,
 	showErrors,
@@ -10,6 +11,8 @@ import { addUriIntegrityToEditor } from './uri-integrity.js';
 let editor;
 
 const container = document.getElementById('jsoneditor');
+const typeSelect = document.getElementById('metadata-type');
+typeSelect.disabled = true;
 
 async function initializeEditorAndLoadMetadata() {
 	try {
@@ -18,11 +21,29 @@ async function initializeEditorAndLoadMetadata() {
 			undefined,
 			initialSdJwtVcMetadata,
 			onEditorContentChange,
-			'dc+sd-jwt',
+			typeSelect.value,
 		);
+		const drafts = {
+			'dc+sd-jwt': JSON.stringify(initialSdJwtVcMetadata, null, 2),
+			mso_mdoc: JSON.stringify(initialAddMdocData, null, 2),
+		};
+		let currentFormat = typeSelect.value;
+		typeSelect.addEventListener('change', () => {
+			drafts[currentFormat] = editor.getText();
+			currentFormat = typeSelect.value;
+			editor.setText(drafts[currentFormat]);
+			try {
+				onEditorContentChange(editor.get());
+			} catch {
+				// Preserve drafts containing incomplete JSON when switching types.
+			}
+			void editor.validate();
+		});
+		typeSelect.disabled = false;
 		onEditorContentChange(initialSdJwtVcMetadata);
 		await editor.validate();
 	} catch (error) {
+		typeSelect.disabled = true;
 		showErrors('Failed to load metadata editor', error);
 	}
 }
@@ -53,8 +74,8 @@ document.getElementById('registry-submit-btn').addEventListener('click', async (
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({
-			identifier: editorData.vct,
-			format: 'dc+sd-jwt',
+			identifier: typeSelect.value === 'mso_mdoc' ? editorData.doctype : editorData.vct,
+			format: typeSelect.value,
 			metadata: editorData,
 		}),
 	});
@@ -63,7 +84,12 @@ document.getElementById('registry-submit-btn').addEventListener('click', async (
 	if (!res.ok) {
 		showErrors('Failed to create type metadata', result);
 	} else {
-		const redirectUrl = new URL(getMetadataViewUrl(editorData.vct), window.location.href);
+		const redirectUrl = new URL(
+			getMetadataViewUrl(
+				typeSelect.value === 'mso_mdoc' ? editorData.doctype : editorData.vct,
+			),
+			window.location.href,
+		);
 		redirectUrl.searchParams.set('toast', 'add-success');
 		window.location.href = redirectUrl.toString();
 	}

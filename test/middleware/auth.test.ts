@@ -28,8 +28,7 @@ describe('Frontend Authentication', () => {
 		expect(edit.text).not.toContain('<select');
 		expect(edit.text).toContain('id="edit-metadata-format-value"');
 		const add = await agent.get('/add').expect(200);
-		expect(add.text).not.toContain('<select');
-		expect(add.text).toContain('<code>dc+sd-jwt</code>');
+		expect(add.text).toMatch(/<select id="metadata-type" class="registry-select">/);
 	});
 });
 

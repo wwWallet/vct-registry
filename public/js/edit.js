@@ -26,9 +26,9 @@ async function initializeEditorAndLoadMetadata() {
 function validateMetadata(value) {
 	const errors = [];
 
-	if (value && identifier && value.vct !== identifier) {
+	if (value && identifier && (format === 'mso_mdoc' ? value.doctype : value.vct) !== identifier) {
 		errors.push({
-			path: ['vct'],
+			path: [format === 'mso_mdoc' ? 'doctype' : 'vct'],
 			message: 'Cannot change the type metadata identifier.',
 		});
 	}
@@ -64,7 +64,8 @@ async function loadSelectedMetadata() {
 	onEditorContentChange(metadata);
 
 	const titleContainer = document.getElementById('edit-metadata-title');
-	const title = metadata.name || `${metadata.vct} Type Metadata`;
+	const title =
+		metadata.name || `${format === 'mso_mdoc' ? metadata.doctype : metadata.vct} Type Metadata`;
 	titleContainer.textContent = `Edit ${title}`;
 }
 
@@ -78,7 +79,7 @@ document.getElementById('registry-submit-btn').addEventListener('click', async (
 	}
 
 	let editorData = editor.get();
-	if (editorData.vct !== identifier) {
+	if ((format === 'mso_mdoc' ? editorData.doctype : editorData.vct) !== identifier) {
 		showErrors('Failed to save type metadata', {
 			message: 'The type metadata identifier cannot be changed.',
 		});

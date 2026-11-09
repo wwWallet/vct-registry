@@ -35,9 +35,9 @@
       <pre class="code-surface usage-code"><code id="usage-code-all">curl -s "{{ registryBaseUrl }}/type-metadata/all"</code></pre>
     </div>
 
-    <p class="usage-text">Optionally filter by format: <code>/type-metadata/all?format=dc%2Bsd-jwt</code>. No matches returns an empty array; unsupported formats return HTTP 400.</p>
+    <p class="usage-text">Optionally filter by format: <code>/type-metadata/all?format=mso_mdoc</code> or <code>/type-metadata/all?format=dc%2Bsd-jwt</code>. No matches returns an empty array; unsupported formats return HTTP 400.</p>
 
-    <h3>2. Fetch One Metadata Entry by Identifier</h3>
+    <h3>2. Fetch One Metadata Entry by Identifier (vct or doctype)</h3>
     <p class="usage-text">
       Endpoint: <code>GET {{ registryBaseUrl }}/type-metadata?identifier=&lt;identifier&gt;</code>
     </p>
@@ -51,8 +51,8 @@
 
     <p class="usage-text">
       For any format, use <code>/type-metadata?identifier=&lt;identifier&gt;</code> (or <code>id</code>).
-      Add <code>&amp;format=dc%2Bsd-jwt</code> to constrain the format.
-      The <code>vct</code> parameter selects SD-JWT VC metadata.
+      Add <code>&amp;format=mso_mdoc</code> or <code>&amp;format=dc%2Bsd-jwt</code> to constrain the format.
+      The <code>vct</code> parameter selects SD-JWT VC metadata; <code>doctype</code> selects mdoc metadata.
       Conflicting selectors return HTTP 400. No match returns HTTP 404.
     </p>
 

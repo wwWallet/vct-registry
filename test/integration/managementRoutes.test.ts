@@ -24,7 +24,7 @@ beforeEach(() => vi.resetAllMocks());
 
 describe.each(['/api/type-metadata'])('authenticated management at %s', (prefix) => {
 	it.each(
-		(['dc+sd-jwt'] as const).flatMap((format) =>
+		(['dc+sd-jwt', 'mso_mdoc'] as const).flatMap((format) =>
 			[
 				'org.example.document',
 				'https://example.org/types/a%2Fb',
@@ -36,7 +36,7 @@ describe.each(['/api/type-metadata'])('authenticated management at %s', (prefix)
 	)(
 		'preserves $identifier through lookup and writes for $format',
 		async ({ format, identifier }) => {
-			const metadata = { vct: identifier };
+			const metadata = format === 'mso_mdoc' ? { doctype: identifier } : { vct: identifier };
 			const entry = { format, metadata };
 			vi.mocked(getTypeMetadataByIdentifier).mockResolvedValue(undefined);
 			vi.mocked(getTypeMetadataEntry).mockResolvedValue(entry);

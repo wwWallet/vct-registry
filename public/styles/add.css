@@ -52,3 +52,13 @@
 	gap: 8px;
 	margin-bottom: 16px;
 }
+
+.metadata-type-field .registry-select {
+	width: 100%;
+	min-width: 0;
+}
+
+.metadata-type-field .registry-select:disabled {
+	cursor: default;
+	opacity: 0.7;
+}

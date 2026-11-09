@@ -13,6 +13,7 @@ function setup(disabled = false) {
 	const submit = { disabled: true };
 	const schemas = {
 		'type-metadata/schema/dc+sd-jwt': { required: ['vct'] },
+		'type-metadata/schema/mso_mdoc': { required: ['doctype'] },
 	};
 	vi.stubGlobal('document', {
 		getElementById: () => select,
@@ -43,7 +44,7 @@ describe('Editor metadata type', () => {
 		);
 	});
 	it.each(
-		['dc+sd-jwt'].flatMap((format) =>
+		['dc+sd-jwt', 'mso_mdoc'].flatMap((format) =>
 			[undefined, '', 'Example Credential'].map((name) => ({ format, name })),
 		),
 	)(
@@ -53,7 +54,7 @@ describe('Editor metadata type', () => {
 			const { schemas } = setup();
 			const identifier = 'org.example.document';
 			const metadata = {
-				vct: identifier,
+				...(format === 'mso_mdoc' ? { doctype: identifier } : { vct: identifier }),
 				name,
 			};
 			const pill = { textContent: '' };
@@ -107,12 +108,100 @@ describe('Editor metadata type', () => {
 		},
 	);
 
+	it('uses the explicit SD JWT VC format and switches schemas when the selected type changes', async () => {
+		const { select, schemas, change } = setup();
+		const editor = await initializeEditor(
+			{},
+			undefined,
+			{ vct: 'urn:example:test' },
+			undefined,
+			'dc+sd-jwt',
+		);
+		expect(editor.options.schema).toEqual(schemas['type-metadata/schema/dc+sd-jwt']);
+		select.value = 'mso_mdoc';
+		change();
+		expect(editor.setSchema).toHaveBeenLastCalledWith(schemas['type-metadata/schema/mso_mdoc']);
+		expect(editor.validate).toHaveBeenCalled();
+		select.value = 'dc+sd-jwt';
+		change();
+		expect(editor.setSchema).toHaveBeenLastCalledWith(
+			schemas['type-metadata/schema/dc+sd-jwt'],
+		);
+	});
+
+	it('initializes an existing mdoc entry with its schema and ignores a disabled selector', async () => {
+		const { select, schemas, change } = setup(true);
+		const editor = await initializeEditor({}, undefined, undefined, undefined, 'mso_mdoc');
+		expect(editor.options.schema).toEqual(schemas['type-metadata/schema/mso_mdoc']);
+		select.value = 'dc+sd-jwt';
+		change();
+		expect(editor.setSchema).not.toHaveBeenCalled();
+	});
+
 	it('disables submission on validation errors and enables it when valid', async () => {
 		const { submit } = setup();
 		const editor = await initializeEditor({}, undefined, undefined, undefined, 'dc+sd-jwt');
-		editor.options.onValidationError([{ message: 'Missing vct' }]);
+		editor.options.onValidationError([{ message: 'Missing doctype' }]);
 		expect(submit.disabled).toBe(true);
 		editor.options.onValidationError([]);
 		expect(submit.disabled).toBe(false);
+	});
+
+	it('preserves separate drafts, including incomplete JSON, when switching types on add', async () => {
+		const { select, schemas, change } = setup();
+		let initialize;
+		const editors = [];
+		vi.stubGlobal('window', {
+			addEventListener: (_event, handler) => {
+				initialize = handler;
+			},
+		});
+		vi.stubGlobal('document', {
+			getElementById: (id) => {
+				if (id === 'metadata-type') return select;
+				if (id === 'registry-submit-btn') return { addEventListener: vi.fn() };
+				return null;
+			},
+			querySelector: () => null,
+		});
+		vi.stubGlobal(
+			'JSONEditor',
+			class {
+				constructor(_container, options) {
+					this.options = options;
+					editors.push(this);
+				}
+				set(value) {
+					this.text = JSON.stringify(value);
+				}
+				get() {
+					return JSON.parse(this.text);
+				}
+				getText() {
+					return this.text;
+				}
+				setText(value) {
+					this.text = value;
+				}
+				setSchema = vi.fn();
+				validate = vi.fn().mockResolvedValue([]);
+			},
+		);
+		await import('../../public/js/add.js');
+		await initialize();
+		const editor = editors[0];
+		expect(select.disabled).toBe(false);
+		editor.setText('{ "vct":');
+		select.value = 'mso_mdoc';
+		change();
+		expect(editor.get()).toHaveProperty('doctype');
+		expect(editor.setSchema).toHaveBeenLastCalledWith(schemas['type-metadata/schema/mso_mdoc']);
+		editor.setText('{"doctype":"org.example.document"}');
+		select.value = 'dc+sd-jwt';
+		change();
+		expect(editor.getText()).toBe('{ "vct":');
+		select.value = 'mso_mdoc';
+		change();
+		expect(editor.get()).toEqual({ doctype: 'org.example.document' });
 	});
 });

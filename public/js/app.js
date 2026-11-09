@@ -37,7 +37,11 @@ export async function initializeEditor(
 	onContentChange,
 	format,
 ) {
-	const schemas = { 'dc+sd-jwt': await fetchJson('type-metadata/schema/dc+sd-jwt') };
+	const [sdJwtVcSchema, mdocSchema] = await Promise.all([
+		fetchJson('type-metadata/schema/dc+sd-jwt'),
+		fetchJson('type-metadata/schema/mso_mdoc'),
+	]);
+	const schemas = { 'dc+sd-jwt': sdJwtVcSchema, mso_mdoc: mdocSchema };
 
 	if (!Object.hasOwn(schemas, format))
 		throw new Error('A supported metadata format is required.');
@@ -70,7 +74,14 @@ export async function initializeEditor(
 	if (initialData) {
 		editor.set(initialData);
 	}
-
+	const typeSelect = document.getElementById('metadata-type');
+	if (typeSelect) {
+		typeSelect.addEventListener('change', () => {
+			if (typeSelect.disabled) return;
+			editor.setSchema(schemas[typeSelect.value]);
+			void editor.validate();
+		});
+	}
 	return editor;
 }
 
@@ -213,6 +224,13 @@ export const initialSdJwtVcMetadata = {
 	],
 };
 
+export const initialAddMdocData = {
+	doctype: '',
+	name: '',
+	display: [{}],
+	claims: [],
+};
+
 function updateMetadataDetails(metadata) {
 	const identifierValue = document.querySelector('#edit-metadata-identifier-value code');
 	const nameValue = document.getElementById('edit-metadata-name-value');
@@ -222,7 +240,7 @@ function updateMetadataDetails(metadata) {
 		return;
 	}
 
-	identifierValue.textContent = metadata?.vct || '';
+	identifierValue.textContent = metadata?.vct || metadata?.doctype || '';
 	nameValue.textContent = metadata?.name || '-';
 	descriptionValue.textContent = metadata?.description || 'No description provided.';
 }
@@ -268,7 +286,7 @@ function renderPreview(metadata) {
 				const image = document.createElement('img');
 				image.className = 'metadata-preview';
 				image.src = preview.uri;
-				image.alt = `${metadata?.name || metadata?.vct || 'Credential'} preview`;
+				image.alt = `${metadata?.name || metadata?.vct || metadata?.doctype || 'Credential'} preview`;
 				figure.appendChild(image);
 
 				const captionText = formatPreviewProperties(preview.properties);

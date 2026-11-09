@@ -88,7 +88,7 @@ describe('documented legacy registry API compatibility', () => {
 		const missing = await request(app).get('/type-metadata').expect(400);
 		expect(missing.body.error).toBe('missing_identifier');
 		expect(missing.body.message).toBe(
-			'One of the query parameters "identifier", "id", or "vct" is required',
+			'One of the query parameters "identifier", "id", "vct", or "doctype" is required',
 		);
 		vi.mocked(getTypeMetadataByIdentifier).mockResolvedValue(undefined);
 		const unknown = await request(app).get('/type-metadata?vct=urn:unknown').expect(404);
@@ -102,59 +102,104 @@ describe('documented legacy registry API compatibility', () => {
 	});
 });
 
+const mdoc = { doctype: 'org.example.document', name: 'Mdoc' };
+
 describe('format-neutral registry lookups', () => {
 	it.each([
-		[{ identifier: pid.vct }, undefined],
-		[{ id: pid.vct }, undefined],
-		[{ identifier: pid.vct, format: 'dc+sd-jwt' }, 'dc+sd-jwt'],
-		[{ identifier: pid.vct, id: pid.vct, vct: pid.vct }, 'dc+sd-jwt'],
-	] as const)('resolves %j with the expected format constraint', async (query, format) => {
-		const { body } = await request(app).get('/type-metadata').query(query).expect(200);
-		expect(body).toEqual(pid);
-		expect(getTypeMetadataByIdentifier).toHaveBeenCalledWith(
-			expect.anything(),
-			pid.vct,
-			format,
-		);
-	});
+		[{ vct: pid.vct }, pid.vct, 'dc+sd-jwt'],
+		[{ doctype: mdoc.doctype }, mdoc.doctype, 'mso_mdoc'],
+		[{ identifier: mdoc.doctype }, mdoc.doctype, undefined],
+		[{ id: mdoc.doctype }, mdoc.doctype, undefined],
+		[{ identifier: pid.vct, format: 'dc+sd-jwt' }, pid.vct, 'dc+sd-jwt'],
+		[{ id: mdoc.doctype, format: 'mso_mdoc' }, mdoc.doctype, 'mso_mdoc'],
+		[{ identifier: pid.vct, id: pid.vct, vct: pid.vct }, pid.vct, 'dc+sd-jwt'],
+	] as const)(
+		'resolves %j with the expected format constraint',
+		async (query, identifier, format) => {
+			vi.mocked(getTypeMetadataByIdentifier).mockResolvedValue(
+				format === 'dc+sd-jwt' ? pid : mdoc,
+			);
+			const { body } = await request(app).get('/type-metadata').query(query).expect(200);
+			expect(getTypeMetadataByIdentifier).toHaveBeenCalledWith(
+				expect.anything(),
+				identifier,
+				format,
+			);
+			expect(body).toEqual(format === 'dc+sd-jwt' ? pid : mdoc);
+		},
+	);
 
 	it.each([
 		{ identifier: '' },
 		{ id: ' ' },
+		{ doctype: ['a', 'b'] },
 		{ id: ['a', 'a'] },
-		{ identifier: 'a', format: 'unsupported-format' },
+		{ identifier: 'a', format: 'mdoc' },
 		{ identifier: 'a', id: 'b' },
 		{ id: 'a', vct: 'b' },
-		{ id: 'a', format: ['dc+sd-jwt', 'dc+sd-jwt'] },
+		{ vct: 'a', doctype: 'a' },
+		{ vct: 'a', format: 'mso_mdoc' },
+		{ doctype: 'a', format: 'dc+sd-jwt' },
+		{ id: 'a', format: ['mso_mdoc', 'dc+sd-jwt'] },
 	])('rejects invalid or conflicting selectors %j', async (query) => {
 		await request(app).get('/type-metadata').query(query).expect(400);
 		expect(getTypeMetadataByIdentifier).not.toHaveBeenCalled();
 	});
 
-	it('filters collections by the requested format', async () => {
+	it('returns 404 when the identifier and format do not match an entry', async () => {
+		vi.mocked(getTypeMetadataByIdentifier).mockResolvedValue(undefined);
 		const { body } = await request(app)
-			.get('/type-metadata/all')
-			.query({ format: 'dc+sd-jwt' })
-			.expect(200);
-		expect(body).toEqual([pid, diploma]);
-		expect(getAllTypeMetadata).toHaveBeenCalledWith(expect.anything(), 'dc+sd-jwt');
+			.get('/type-metadata')
+			.query({ id: pid.vct, format: 'mso_mdoc' })
+			.expect(404);
+		expect(body.error).toBe('unknown_identifier');
 	});
 
-	it.each(['', 'unsupported-format', ['dc+sd-jwt', 'dc+sd-jwt']])(
-		'rejects invalid collection format %j',
+	it.each(['dc+sd-jwt', 'mso_mdoc'] as const)('filters /all by %s', async (format) => {
+		const metadata = format === 'mso_mdoc' ? mdoc : pid;
+		vi.mocked(getAllTypeMetadata).mockResolvedValue([metadata]);
+		const { body } = await request(app).get('/type-metadata/all').query({ format }).expect(200);
+		expect(body).toEqual([metadata]);
+		expect(getAllTypeMetadata).toHaveBeenCalledWith(expect.anything(), format);
+	});
+
+	it('returns an empty array for a format with no entries', async () => {
+		vi.mocked(getAllTypeMetadata).mockResolvedValue([]);
+		const { body } = await request(app).get('/type-metadata/all?format=mso_mdoc').expect(200);
+		expect(body).toEqual([]);
+	});
+
+	it.each(['', 'mdoc', 'sdjwt', 'other', ['mso_mdoc', 'dc+sd-jwt']])(
+		'rejects invalid /all format %j',
 		async (format) => {
-			await request(app).get('/type-metadata/all').query({ format }).expect(400);
+			const { body } = await request(app)
+				.get('/type-metadata/all')
+				.query({ format })
+				.expect(400);
+			expect(body.error).toBe('invalid_format');
 			expect(getAllTypeMetadata).not.toHaveBeenCalled();
 		},
 	);
 
-	it('lists explicit identifiers and stored formats', async () => {
+	it('returns documents from both formats in /all', async () => {
+		vi.mocked(getAllTypeMetadata).mockResolvedValue([pid, mdoc]);
+		const { body } = await request(app).get('/type-metadata/all').expect(200);
+		expect(body).toEqual([pid, mdoc]);
+	});
+
+	it('lists all formats using explicit identifiers and stored formats', async () => {
 		const entries = [
 			{ identifier: pid.vct, format: 'dc+sd-jwt' as const, name: pid.name },
-			{ identifier: diploma.vct, format: 'dc+sd-jwt' as const, name: diploma.name },
+			{ identifier: mdoc.doctype, format: 'mso_mdoc' as const, name: mdoc.name },
 		];
 		vi.mocked(getTypeMetadataList).mockResolvedValue(entries);
 		const { body } = await request(app).get('/type-metadata/list').expect(200);
 		expect(body).toEqual([...entries].reverse());
+	});
+
+	it('keeps mdocs out of the deprecated VCT list', async () => {
+		vi.mocked(getAllTypeMetadata).mockResolvedValue([pid, mdoc, diploma]);
+		const { body } = await request(app).get('/api/vct-list').expect(200);
+		expect(body).toEqual([diploma, pid]);
 	});
 });

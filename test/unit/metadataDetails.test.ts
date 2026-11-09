@@ -26,9 +26,9 @@ describe('metadata details', () => {
 		'accepts the %s page selector and generates identifier links',
 		async (key) => {
 			const identifier = 'org.example.document';
-			const metadata = { vct: identifier };
+			const metadata = { doctype: identifier };
 			vi.mocked(getAllTypeMetadata).mockResolvedValue([metadata]);
-			vi.mocked(getTypeMetadataEntry).mockResolvedValue({ format: 'dc+sd-jwt', metadata });
+			vi.mocked(getTypeMetadataEntry).mockResolvedValue({ format: 'mso_mdoc', metadata });
 			const { text } = await request(app)
 				.get('/metadata')
 				.query({ [key]: identifier })
@@ -39,11 +39,11 @@ describe('metadata details', () => {
 		},
 	);
 
-	it.each(['dc+sd-jwt'] as const)(
+	it.each(['dc+sd-jwt', 'mso_mdoc'] as const)(
 		'displays the stored %s format before the VCT',
 		async (format) => {
 			const identifier = 'org.example.document';
-			const metadata = { vct: identifier };
+			const metadata = format === 'mso_mdoc' ? { doctype: identifier } : { vct: identifier };
 			vi.mocked(getAllTypeMetadata).mockResolvedValue([metadata]);
 			vi.mocked(getTypeMetadataEntry).mockResolvedValue({ format, metadata });
 

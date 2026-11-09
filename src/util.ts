@@ -1,6 +1,6 @@
 /**
  * Handle a raw identifier string that may or may not be URL-encoded.
- * @param identifier an id, identifier, or vct query/body parameter
+ * @param identifier an id, identifier, vct, or doctype query/body parameter
  * 	but can potentially be undefined, string, Array<string> or Object.
  * @returns a decoded identifier string, undefined if no identifier given or null if input is invalid
  */
