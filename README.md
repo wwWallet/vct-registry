@@ -64,16 +64,6 @@ Management routes require an authenticated session obtained through `/auth/login
 | `POST` | `/api/type-metadata/delete`               |
 | `POST` | `/api/type-metadata/preview`              |
 
-### Upgrading from the VCT-only registry
-
-Run `yarn migration:run` before starting the updated application. The migration renames `vct` to `type_metadata` and `urn` to `identifier`, and backfills existing entries with the `dc+sd-jwt` format.
-
-The follow-up migration enables `mso_mdoc` in the database format constraint. Rolling back that migration requires first removing or exporting mdoc entries; it will fail rather than delete them or relabel them as SD-JWT VC metadata.
-
-Management clients must replace `/vct/create`, `/vct/edit`, `/vct/delete`, and `/vct/preview` with the corresponding `/api/type-metadata/*` routes. Create and edit requests use `identifier` instead of `vct`; create requests also require an explicit `format`. The old management routes have been removed. Public VCT lookup and the original `/type-metadata/schema` endpoint remain available; `/api/vct-list` is deprecated in favor of `/type-metadata/list`.
-
-`MAX_METADATA_SIZE` sets the metadata size limit in bytes and takes precedence over the legacy `MAX_VCT_SIZE`. If neither is set, the limit remains 102400 bytes.
-
 ### Example
 
 **GET** `/type-metadata?vct=urn:eu.europa.ec.eudi:pid:1`
