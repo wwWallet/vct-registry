@@ -1,7 +1,7 @@
 import { app } from '../../src/server';
 import request from 'supertest';
 import { config } from '../../config';
-import { describe, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 describe('Frontend Authentication', () => {
 	it('GET /edit redirects to the configured URL when not authenticated', async () => {
@@ -24,7 +24,13 @@ describe('Frontend Authentication', () => {
 
 		await agent.get('/auth/login').auth(username, password).expect(200);
 
-		await agent.get('/edit').expect(200);
+		const response = await agent.get('/edit').expect(200);
+
+		expect(response.text).toContain(`<a class="header-brand" href="${config.url}">`);
+		expect(response.text).toContain(`alt="${config.issuer_name} logo"`);
+		expect(response.text).toContain(`<p class="header-kicker">${config.issuer_name}</p>`);
+		expect(response.text).toContain(`<title>${config.issuer_name} VCT Registry</title>`);
+		expect(response.text).toContain(`<h1>VCT Registry</h1>`);
 	});
 });
 
