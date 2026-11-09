@@ -11,7 +11,6 @@ export interface TypeMetadata {
 	vct: string;
 	name?: string;
 	description?: string;
-	previewDataUri?: string;
 	display?: Array<{
 		lang?: string;
 		name?: string;

@@ -4,6 +4,7 @@ import { createMetadata, getMetadata, updateMetadata } from '../api/client';
 import { useAuth } from '../auth';
 import { Breadcrumbs } from '../components/Breadcrumbs';
 import { JsonMetadataEditor } from '../components/JsonMetadataEditor';
+import { previewCaption, previews } from '../metadataPreview';
 import type { TypeMetadata } from '../types';
 import { buttonClass, cardClass, feedbackClass } from '../ui';
 import { addMetadataUriIntegrity } from '../uriIntegrity';
@@ -23,37 +24,8 @@ interface MetadataEditorPageProps {
 	onSaved: () => Promise<void>;
 }
 
-function previews(metadata?: TypeMetadata) {
-	if (!Array.isArray(metadata?.display)) return [];
-
-	return metadata.display.flatMap((item) => {
-		if (!item || typeof item !== 'object') return [];
-		const templates = item.rendering?.svg_templates;
-		if (!Array.isArray(templates)) return [];
-
-		return templates.filter(
-			(template) =>
-				template && typeof template === 'object' && typeof template.uri === 'string',
-		);
-	});
-}
-
 function text(value: unknown, fallback: string) {
 	return typeof value === 'string' && value ? value : fallback;
-}
-
-function previewCaption(properties?: {
-	orientation?: string;
-	color_scheme?: string;
-	contrast?: string;
-}) {
-	return [
-		properties?.orientation,
-		properties?.color_scheme,
-		properties?.contrast ? `${properties.contrast} contrast` : undefined,
-	]
-		.filter(Boolean)
-		.join(' · ');
 }
 
 export function MetadataEditorPage({ mode, onSaved }: MetadataEditorPageProps) {
