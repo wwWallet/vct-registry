@@ -4,6 +4,7 @@ import { deleteMetadata } from '../api/client';
 import { useAuth } from '../auth';
 import { Breadcrumbs } from '../components/Breadcrumbs';
 import { CopyButton } from '../components/CopyButton';
+import { previewCaption, previews } from '../metadataPreview';
 import type { TypeMetadata } from '../types';
 import { buttonClass, cardClass, feedbackClass } from '../ui';
 
@@ -11,30 +12,6 @@ const stat =
 	'flex flex-col gap-1 border-b border-[var(--vct-border)] pb-2.5 last:border-0 last:pb-0';
 const label = 'm-0 text-[.74rem] font-bold tracking-[.05em] text-[var(--vct-text-muted)] uppercase';
 const value = 'm-0 text-[.95rem] font-semibold text-[var(--vct-text)]';
-
-function previews(metadata?: TypeMetadata) {
-	return metadata?.display?.flatMap((item) => item.rendering?.svg_templates ?? []) ?? [];
-}
-
-function previewCaption(properties?: {
-	orientation?: string;
-	color_scheme?: string;
-	contrast?: string;
-}) {
-	return [
-		properties?.orientation,
-		properties?.color_scheme,
-		properties?.contrast ? `${properties.contrast} contrast` : undefined,
-	]
-		.filter(Boolean)
-		.join(' · ');
-}
-
-function withoutGeneratedPreview(metadata: TypeMetadata): TypeMetadata {
-	const result = { ...metadata };
-	delete result.previewDataUri;
-	return result;
-}
 
 export function MetadataPage({ metadata, loading, error, onMetadataChanged }: PageProps) {
 	const { auth, handleAuthError } = useAuth();
@@ -48,12 +25,7 @@ export function MetadataPage({ metadata, loading, error, onMetadataChanged }: Pa
 		[metadata, requestedVct],
 	);
 	const selectedVct = selected?.vct ?? '__all__';
-	const payload =
-		selectedVct === '__all__'
-			? metadata.map(withoutGeneratedPreview)
-			: selected
-				? withoutGeneratedPreview(selected)
-				: undefined;
+	const payload = selectedVct === '__all__' ? metadata : selected;
 	const metadataJson = JSON.stringify(payload ?? null, null, 2);
 	const registryUrl = window.location.origin;
 	const sourceUrl = selected
