@@ -41,7 +41,7 @@
 	max-width: 560px;
 }
 
-.vct-controls {
+.registry-controls {
 	display: flex;
 	flex-direction: column;
 	gap: 12px;
@@ -55,11 +55,11 @@
 	color: #374151;
 }
 
-.vct-select {
+.registry-select {
 	width: 100%;
 }
 
-.vct-data {
+.registry-data {
 	padding: 14px;
 	color: #1f2937;
 	max-height: 640px;
@@ -100,12 +100,12 @@
 	margin-top: 4px;
 }
 
-.metadata-delete-action .vct-btn {
+.metadata-delete-action .registry-btn {
 	width: 100%;
 }
 
-a.vct-btn,
-a.vct-edit-btn {
+a.registry-btn,
+a.registry-edit-btn {
 	text-decoration: none;
 	color: inherit;
 }

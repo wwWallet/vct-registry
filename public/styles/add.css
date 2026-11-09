@@ -46,3 +46,9 @@
 		grid-template-columns: 1fr;
 	}
 }
+
+.metadata-type-field {
+	display: grid;
+	gap: 8px;
+	margin-bottom: 16px;
+}

@@ -14,22 +14,22 @@
 }
 
 .error {
-	background: var(--vct-danger-soft);
-	color: var(--vct-danger);
-	border-color: var(--vct-danger-border);
-	border-left-color: var(--vct-danger);
+	background: var(--registry-danger-soft);
+	color: var(--registry-danger);
+	border-color: var(--registry-danger-border);
+	border-left-color: var(--registry-danger);
 }
 
 .success {
-	background: var(--vct-success-soft);
-	color: var(--vct-success);
-	border-color: var(--vct-success-border);
-	border-left-color: var(--vct-success);
+	background: var(--registry-success-soft);
+	color: var(--registry-success);
+	border-color: var(--registry-success-border);
+	border-left-color: var(--registry-success);
 }
 
 .info {
-	background: var(--vct-accent-soft);
-	color: var(--vct-accent);
-	border-color: var(--vct-accent-border);
-	border-left-color: var(--vct-accent);
+	background: var(--registry-accent-soft);
+	color: var(--registry-accent);
+	border-color: var(--registry-accent-border);
+	border-left-color: var(--registry-accent);
 }

@@ -1,24 +1,31 @@
 /**
- * Handle a raw VCT string that may or may not be URL-encoded.
- * @param rawVct a vct query/body param that should be a URI string
+ * Handle a raw identifier string that may or may not be URL-encoded.
+ * @param identifier an id, identifier, or vct query/body parameter
  * 	but can potentially be undefined, string, Array<string> or Object.
- * @returns a decoded VCT string, undefined if no vct given or null if input is invalid
+ * @returns a decoded identifier string, undefined if no identifier given or null if input is invalid
  */
-export function decodeVct(vct: unknown): string | undefined | null {
-	if (!vct) {
+export function decodeIdentifier(identifier: unknown): string | undefined | null {
+	if (!identifier) {
 		return undefined;
 	}
 
-	if (typeof vct !== 'string') {
+	if (typeof identifier !== 'string') {
 		return null;
 	}
 
 	try {
-		return decodeURIComponent(vct).trim();
+		return decodeURIComponent(identifier).trim();
 	} catch (decodingError) {
-		console.warn(`Error decoding VCT ${vct}: ${decodingError}`);
+		console.warn(`Error decoding identifier ${identifier}: ${decodingError}`);
 		return null;
 	}
+}
+
+/** Validate a transport-decoded identifier without changing its value. */
+export function parseIdentifier(identifier: unknown): string | undefined | null {
+	if (identifier === undefined || identifier === null || identifier === '') return undefined;
+	if (typeof identifier !== 'string' || identifier.trim().length === 0) return null;
+	return identifier;
 }
 
 export function reverseList<T>(items: T[]): T[] {

@@ -7,7 +7,7 @@
 	margin-bottom: 20px;
 }
 
-.home-actions .vct-btn {
+.home-actions .registry-btn {
 	text-decoration: none;
 	color: inherit;
 	display: inline-block;
@@ -24,7 +24,7 @@
 .home-metadata-card {
 	flex: 0 1 340px;
 	max-width: 360px;
-	border: 1px solid var(--vct-border);
+	border: 1px solid var(--registry-border);
 	border-radius: 14px;
 	padding: 14px;
 	background: rgba(255, 255, 255, 0.7);
@@ -45,7 +45,7 @@
 	aspect-ratio: 16 / 10;
 	overflow: hidden;
 	border-radius: 8px;
-	border: 1px solid var(--vct-border);
+	border: 1px solid var(--registry-border);
 	background: #f3f8fa;
 }
 
@@ -59,36 +59,36 @@
 }
 
 .home-metadata-card:hover {
-	border-color: var(--vct-accent);
+	border-color: var(--registry-accent);
 	transform: translateY(-2px);
 	box-shadow: 0 14px 30px rgba(29, 42, 34, 0.08);
 }
 
 .home-metadata-card:focus-visible {
 	outline: none;
-	box-shadow: 0 0 0 3px var(--vct-accent-ring-soft);
+	box-shadow: 0 0 0 3px var(--registry-accent-ring-soft);
 }
 
 .home-metadata-card h3 {
 	margin: 0;
 	font-size: 1rem;
-	color: var(--vct-text);
+	color: var(--registry-text);
 }
 
-.home-vct {
+.home-identifier {
 	margin: 0;
 	font-family:
 		ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
 		monospace;
 	font-size: 0.8rem;
-	color: var(--vct-text-muted);
+	color: var(--registry-text-muted);
 	word-break: break-all;
 }
 
 .home-description {
 	margin: 0;
 	font-size: 0.9rem;
-	color: var(--vct-text-muted);
+	color: var(--registry-text-muted);
 	flex: 1;
 	display: -webkit-box;
 	-webkit-box-orient: vertical;

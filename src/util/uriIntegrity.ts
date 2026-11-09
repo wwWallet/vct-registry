@@ -1,5 +1,5 @@
 import * as crypto from 'crypto';
-import type { TypeMetadata } from 'wallet-common';
+import type { RegistryMetadata } from '../schemas/metadata';
 
 export type Algorithm = 'sha256' | 'sha384' | 'sha512';
 
@@ -37,7 +37,7 @@ async function getImageFromInput(input: string): Promise<Buffer> {
 	return Buffer.from(arrayBuffer);
 }
 
-function getAllUriValues(vctContent: TypeMetadata): UriWithIntegrity[] {
+function getAllUriValues(typeMetadata: RegistryMetadata): UriWithIntegrity[] {
 	const integrityValues: UriWithIntegrity[] = [];
 
 	const addIfUriExists = (object: UriWithIntegrity | undefined) => {
@@ -46,7 +46,7 @@ function getAllUriValues(vctContent: TypeMetadata): UriWithIntegrity[] {
 		}
 	};
 
-	vctContent.display?.forEach((displayEntry) => {
+	typeMetadata.display?.forEach((displayEntry) => {
 		const rendering = displayEntry.rendering;
 		if (!rendering) return;
 
@@ -63,13 +63,13 @@ function getAllUriValues(vctContent: TypeMetadata): UriWithIntegrity[] {
 	return integrityValues;
 }
 
-export async function verifyVctUriIntegrity(
-	vctContent: TypeMetadata,
+export async function verifyTypeMetadataUriIntegrity(
+	typeMetadata: RegistryMetadata,
 ): Promise<{ valid: boolean; message?: string }> {
 	let valid: boolean = true;
 	const errors: string[] = [];
 
-	const uriValues = getAllUriValues(vctContent);
+	const uriValues = getAllUriValues(typeMetadata);
 
 	for (const uriValue of uriValues) {
 		const uri = uriValue.uri;

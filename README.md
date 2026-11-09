@@ -1,13 +1,13 @@
 # VCT Registry
 
-The VCT Registry is a standalone, lightweight registry that serves Type Metadata for SD-JWT VCs, according to the [SD-JWT-based Verifiable Digital Credentials (SD-JWT VC)
-](https://datatracker.ietf.org/doc/draft-ietf-oauth-sd-jwt-vc/) Proposed Standard.
+The VCT Registry is a standalone, lightweight registry that serves Type Metadata for Verifiable Credentials, according to the [SD-JWT-based Verifiable Digital Credentials (SD-JWT VC)
+](https://datatracker.ietf.org/doc/draft-ietf-oauth-sd-jwt-vc/) Proposed Standard. While the Registry has been built upon SD-JWT VCs, it is credential-format-agnostic. It currently supports the `dc+sd-jwt` credential format, and other verifiable credential formats can be added by introducing a schema and adding the format identifier to existing endpoints.
 
 Users can browse registered Type Metadata, while administrators can create, edit, and delete entries with live validation and visual previews.
 
 ## Features
 
-- Browse registered SD-JWT VC Type Metadata
+- Browse registered Verifiable Credential Type Metadata
 - View metadata in a human-friendly interface
 - Create, edit and delete Type Metadata entries
 - Live JSON validation and preview
@@ -34,7 +34,7 @@ yarn run dev
 
 ## Storage
 
-VC Type Metadata entries are stored in a database, in table `vct`, containing columns `urn` (VCT urn identifier, the primary key) and `metadata` (a JSON object containing the VC Type Metadata).
+VC Type Metadata entries are stored in a database, in table `type_metadata`, containing columns `identifier` (the type identifier, the primary key), `format` (`dc+sd-jwt`), and `metadata` (a JSON object containing the type metadata).
 
 Setting up VCT Registry as part of the wwWallet ecosystem provides a MariaDB database, but any database can be used.
 
@@ -44,11 +44,33 @@ Editing Type Metadata is protected using Basic authentication. The username and 
 
 ## API
 
-| Method | Endpoint                 | Description                          |
-| ------ | ------------------------ | ------------------------------------ |
-| GET    | `/type-metadata/all`     | Retrieve all registered metadata     |
-| GET    | `/type-metadata?vct=...` | Retrieve metadata for a specific VCT |
-| GET    | `/api/vct-list`          | List available VCTs                  |
+| Method | Endpoint                        | Description                                                                                       |
+| ------ | ------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `GET`  | `/type-metadata/all`            | Retrieve all registered metadata. Use query parameters to filter credential format results.       |
+| `GET`  | `/type-metadata?identifier=...` | Retrieve metadata for a specific type metadata identifier or vct, specified as a query parameter. |
+| `GET`  | `/type-metadata?vct=...`        | Retrieve metadata for a specific VCT                                                              |
+| `GET`  | `/type-metadata/list`           | List all formats as `{identifier, format, name}`                                                  |
+| `GET`  | `/api/vct-list`                 | Deprecated: list SD-JWT VC types as `{vct, name}`.                                                |
+
+### Management API
+
+Management routes require an authenticated session obtained through `/auth/login`:
+
+| Method | Endpoint                                  |
+| ------ | ----------------------------------------- |
+| `GET`  | `/api/type-metadata/entry?identifier=...` |
+| `POST` | `/api/type-metadata/create`               |
+| `POST` | `/api/type-metadata/edit`                 |
+| `POST` | `/api/type-metadata/delete`               |
+| `POST` | `/api/type-metadata/preview`              |
+
+### Upgrading from the VCT-only registry
+
+Run `yarn migration:run` before starting the updated application. The migration renames `vct` to `type_metadata` and `urn` to `identifier`, and backfills existing entries with the `dc+sd-jwt` format.
+
+Management clients must replace `/vct/create`, `/vct/edit`, `/vct/delete`, and `/vct/preview` with the corresponding `/api/type-metadata/*` routes. Create and edit requests use `identifier` instead of `vct`; create requests also require an explicit `format`. The old management routes have been removed. Public VCT lookup and the original `/type-metadata/schema` endpoint remain available; `/api/vct-list` is deprecated in favor of `/type-metadata/list`.
+
+`MAX_METADATA_SIZE` sets the metadata size limit in bytes and takes precedence over the legacy `MAX_VCT_SIZE`. If neither is set, the limit remains 102400 bytes.
 
 ### Example
 
