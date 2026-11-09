@@ -1,6 +1,5 @@
 import * as crypto from 'crypto';
-import { TypeMetadata } from 'wallet-common';
-import z from 'zod';
+import type { TypeMetadata } from 'wallet-common';
 
 export type Algorithm = 'sha256' | 'sha384' | 'sha512';
 
@@ -15,17 +14,14 @@ type UriWithIntegrity = {
  * @param algorithm - Hashing algorithm to use (default: sha256)
  * @returns SRI string like: sha256-<base64Hash>
  */
-async function calculateImageSRI(
-	input: URL | RequestInfo | string,
-	algorithm: Algorithm = 'sha256',
-): Promise<string> {
+async function calculateImageSRI(input: string, algorithm: Algorithm = 'sha256'): Promise<string> {
 	const buffer = await getImageFromInput(input);
 
 	const hash = crypto.createHash(algorithm).update(buffer).digest('base64');
 	return `${algorithm}-${hash}`;
 }
 
-async function getImageFromInput(input: URL | RequestInfo | string): Promise<Buffer> {
+async function getImageFromInput(input: string): Promise<Buffer> {
 	const response = await fetch(input);
 
 	if (!response.ok) {
@@ -68,7 +64,7 @@ function getAllUriValues(vctContent: TypeMetadata): UriWithIntegrity[] {
 }
 
 export async function verifyVctUriIntegrity(
-	vctContent: z.infer<typeof TypeMetadata>,
+	vctContent: TypeMetadata,
 ): Promise<{ valid: boolean; message?: string }> {
 	let valid: boolean = true;
 	const errors: string[] = [];

@@ -14,5 +14,9 @@ describe('Type Metadata JSON Schema', () => {
 		['vct', 'name', 'description', 'display', 'claims'].forEach((key) => {
 			expect(schema.properties).toHaveProperty(key);
 		});
+
+		expect(schema.additionalProperties).toBe(false);
+		expect(schema.properties.display.items.additionalProperties).toBe(false);
+		expect(schema.properties.claims.items.additionalProperties).toBe(false);
 	});
 });

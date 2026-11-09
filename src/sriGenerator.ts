@@ -11,7 +11,7 @@ export type Algorithm = 'sha256' | 'sha384' | 'sha512';
  * @returns SRI string like: sha256-<base64Hash>
  */
 export function createSRI(
-	input: Record<string, any> | string,
+	input: Record<string, unknown> | string,
 	algorithm: Algorithm = 'sha256',
 ): string {
 	let buffer: Buffer;

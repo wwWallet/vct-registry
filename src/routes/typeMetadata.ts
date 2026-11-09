@@ -3,7 +3,7 @@ import { decodeVct } from '../util';
 import { getAllVctMetadata, getVctByUrn } from '../db/vct';
 import { db } from '../server';
 import { TypeMetadata } from 'wallet-common';
-import { zodToJsonSchema } from 'zod-to-json-schema';
+import { z } from 'zod';
 
 /** /type-metadata */
 const typeMetadataRouter = Router();
@@ -56,11 +56,11 @@ typeMetadataRouter.get('/all', async (_req, res) => {
  * based on the Zod schema defined in wallet-common.
  */
 typeMetadataRouter.get('/schema', (_req, res) => {
-	const typeMetadataSchema = zodToJsonSchema(TypeMetadata as any, {
-		$refStrategy: 'none',
-		target: 'jsonSchema7',
+	const typeMetadataSchema = z.toJSONSchema(TypeMetadata, {
+		target: 'draft-07',
+		io: 'output',
 	});
-	delete (typeMetadataSchema as any).$schema;
+	delete typeMetadataSchema.$schema;
 
 	res.json(typeMetadataSchema);
 });
