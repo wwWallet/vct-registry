@@ -9,12 +9,18 @@ import { metadataId, metadataSelector, type MetadataFormat, type TypeMetadata } 
 import { buttonClass, cardClass, feedbackClass } from '../ui';
 import { addMetadataUriIntegrity } from '../uriIntegrity';
 
-const emptyMetadata: TypeMetadata = {
-	vct: '',
-	name: '',
-	display: [{}],
-	claims: [{ path: ['vct'], mandatory: true, sd: 'never' }],
+const emptyMetadata: Record<MetadataFormat, TypeMetadata> = {
+	'dc+sd-jwt': {
+		vct: '',
+		name: '',
+		display: [{}],
+		claims: [{ path: ['vct'], mandatory: true, sd: 'never' }],
+	},
+	mso_mdoc: { doctype: '', name: '', display: [{}], claims: [] },
 };
+
+const formatControlClass =
+	'h-11 w-full max-w-72 rounded-lg border border-[var(--vct-border)] bg-white px-3 text-[.9rem] font-normal text-[var(--vct-text)]';
 
 const editorStat =
 	'flex flex-col gap-1 border-b border-[var(--vct-border)] pb-2.5 last:border-0 last:pb-0';
@@ -34,12 +40,11 @@ export function MetadataEditorPage({ mode, onSaved }: MetadataEditorPageProps) {
 	const [searchParams] = useSearchParams();
 	const originalIdentifier = mode === 'edit' ? metadataSelector(searchParams) : '';
 	const [format, setFormat] = useState<MetadataFormat>('dc+sd-jwt');
-	const [initialText, setInitialText] = useState<string | undefined>();
-	const drafts = useRef<Partial<Record<MetadataFormat, string>>>({});
-	const [document, setDocument] = useState<TypeMetadata | undefined>(
-		mode === 'add' ? emptyMetadata : undefined,
+	const hasUnsavedChanges = useRef(false);
+	const [document, setDocument] = useState<TypeMetadata | undefined>(undefined);
+	const [editorInitialValue, setEditorInitialValue] = useState<TypeMetadata>(
+		emptyMetadata['dc+sd-jwt'],
 	);
-	const [editorInitialValue, setEditorInitialValue] = useState<TypeMetadata>(emptyMetadata);
 	const [validationErrors, setValidationErrors] = useState<string[]>([]);
 	const [editorRevision, setEditorRevision] = useState(0);
 	const [loadingEntry, setLoadingEntry] = useState(mode === 'edit');
@@ -49,6 +54,7 @@ export function MetadataEditorPage({ mode, onSaved }: MetadataEditorPageProps) {
 	const [error, setError] = useState('');
 
 	useEffect(() => {
+		hasUnsavedChanges.current = false;
 		if (mode !== 'edit') return;
 		if (!originalIdentifier) {
 			setLoadingEntry(false);
@@ -90,29 +96,21 @@ export function MetadataEditorPage({ mode, onSaved }: MetadataEditorPageProps) {
 	const handleValidationChange = useCallback((errors: string[]) => {
 		setValidationErrors(errors);
 	}, []);
-	const handleTextChange = useCallback(
-		(value: string) => {
-			drafts.current[format] = value;
-		},
-		[format],
-	);
-	function changeFormat(next: MetadataFormat) {
-		setFormat(next);
-		setInitialText(drafts.current[next]);
-		const initial: TypeMetadata =
-			next === 'mso_mdoc'
-				? { doctype: '', name: '', display: [{}], claims: [] }
-				: emptyMetadata;
-		setEditorInitialValue(initial);
-		try {
-			setDocument(
-				JSON.parse(drafts.current[next] ?? JSON.stringify(initial)) as TypeMetadata,
-			);
-		} catch {
-			setDocument(undefined);
-		}
-		setValidationErrors(['Validating metadata…']);
+	const handleDirtyChange = useCallback((dirty: boolean) => {
+		hasUnsavedChanges.current = dirty;
+	}, []);
+
+	function handleCancel(event: React.MouseEvent<HTMLAnchorElement>) {
+		// Opening the destination in another tab leaves this editor and its input intact.
+		if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey || event.button !== 0)
+			return;
+		if (
+			hasUnsavedChanges.current &&
+			!window.confirm('Discard your unsaved changes and leave this page?')
+		)
+			event.preventDefault();
 	}
+
 	const title = mode === 'add' ? 'Create Metadata' : 'Edit Metadata';
 	const previewList = previews(document);
 	const documentVct = text(document && metadataId(document), 'Not defined');
@@ -205,7 +203,7 @@ export function MetadataEditorPage({ mode, onSaved }: MetadataEditorPageProps) {
 					<h2 className="m-0 text-[1.6rem] leading-[1.1] font-bold">
 						{mode === 'add'
 							? 'Create Verifiable Credential Type Metadata'
-							: `Edit ${originalIdentifier} Type Metadata`}
+							: `Edit ${text(editorInitialValue.name, `${originalIdentifier} Type Metadata`)}`}
 					</h2>
 					<p className="mx-auto mt-2.5 max-w-[60ch] text-[.95rem] leading-[1.5] text-[var(--vct-text-muted)]">
 						{mode === 'add'
@@ -231,7 +229,7 @@ export function MetadataEditorPage({ mode, onSaved }: MetadataEditorPageProps) {
 								<p className="m-0 text-[.74rem] font-bold tracking-[.05em] text-[var(--vct-text-muted)] uppercase">
 									Identifier
 								</p>
-								<code className="mt-1 block break-all text-[.8rem]">
+								<code className="mt-1 inline-block max-w-full self-start break-all rounded bg-[color-mix(in_srgb,var(--vct-accent)_8%,white)] px-1 py-0.5 text-[.8rem]">
 									{documentVct}
 								</code>
 							</div>
@@ -306,32 +304,36 @@ export function MetadataEditorPage({ mode, onSaved }: MetadataEditorPageProps) {
 							Existing integrity algorithms are preserved and their values are
 							refreshed.
 						</div>
-						<label className="my-3 block">
+						<label className="my-4 flex flex-col items-start gap-2 text-[.85rem] font-semibold">
 							Metadata format
 							{mode === 'add' ? (
 								<select
 									aria-label="Metadata format"
+									className={`${formatControlClass} cursor-pointer outline-none transition-[border-color,box-shadow] hover:border-[var(--vct-border-strong)] focus:border-vct-accent focus:ring-3 focus:ring-[var(--vct-accent-ring)]`}
 									value={format}
 									onChange={(event) =>
-										changeFormat(event.target.value as MetadataFormat)
+										setFormat(event.target.value as MetadataFormat)
 									}
 								>
 									<option value="dc+sd-jwt">dc+sd-jwt</option>
 									<option value="mso_mdoc">mso_mdoc</option>
 								</select>
 							) : (
-								<code className="ml-2">{format}</code>
+								<span className={`${formatControlClass} inline-flex items-center`}>
+									{format}
+								</span>
 							)}
 						</label>
 						<JsonMetadataEditor
-							key={`${mode}-${originalIdentifier}-${editorRevision}-${format}`}
+							key={`${mode}-${originalIdentifier}-${editorRevision}`}
 							format={format}
-							initialText={initialText}
-							onTextChange={handleTextChange}
-							initialValue={editorInitialValue}
+							initialValue={
+								mode === 'add' ? emptyMetadata[format] : editorInitialValue
+							}
 							originalIdentifier={mode === 'edit' ? originalIdentifier : undefined}
 							onChange={handleEditorChange}
 							onValidationChange={handleValidationChange}
+							onDirtyChange={handleDirtyChange}
 						/>
 						{validationErrors.length > 0 && (
 							<div className={`${feedbackClass.error} mt-2`} role="status">
@@ -362,6 +364,7 @@ export function MetadataEditorPage({ mode, onSaved }: MetadataEditorPageProps) {
 						<div className="mt-3 flex items-stretch gap-2 max-[520px]:flex-col">
 							<Link
 								className={buttonClass('secondary', 'flex-1')}
+								onClick={handleCancel}
 								to={
 									originalIdentifier
 										? `/metadata?identifier=${encodeURIComponent(originalIdentifier)}`

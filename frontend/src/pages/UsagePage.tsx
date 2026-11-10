@@ -8,22 +8,40 @@ export function UsagePage() {
 			title: '1. Fetch All Metadata',
 			endpoint: `GET ${registryUrl}/type-metadata/all`,
 			code: `curl -s "${registryUrl}/type-metadata/all"`,
+			guidance: (
+				<>
+					Optionally filter by format: <code>/type-metadata/all?format=mso_mdoc</code> or{' '}
+					<code>/type-metadata/all?format=dc%2Bsd-jwt</code>. No matches returns an empty
+					array; unsupported formats return HTTP 400.
+				</>
+			),
 		},
 		{
 			title: '2. Fetch One Metadata Entry By Identifier',
 			endpoint: `GET ${registryUrl}/type-metadata?identifier=<identifier>`,
 			code: `curl -s "${registryUrl}/type-metadata?identifier=urn:eudi:pid:1"`,
+			guidance: (
+				<>
+					For any format, use <code>/type-metadata?identifier=&lt;identifier&gt;</code>{' '}
+					(or <code>id</code>). Add <code>&amp;format=mso_mdoc</code> or{' '}
+					<code>&amp;format=dc%2Bsd-jwt</code> to constrain the format. The{' '}
+					<code>vct</code> parameter selects SD-JWT VC metadata; <code>doctype</code>{' '}
+					selects mdoc metadata. Conflicting selectors return HTTP 400. No match returns
+					HTTP 404.
+				</>
+			),
 		},
 		{
 			title: 'Fetch mdoc Metadata',
 			endpoint: `GET ${registryUrl}/type-metadata?doctype=org.iso.18013.5.1.mDL`,
-			code: `curl -s "${registryUrl}/type-metadata/all?format=mso_mdoc"`,
+			code: `curl -s "${registryUrl}/type-metadata?doctype=org.iso.18013.5.1.mDL"`,
 		},
 		{
 			title: '3. Browser Fetch Example',
 			code: `const vct = encodeURIComponent("urn:eudi:pid:1");\nconst res = await fetch(\`${registryUrl}/type-metadata?identifier=\${vct}\`);\nconst metadata = await res.json();\nconsole.log(metadata);`,
 		},
 		{
+			id: 'type-metadata-list',
 			title: '4. List Available Types (Identifier, Format, and Name)',
 			endpoint: `GET ${registryUrl}/type-metadata/list`,
 			code: `curl -s "${registryUrl}/type-metadata/list"`,
@@ -51,10 +69,7 @@ export function UsagePage() {
 						</code>
 					</p>
 					{examples.map((example) => (
-						<div
-							key={example.title}
-							id={example.title.startsWith('4.') ? 'type-metadata-list' : undefined}
-						>
+						<div key={example.title} id={example.id}>
 							<h3 className="mt-5 mb-2 text-[1.05rem] font-bold">{example.title}</h3>
 							{example.endpoint && (
 								<p className="mb-2 text-[.92rem] text-gray-600">
@@ -76,6 +91,11 @@ export function UsagePage() {
 									</code>
 								</pre>
 							</div>
+							{example.guidance && (
+								<p className="mt-2 mb-2 text-[.92rem] text-gray-600">
+									{example.guidance}
+								</p>
+							)}
 						</div>
 					))}
 				</section>

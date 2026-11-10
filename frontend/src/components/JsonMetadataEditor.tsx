@@ -2,16 +2,16 @@ import { useEffect, useRef, useState } from 'react';
 import JSONEditor, { type ValidationError } from 'jsoneditor';
 import 'jsoneditor/dist/jsoneditor.css';
 import { getMetadataSchema } from '../api/client';
+import { hasMetadataChanges } from '../metadataChanges';
 import { metadataId, type MetadataFormat, type TypeMetadata } from '../types';
 
 interface JsonMetadataEditorProps {
 	initialValue: TypeMetadata;
 	format: MetadataFormat;
-	initialText?: string;
-	onTextChange: (text: string) => void;
 	originalIdentifier?: string;
 	onChange: (metadata?: TypeMetadata) => void;
 	onValidationChange: (errors: string[]) => void;
+	onDirtyChange: (dirty: boolean) => void;
 }
 
 function validationMessage(entry: unknown): string {
@@ -47,20 +47,50 @@ function validationMessage(entry: unknown): string {
 export function JsonMetadataEditor({
 	initialValue,
 	format,
-	initialText,
-	onTextChange,
 	originalIdentifier,
 	onChange,
 	onValidationChange,
+	onDirtyChange,
 }: JsonMetadataEditorProps) {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const [setupError, setSetupError] = useState('');
+	const editedText = useRef<string | undefined>(undefined);
 
 	useEffect(() => {
 		const container = containerRef.current;
 		if (!container) return;
 		let disposed = false;
 		let editor: JSONEditor | undefined;
+		let validationRevision = 0;
+		setSetupError('');
+		onChange(undefined);
+		onValidationChange(['Validating metadata…']);
+
+		// Programmatic restoration does not emit JSONEditor onChange events.
+		// Publish the parsed value and validation result through the same path as typing.
+		function reportContent() {
+			if (disposed || !editor) return;
+			onDirtyChange(hasMetadataChanges(editor.getText(), initialValue));
+			const revision = ++validationRevision;
+			onValidationChange(['Validating metadata…']);
+			try {
+				onChange(editor.get() as TypeMetadata);
+			} catch {
+				onChange(undefined);
+			}
+			void editor
+				.validate()
+				.then((errors) => {
+					if (!disposed && revision === validationRevision) {
+						onValidationChange(errors.map(validationMessage));
+					}
+				})
+				.catch(() => {
+					if (!disposed && revision === validationRevision) {
+						onValidationChange(['The metadata could not be validated.']);
+					}
+				});
+		}
 
 		void getMetadataSchema(format)
 			.then((schema) => {
@@ -85,22 +115,14 @@ export function JsonMetadataEditor({
 							}
 							return errors;
 						},
-						onValidationError: (errors) => {
-							onValidationChange(errors.map(validationMessage));
-						},
-						onChange: () => {
-							onTextChange(editor?.getText() ?? '');
-							try {
-								onChange(editor?.get() as TypeMetadata);
-							} catch {
-								onChange(undefined);
-							}
-						},
+						onChange: reportContent,
 					},
 					initialValue,
 				);
-				if (initialText !== undefined) editor.setText(initialText);
-				void editor.validate();
+				if (!originalIdentifier && editedText.current !== undefined) {
+					editor.setText(editedText.current);
+				}
+				reportContent();
 			})
 			.catch((reason: unknown) => {
 				if (!disposed) {
@@ -115,17 +137,14 @@ export function JsonMetadataEditor({
 
 		return () => {
 			disposed = true;
+			if (editor && !originalIdentifier) {
+				// Keep edited text across schema changes; pristine content uses the next template.
+				const text = editor.getText();
+				editedText.current = hasMetadataChanges(text, initialValue) ? text : undefined;
+			}
 			editor?.destroy();
 		};
-	}, [
-		initialValue,
-		initialText,
-		format,
-		onChange,
-		onTextChange,
-		onValidationChange,
-		originalIdentifier,
-	]);
+	}, [initialValue, format, onChange, onValidationChange, onDirtyChange, originalIdentifier]);
 
 	return (
 		<>
