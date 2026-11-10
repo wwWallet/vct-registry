@@ -1,3 +1,4 @@
+import { metadataId, metadataFormat, metadataSelector } from '../types';
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { deleteMetadata } from '../api/client';
@@ -18,18 +19,18 @@ export function MetadataPage({ metadata, loading, error, onMetadataChanged }: Pa
 	const [searchParams, setSearchParams] = useSearchParams();
 	const [mutationError, setMutationError] = useState('');
 	const [deleting, setDeleting] = useState(false);
-	const requestedVct = searchParams.get('vct');
+	const requestedVct = metadataSelector(searchParams);
 	const status = searchParams.get('status');
 	const selected = useMemo(
-		() => metadata.find((item) => item.vct === requestedVct),
+		() => metadata.find((item) => metadataId(item) === requestedVct),
 		[metadata, requestedVct],
 	);
-	const selectedVct = selected?.vct ?? '__all__';
+	const selectedVct = selected ? metadataId(selected) : '__all__';
 	const payload = selectedVct === '__all__' ? metadata : selected;
 	const metadataJson = JSON.stringify(payload ?? null, null, 2);
 	const registryUrl = window.location.origin;
 	const sourceUrl = selected
-		? `${registryUrl}/type-metadata?vct=${encodeURIComponent(selected.vct)}`
+		? `${registryUrl}/type-metadata?identifier=${encodeURIComponent(metadataId(selected))}`
 		: `${registryUrl}/type-metadata/all`;
 
 	useEffect(() => {
@@ -51,7 +52,7 @@ export function MetadataPage({ metadata, loading, error, onMetadataChanged }: Pa
 		if (!selected) return;
 		if (
 			!window.confirm(
-				'Are you sure you want to delete this VC Type Metadata entry? This action is irreversible.',
+				'Are you sure you want to delete this Type Metadata entry? This action is irreversible.',
 			)
 		) {
 			return;
@@ -60,7 +61,7 @@ export function MetadataPage({ metadata, loading, error, onMetadataChanged }: Pa
 		setMutationError('');
 		setDeleting(true);
 		try {
-			await deleteMetadata(selected.vct);
+			await deleteMetadata(metadataId(selected));
 			await onMetadataChanged();
 			setSearchParams({ status: 'deleted' });
 		} catch (reason) {
@@ -100,8 +101,8 @@ export function MetadataPage({ metadata, loading, error, onMetadataChanged }: Pa
 				{status && ['created', 'updated', 'deleted'].includes(status) && (
 					<div className={feedbackClass.success} role="status">
 						{status === 'deleted'
-							? 'Successfully deleted VC Type Metadata.'
-							: 'Successfully saved VC Type Metadata.'}
+							? 'Successfully deleted Type Metadata.'
+							: 'Successfully saved Type Metadata.'}
 					</div>
 				)}
 				{mutationError && (
@@ -121,7 +122,7 @@ export function MetadataPage({ metadata, loading, error, onMetadataChanged }: Pa
 									Selection
 								</h3>
 								<p className="m-0 text-[.88rem] leading-[normal] text-[var(--vct-text-muted)]">
-									Choose a VCT to inspect a single record, or switch to the
+									Choose a type to inspect a single record, or switch to the
 									complete registry response.
 								</p>
 							</div>
@@ -134,14 +135,14 @@ export function MetadataPage({ metadata, loading, error, onMetadataChanged }: Pa
 											setSearchParams(
 												event.target.value === '__all__'
 													? {}
-													: { vct: event.target.value },
+													: { identifier: event.target.value },
 											)
 										}
 									>
 										<option value="__all__">(All metadata)</option>
 										{metadata.map((item) => (
-											<option key={item.vct} value={item.vct}>
-												{item.name} ({item.vct})
+											<option key={metadataId(item)} value={metadataId(item)}>
+												{item.name} ({metadataId(item)})
 											</option>
 										))}
 									</select>
@@ -152,7 +153,7 @@ export function MetadataPage({ metadata, loading, error, onMetadataChanged }: Pa
 											'outline',
 											'px-4.5 py-2.5 tracking-[.01em]',
 										)}
-										to={`/edit?vct=${encodeURIComponent(selected.vct)}`}
+										to={`/edit?identifier=${encodeURIComponent(metadataId(selected))}`}
 									>
 										Edit metadata
 									</Link>
@@ -170,16 +171,22 @@ export function MetadataPage({ metadata, loading, error, onMetadataChanged }: Pa
 									{selected ? (
 										<>
 											<div className={stat}>
-												<dt className={label}>VCT</dt>
+												<dt className={label}>Format</dt>
+												<dd className={value}>
+													{metadataFormat(selected)}
+												</dd>
+											</div>
+											<div className={stat}>
+												<dt className={label}>Identifier</dt>
 												<dd
 													className={`${value} flex items-center justify-between gap-2.5`}
 												>
 													<code className="break-all rounded bg-[color-mix(in_srgb,var(--vct-accent)_8%,white)] px-1 py-0.5 text-[.85em]">
-														{selected.vct}
+														{metadataId(selected)}
 													</code>
 													<CopyButton
-														value={selected.vct}
-														label="Copy VCT"
+														value={metadataId(selected)}
+														label="Copy identifier"
 													/>
 												</dd>
 											</div>
@@ -200,7 +207,7 @@ export function MetadataPage({ metadata, loading, error, onMetadataChanged }: Pa
 																	<img
 																		className="block h-auto w-full max-w-60 rounded-[10px] border border-[var(--vct-border)] bg-[#f3f8fa]"
 																		src={preview.uri}
-																		alt={`${selected.name || selected.vct} preview`}
+																		alt={`${selected.name || metadataId(selected)} preview`}
 																	/>
 																	{previewCaption(
 																		preview.properties,
@@ -282,7 +289,7 @@ export function MetadataPage({ metadata, loading, error, onMetadataChanged }: Pa
 						</div>
 					</>
 				) : (
-					<div className={feedbackClass.error}>No VCT entries found.</div>
+					<div className={feedbackClass.error}>No type metadata entries found.</div>
 				)}
 			</section>
 		</>

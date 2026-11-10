@@ -3,9 +3,18 @@ import request from 'supertest';
 import { app } from '../../src/server';
 
 describe('Type Metadata JSON Schema', () => {
+	it('serves the mdoc schema through the format-specific route', async () => {
+		const { body } = await request(app).get('/type-metadata/schema/mso_mdoc').expect(200);
+		expect(body.required).toContain('doctype');
+	});
+
+	it('no longer exposes the legacy mdoc schema route', async () => {
+		await request(app).get('/mdoc/schema').expect(404);
+	});
+
 	it('should have correct top-level type and properties', async () => {
 		const { body: schema } = await request(app)
-			.get('/type-metadata/schema')
+			.get('/type-metadata/schema/dc+sd-jwt')
 			.expect(200)
 			.expect('Content-Type', /json/);
 

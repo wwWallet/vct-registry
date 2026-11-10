@@ -18,4 +18,23 @@ describe('ZOD validation', () => {
 		);
 		expect(zodVctValidationResult.success).toBe(false);
 	});
+
+	it('Should strip additional properties before storage', () => {
+		const result = TypeMetadata.safeParse({
+			...verifiableCredentialTypeMetadata,
+			unexpected: 'remove me',
+			display: [
+				{
+					...verifiableCredentialTypeMetadata.display[0],
+					unexpected: 'remove me too',
+				},
+			],
+		});
+
+		expect(result.success).toBe(true);
+		if (result.success) {
+			expect(result.data).not.toHaveProperty('unexpected');
+			expect(result.data.display?.[0]).not.toHaveProperty('unexpected');
+		}
+	});
 });

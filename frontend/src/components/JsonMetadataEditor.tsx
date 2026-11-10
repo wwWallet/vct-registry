@@ -2,11 +2,14 @@ import { useEffect, useRef, useState } from 'react';
 import JSONEditor, { type ValidationError } from 'jsoneditor';
 import 'jsoneditor/dist/jsoneditor.css';
 import { getMetadataSchema } from '../api/client';
-import type { TypeMetadata } from '../types';
+import { metadataId, type MetadataFormat, type TypeMetadata } from '../types';
 
 interface JsonMetadataEditorProps {
 	initialValue: TypeMetadata;
-	originalVct?: string;
+	format: MetadataFormat;
+	initialText?: string;
+	onTextChange: (text: string) => void;
+	originalIdentifier?: string;
 	onChange: (metadata?: TypeMetadata) => void;
 	onValidationChange: (errors: string[]) => void;
 }
@@ -43,7 +46,10 @@ function validationMessage(entry: unknown): string {
 
 export function JsonMetadataEditor({
 	initialValue,
-	originalVct,
+	format,
+	initialText,
+	onTextChange,
+	originalIdentifier,
 	onChange,
 	onValidationChange,
 }: JsonMetadataEditorProps) {
@@ -56,7 +62,7 @@ export function JsonMetadataEditor({
 		let disposed = false;
 		let editor: JSONEditor | undefined;
 
-		void getMetadataSchema()
+		void getMetadataSchema(format)
 			.then((schema) => {
 				if (disposed) return;
 				editor = new JSONEditor(
@@ -68,10 +74,13 @@ export function JsonMetadataEditor({
 						schema,
 						onValidate: (value: TypeMetadata) => {
 							const errors: ValidationError[] = [];
-							if (originalVct && value?.vct !== originalVct) {
+							if (
+								originalIdentifier &&
+								(!value || metadataId(value) !== originalIdentifier)
+							) {
 								errors.push({
-									path: ['vct'],
-									message: 'The VCT identifier cannot be changed.',
+									path: [format === 'mso_mdoc' ? 'doctype' : 'vct'],
+									message: 'The type metadata identifier cannot be changed.',
 								});
 							}
 							return errors;
@@ -80,6 +89,7 @@ export function JsonMetadataEditor({
 							onValidationChange(errors.map(validationMessage));
 						},
 						onChange: () => {
+							onTextChange(editor?.getText() ?? '');
 							try {
 								onChange(editor?.get() as TypeMetadata);
 							} catch {
@@ -89,6 +99,7 @@ export function JsonMetadataEditor({
 					},
 					initialValue,
 				);
+				if (initialText !== undefined) editor.setText(initialText);
 				void editor.validate();
 			})
 			.catch((reason: unknown) => {
@@ -106,7 +117,15 @@ export function JsonMetadataEditor({
 			disposed = true;
 			editor?.destroy();
 		};
-	}, [initialValue, onChange, onValidationChange, originalVct]);
+	}, [
+		initialValue,
+		initialText,
+		format,
+		onChange,
+		onTextChange,
+		onValidationChange,
+		originalIdentifier,
+	]);
 
 	return (
 		<>

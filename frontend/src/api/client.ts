@@ -1,4 +1,5 @@
-import type { AuthState, TypeMetadata } from '../types';
+import { metadataId, metadataFormat } from '../types';
+import type { AuthState, TypeMetadata, MetadataFormat, MetadataEntry } from '../types';
 
 class RequestError extends Error {
 	readonly status: number;
@@ -29,20 +30,20 @@ export function getAllMetadata(): Promise<TypeMetadata[]> {
 	return requestJson('/type-metadata/all');
 }
 
-export function getMetadata(vct: string, signal?: AbortSignal): Promise<TypeMetadata> {
-	return requestJson(`/type-metadata?vct=${encodeURIComponent(vct)}`, { signal });
+export function getMetadata(identifier: string, signal?: AbortSignal): Promise<TypeMetadata> {
+	return requestJson(`/type-metadata?identifier=${encodeURIComponent(identifier)}`, { signal });
 }
 
-export async function getMetadataPreview(vct: string, signal?: AbortSignal) {
+export async function getMetadataPreview(identifier: string, signal?: AbortSignal) {
 	const preview = await requestJson<{ dataUri: string | null }>(
-		`/api/vct-preview?vct=${encodeURIComponent(vct)}`,
+		`/api/type-metadata-preview?identifier=${encodeURIComponent(identifier)}`,
 		{ signal },
 	);
 	return preview.dataUri;
 }
 
-export function getMetadataSchema(): Promise<object> {
-	return requestJson<object>('/type-metadata/schema');
+export function getMetadataSchema(format: MetadataFormat = 'dc+sd-jwt'): Promise<object> {
+	return requestJson<object>(`/type-metadata/schema/${encodeURIComponent(format)}`);
 }
 
 export function getAuthState(): Promise<AuthState> {
@@ -87,16 +88,26 @@ function mutationRequest<T>(url: string, body: unknown): Promise<T> {
 }
 
 export function createMetadata(metadata: TypeMetadata): Promise<{ message: string }> {
-	return mutationRequest('/vct/create', { vct: metadata.vct, metadata });
+	return mutationRequest('/api/type-metadata/create', {
+		identifier: metadataId(metadata),
+		format: metadataFormat(metadata),
+		metadata,
+	});
 }
 
 export function updateMetadata(
-	originalVct: string,
+	identifier: string,
 	metadata: TypeMetadata,
 ): Promise<{ message: string }> {
-	return mutationRequest('/vct/edit', { vct: originalVct, metadata });
+	return mutationRequest('/api/type-metadata/edit', { identifier, metadata });
 }
 
-export function deleteMetadata(vct: string): Promise<{ message: string }> {
-	return mutationRequest('/vct/delete', { vct });
+export function deleteMetadata(identifier: string): Promise<{ message: string }> {
+	return mutationRequest('/api/type-metadata/delete', { identifier });
+}
+
+export function getMetadataEntry(identifier: string, signal?: AbortSignal): Promise<MetadataEntry> {
+	return requestJson(`/api/type-metadata/entry?identifier=${encodeURIComponent(identifier)}`, {
+		signal,
+	});
 }

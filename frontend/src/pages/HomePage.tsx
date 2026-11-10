@@ -1,3 +1,4 @@
+import { metadataId } from '../types';
 import { Link } from 'react-router-dom';
 import { MetadataCard } from '../components/MetadataCard';
 import type { TypeMetadata } from '../types';
@@ -11,8 +12,7 @@ export function HomePage({ metadata, loading, error }: PageProps) {
 					Verifiable Credential TypeMetadata Registry
 				</h1>
 				<p className="mx-auto mt-2.5 max-w-[60ch] text-[.95rem] leading-[1.5] text-[var(--vct-text-muted)]">
-					Browse and inspect SD-JWT Verifiable Credential Type metadata from one local
-					registry.
+					Browse and inspect SD-JWT VC and mdoc type metadata from one local registry.
 				</p>
 			</div>
 			<div className="mb-5 flex flex-wrap justify-center gap-2.5 text-center">
@@ -32,7 +32,7 @@ export function HomePage({ metadata, loading, error }: PageProps) {
 			) : metadata.length ? (
 				<div className="home-cards flex flex-wrap justify-center gap-3">
 					{metadata.map((item) => (
-						<MetadataCard key={item.vct} metadata={item} />
+						<MetadataCard key={metadataId(item)} metadata={item} />
 					))}
 				</div>
 			) : (

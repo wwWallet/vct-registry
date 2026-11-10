@@ -10,18 +10,23 @@ export function UsagePage() {
 			code: `curl -s "${registryUrl}/type-metadata/all"`,
 		},
 		{
-			title: '2. Fetch One Metadata Entry By VCT',
-			endpoint: `GET ${registryUrl}/type-metadata?vct=<vct-value>`,
-			code: `curl -s "${registryUrl}/type-metadata?vct=urn:eudi:pid:1"`,
+			title: '2. Fetch One Metadata Entry By Identifier',
+			endpoint: `GET ${registryUrl}/type-metadata?identifier=<identifier>`,
+			code: `curl -s "${registryUrl}/type-metadata?identifier=urn:eudi:pid:1"`,
+		},
+		{
+			title: 'Fetch mdoc Metadata',
+			endpoint: `GET ${registryUrl}/type-metadata?doctype=org.iso.18013.5.1.mDL`,
+			code: `curl -s "${registryUrl}/type-metadata/all?format=mso_mdoc"`,
 		},
 		{
 			title: '3. Browser Fetch Example',
-			code: `const vct = encodeURIComponent("urn:eudi:pid:1");\nconst res = await fetch(\`${registryUrl}/type-metadata?vct=\${vct}\`);\nconst metadata = await res.json();\nconsole.log(metadata);`,
+			code: `const vct = encodeURIComponent("urn:eudi:pid:1");\nconst res = await fetch(\`${registryUrl}/type-metadata?identifier=\${vct}\`);\nconst metadata = await res.json();\nconsole.log(metadata);`,
 		},
 		{
-			title: '4. Optional: List Available VCTs (Name + VCT)',
-			endpoint: `GET ${registryUrl}/api/vct-list`,
-			code: `curl -s "${registryUrl}/api/vct-list"`,
+			title: '4. List Available Types (Identifier, Format, and Name)',
+			endpoint: `GET ${registryUrl}/type-metadata/list`,
+			code: `curl -s "${registryUrl}/type-metadata/list"`,
 		},
 	];
 
@@ -46,7 +51,10 @@ export function UsagePage() {
 						</code>
 					</p>
 					{examples.map((example) => (
-						<div key={example.title}>
+						<div
+							key={example.title}
+							id={example.title.startsWith('4.') ? 'type-metadata-list' : undefined}
+						>
 							<h3 className="mt-5 mb-2 text-[1.05rem] font-bold">{example.title}</h3>
 							{example.endpoint && (
 								<p className="mb-2 text-[.92rem] text-gray-600">
