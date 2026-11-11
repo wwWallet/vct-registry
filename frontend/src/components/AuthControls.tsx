@@ -214,7 +214,7 @@ export function AuthControls() {
 					<label className="grid gap-1.5 text-[.85rem] text-[var(--vct-text-muted)]">
 						Username
 						<input
-							className="w-full rounded-lg border border-[var(--vct-border)] bg-white p-2.5 text-[.9rem] font-normal outline-none focus:border-vct-accent focus:ring-3 focus:ring-[var(--vct-accent-ring-soft)]"
+							className="w-full rounded-lg border border-[var(--vct-border)] bg-white p-2.5 text-[.9rem] font-normal text-[var(--vct-text)] outline-none focus:border-vct-accent focus:ring-3 focus:ring-[var(--vct-accent-ring-soft)]"
 							name="username"
 							type="text"
 							autoComplete="username"
@@ -225,7 +225,7 @@ export function AuthControls() {
 					<label className="grid gap-1.5 text-[.85rem] text-[var(--vct-text-muted)]">
 						Password
 						<input
-							className="w-full rounded-lg border border-[var(--vct-border)] bg-white p-2.5 text-[.9rem] font-normal outline-none focus:border-vct-accent focus:ring-3 focus:ring-[var(--vct-accent-ring-soft)]"
+							className="w-full rounded-lg border border-[var(--vct-border)] bg-white p-2.5 text-[.9rem] font-normal text-[var(--vct-text)] outline-none focus:border-vct-accent focus:ring-3 focus:ring-[var(--vct-accent-ring-soft)]"
 							name="password"
 							type="password"
 							autoComplete="current-password"
