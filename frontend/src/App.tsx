@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { AuthProvider } from './auth';
 import { Layout } from './components/Layout';
+import { LoadingFallback } from './components/LoadingFallback';
 import { RequireAuth } from './components/RequireAuth';
 import { HomePage } from './pages/HomePage';
 import { MetadataPage } from './pages/MetadataPage';
@@ -13,10 +14,6 @@ const MetadataEditorPage = lazy(() =>
 		default: module.MetadataEditorPage,
 	})),
 );
-
-function EditorFallback() {
-	return <div className="text-center text-sm text-gray-500">Loading editor…</div>;
-}
 
 export default function App() {
 	const { metadata, loading, error, handleMetadataChanged } = useRegistryMetadata();
@@ -47,7 +44,11 @@ export default function App() {
 							<Route
 								path="add"
 								element={
-									<Suspense fallback={<EditorFallback />}>
+									<Suspense
+										fallback={
+											<LoadingFallback label="Loading metadata editor…" />
+										}
+									>
 										<MetadataEditorPage
 											mode="add"
 											onSaved={handleMetadataChanged}
@@ -58,7 +59,11 @@ export default function App() {
 							<Route
 								path="edit"
 								element={
-									<Suspense fallback={<EditorFallback />}>
+									<Suspense
+										fallback={
+											<LoadingFallback label="Loading metadata editor…" />
+										}
+									>
 										<MetadataEditorPage
 											mode="edit"
 											onSaved={handleMetadataChanged}
