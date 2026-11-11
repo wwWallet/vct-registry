@@ -246,7 +246,7 @@ export function MetadataPage({ metadata, loading, error, onMetadataChanged }: Pa
 											className={`${value} flex items-center justify-between gap-2.5`}
 										>
 											<code className="break-all rounded bg-[color-mix(in_srgb,var(--vct-accent)_8%,white)] px-1 py-0.5 text-[.85em]">
-												GET {sourceUrl}
+												{sourceUrl}
 											</code>
 											<CopyButton value={sourceUrl} label="Copy source" />
 										</dd>

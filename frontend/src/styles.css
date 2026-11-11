@@ -72,9 +72,9 @@
     border-radius: 4px;
     background: #fff;
   }
+}
 
-  .react-jsoneditor > .jsoneditor {
-    height: 100%;
-    border: 0;
-  }
+.react-jsoneditor > .jsoneditor {
+  height: 100%;
+  border: 0;
 }
