@@ -3,28 +3,24 @@ import request from 'supertest';
 import { config } from '../../config';
 import { describe, it } from 'vitest';
 
-describe('Frontend Authentication', () => {
-	it('GET /edit redirects to the configured URL when not authenticated', async () => {
-		await request(app).get('/edit').expect(302).expect('Location', config.url);
+describe('Session Authentication', () => {
+	it('GET /auth returns 401 when not authenticated', async () => {
+		await request(app).get('/auth').expect(401);
 	});
 
-	it('GET /edit redirects to the configured URL with wrong credentials', async () => {
-		await request(app)
-			.get('/edit')
-			.auth('fake_user', 'wrong_password')
-			.expect(302)
-			.expect('Location', config.url);
+	it('GET /auth/login returns 401 with wrong credentials', async () => {
+		await request(app).get('/auth/login').auth('fake_user', 'wrong_password').expect(401);
 	});
 
-	it('GET /edit returns 200 when authenticated properly', async () => {
+	it('login establishes a session that can be logged out', async () => {
 		const username = Object.keys(config.users)[0];
 		const password = config.users[username];
-
 		const agent = request.agent(app);
 
 		await agent.get('/auth/login').auth(username, password).expect(200);
-
-		await agent.get('/edit').expect(200);
+		await agent.get('/auth').expect(200).expect({ username });
+		await agent.get('/auth/logout').expect(200);
+		await agent.get('/auth').expect(401);
 	});
 });
 
