@@ -8,45 +8,55 @@ export async function fetchJson(url) {
 }
 
 /**
- * Handle a raw VCT string that may or may not be URL-encoded.
- * @param rawVct
- * @returns decoded VCT string, or undefined if input is invalid
+ * Handle a raw identifier string that may or may not be URL-encoded.
+ * @param rawIdentifier
+ * @returns decoded identifier string, or the original value if decoding fails
  */
-export function decodeVct(rawVct) {
-	let decodedVct;
+export function decodeIdentifier(rawIdentifier) {
+	let decodedIdentifier;
 	try {
-		decodedVct = decodeURIComponent(rawVct);
+		decodedIdentifier = decodeURIComponent(rawIdentifier);
 	} catch (decodingError) {
-		console.warn('Error decoding VCT:', decodingError);
-		console.warn('Using raw VCT string as-is.');
-		decodedVct = rawVct;
+		console.warn('Error decoding identifier:', decodingError);
+		console.warn('Using raw identifier string as-is.');
+		decodedIdentifier = rawIdentifier;
 	}
 
-	return decodedVct;
+	return decodedIdentifier;
 }
 
-export function getMetadataViewUrl(vct) {
-	if (!vct) {
-		return './metadata';
-	}
-
-	return `./metadata?vct=${encodeURIComponent(vct)}`;
+export function getMetadataViewUrl(identifier) {
+	if (!identifier) return './metadata';
+	return `./metadata?identifier=${encodeURIComponent(identifier)}`;
 }
 
-export async function initializeEditor(container, validationFn, initialData, onContentChange) {
-	var schema = await fetchJson('type-metadata/schema');
+export async function initializeEditor(
+	container,
+	validationFn,
+	initialData,
+	onContentChange,
+	format,
+) {
+	const [sdJwtVcSchema, mdocSchema] = await Promise.all([
+		fetchJson('type-metadata/schema/dc+sd-jwt'),
+		fetchJson('type-metadata/schema/mso_mdoc'),
+	]);
+	const schemas = { 'dc+sd-jwt': sdJwtVcSchema, mso_mdoc: mdocSchema };
+
+	if (!Object.hasOwn(schemas, format))
+		throw new Error('A supported metadata format is required.');
 
 	const options = {
 		mode: 'code',
 		mainMenuBar: false,
 		statusBar: false,
-		schema: schema,
+		schema: schemas[format],
 		onValidate: validationFn,
 		onValidationError: function (errors) {
 			if (errors.length > 0) {
-				document.querySelector('#vct-submit-btn').disabled = true;
+				document.querySelector('#registry-submit-btn').disabled = true;
 			} else {
-				document.querySelector('#vct-submit-btn').disabled = false;
+				document.querySelector('#registry-submit-btn').disabled = false;
 			}
 		},
 		onChange() {
@@ -64,11 +74,19 @@ export async function initializeEditor(container, validationFn, initialData, onC
 	if (initialData) {
 		editor.set(initialData);
 	}
+	const typeSelect = document.getElementById('metadata-type');
+	if (typeSelect) {
+		typeSelect.addEventListener('change', () => {
+			if (typeSelect.disabled) return;
+			editor.setSchema(schemas[typeSelect.value]);
+			void editor.validate();
+		});
+	}
 	return editor;
 }
 
 export async function requestMetadataPreview(metadata) {
-	const res = await fetch('vct/preview', {
+	const res = await fetch('api/type-metadata/preview', {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({ metadata }),
@@ -124,22 +142,22 @@ export function initializeCopyButtons(selector = '[data-copy-target]') {
 }
 
 export function showSuccess(message) {
-	const successBox = document.getElementById('vct-success');
+	const successBox = document.getElementById('registry-success');
 	successBox.hidden = false;
 	successBox.textContent = message;
 
 	setTimeout(() => {
-		hideElement('vct-success');
+		hideElement('registry-success');
 	}, 5000);
 }
 
 export function showErrors(message, errors) {
-	const errorBox = document.getElementById('vct-error');
+	const errorBox = document.getElementById('registry-error');
 	errorBox.hidden = false;
 	errorBox.textContent = `${message}\nThe following errors were found:\n${errors.message}`;
 
 	setTimeout(() => {
-		hideElement('vct-error');
+		hideElement('registry-error');
 	}, 5000);
 }
 
@@ -193,7 +211,7 @@ export async function getAuthState() {
 	}
 }
 
-export const initialAddVctData = {
+export const initialSdJwtVcMetadata = {
 	vct: '',
 	name: '',
 	display: [{}],
@@ -206,17 +224,24 @@ export const initialAddVctData = {
 	],
 };
 
-function updateMetadataDetails(metadata) {
-	const vctIdValue = document.querySelector('#edit-vct-id-value code');
-	const vctNameValue = document.getElementById('edit-vct-name-value');
-	const descriptionValue = document.getElementById('edit-vct-description');
+export const initialAddMdocData = {
+	doctype: '',
+	name: '',
+	display: [{}],
+	claims: [],
+};
 
-	if (!vctIdValue || !vctNameValue || !descriptionValue) {
+function updateMetadataDetails(metadata) {
+	const identifierValue = document.querySelector('#edit-metadata-identifier-value code');
+	const nameValue = document.getElementById('edit-metadata-name-value');
+	const descriptionValue = document.getElementById('edit-metadata-description');
+
+	if (!identifierValue || !nameValue || !descriptionValue) {
 		return;
 	}
 
-	vctIdValue.textContent = metadata?.vct || '';
-	vctNameValue.textContent = metadata?.name || '-';
+	identifierValue.textContent = metadata?.vct || metadata?.doctype || '';
+	nameValue.textContent = metadata?.name || '-';
 	descriptionValue.textContent = metadata?.description || 'No description provided.';
 }
 
@@ -261,7 +286,7 @@ function renderPreview(metadata) {
 				const image = document.createElement('img');
 				image.className = 'metadata-preview';
 				image.src = preview.uri;
-				image.alt = `${metadata?.name || metadata?.vct || 'Credential'} preview`;
+				image.alt = `${metadata?.name || metadata?.vct || metadata?.doctype || 'Credential'} preview`;
 				figure.appendChild(image);
 
 				const captionText = formatPreviewProperties(preview.properties);

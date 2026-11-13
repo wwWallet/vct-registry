@@ -1,18 +1,18 @@
 import { getAuthState, login, logout } from './app.js';
 
-const loginBtn = document.getElementById('vct-login-btn');
-const logoutBtn = document.getElementById('vct-logout-btn');
+const loginBtn = document.getElementById('registry-login-btn');
+const logoutBtn = document.getElementById('registry-logout-btn');
 const usernameContainer = document.getElementById('username-container');
-const authDropdownWrapper = document.getElementById('vct-auth-dropdown-wrapper');
-const authDropdown = document.getElementById('vct-auth-dropdown');
-const authDropdownUsername = document.getElementById('vct-auth-dropdown-username');
-const loginDialog = document.getElementById('vct-login-dialog');
-const loginForm = document.getElementById('vct-login-form');
-const loginCancelBtn = document.getElementById('vct-login-cancel-btn');
-const loginSubmitBtn = document.getElementById('vct-login-submit-btn');
-const loginUsernameInput = document.getElementById('vct-login-username');
-const loginPasswordInput = document.getElementById('vct-login-password');
-const loginError = document.getElementById('vct-login-error');
+const authDropdownWrapper = document.getElementById('registry-auth-dropdown-wrapper');
+const authDropdown = document.getElementById('registry-auth-dropdown');
+const authDropdownUsername = document.getElementById('registry-auth-dropdown-username');
+const loginDialog = document.getElementById('registry-login-dialog');
+const loginForm = document.getElementById('registry-login-form');
+const loginCancelBtn = document.getElementById('registry-login-cancel-btn');
+const loginSubmitBtn = document.getElementById('registry-login-submit-btn');
+const loginUsernameInput = document.getElementById('registry-login-username');
+const loginPasswordInput = document.getElementById('registry-login-password');
+const loginError = document.getElementById('registry-login-error');
 
 function openLoginDialog() {
 	loginError.hidden = true;

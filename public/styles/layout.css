@@ -28,7 +28,7 @@
 	padding: 0;
 	list-style: none;
 	font-size: 0.88rem;
-	color: var(--vct-text-muted);
+	color: var(--registry-text-muted);
 }
 
 .breadcrumbs-item {
@@ -39,22 +39,22 @@
 
 .breadcrumbs-item:not(:last-child)::after {
 	content: '/';
-	color: var(--vct-border-strong);
+	color: var(--registry-border-strong);
 }
 
 .breadcrumbs a {
-	color: var(--vct-text-muted);
+	color: var(--registry-text-muted);
 	text-decoration: none;
 }
 
 .breadcrumbs a:hover {
-	color: var(--vct-text);
+	color: var(--registry-text);
 	text-decoration: underline;
 	text-underline-offset: 3px;
 }
 
 .breadcrumbs [aria-current='page'] {
-	color: var(--vct-text);
+	color: var(--registry-text);
 	font-weight: 600;
 }
 
@@ -63,8 +63,8 @@
 	background: rgba(255, 255, 255, 0.92);
 	border-radius: 14px;
 	padding: 22px;
-	border: 1px solid var(--vct-border);
-	box-shadow: var(--vct-shadow);
+	border: 1px solid var(--registry-border);
+	box-shadow: var(--registry-shadow);
 	backdrop-filter: blur(6px);
 }
 
@@ -72,7 +72,7 @@
 	margin-top: 0;
 	margin-bottom: 4px;
 	font-size: 1.35rem;
-	color: var(--vct-text);
+	color: var(--registry-text);
 }
 
 .page-header {
@@ -85,7 +85,7 @@
 	margin: 0;
 	font-size: 1.6rem;
 	line-height: 1.1;
-	color: var(--vct-text);
+	color: var(--registry-text);
 }
 
 .page-subtitle {
@@ -93,5 +93,5 @@
 	margin: 10px auto 0;
 	font-size: 0.95rem;
 	line-height: 1.5;
-	color: var(--vct-text-muted);
+	color: var(--registry-text-muted);
 }

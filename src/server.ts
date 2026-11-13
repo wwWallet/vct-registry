@@ -8,7 +8,7 @@ import { auth } from './middleware/auth';
 import { knex } from 'knex';
 import apiRouter from './routes/api';
 import typeMetadataRouter from './routes/typeMetadata';
-import dbVctRouter from './routes/db';
+import typeMetadataManagementRouter from './routes/typeMetadataManagement';
 import nunjucks from 'nunjucks';
 import authRouter from './routes/auth';
 import viewsRouter from './routes/views';
@@ -21,7 +21,7 @@ app.use(cors());
 app.use(cookieParser());
 app.use(
 	express.json({
-		limit: config.max_vct_size,
+		limit: config.max_metadata_size,
 	}),
 );
 
@@ -56,7 +56,7 @@ app.use('/', viewsRouter);
 app.use('/api', apiRouter);
 app.use('/auth', authRouter);
 app.use('/type-metadata', typeMetadataRouter);
-app.use('/vct', auth, dbVctRouter);
+app.use('/api/type-metadata', auth, typeMetadataManagementRouter);
 
 app.listen(port, () => {
 	console.log(`✅ vct-registry server listening at ${url}`);

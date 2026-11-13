@@ -1,10 +1,10 @@
 import { initializeCopyButtons, showSuccess } from './app.js';
 
-const addBtn = document.getElementById('vct-add-btn');
-const editBtn = document.getElementById('vct-edit-btn');
-const deleteBtn = document.getElementById('vct-delete-btn');
+const addBtn = document.getElementById('registry-add-btn');
+const editBtn = document.getElementById('registry-edit-btn');
+const deleteBtn = document.getElementById('registry-delete-btn');
 const usernameContainer = document.getElementById('username-container');
-const editValue = document.getElementById('vct-edit-value');
+const editValue = document.getElementById('registry-edit-value');
 
 function updatePageAuthState(loggedIn) {
 	addBtn.hidden = !loggedIn;
@@ -25,39 +25,39 @@ function checkSuccess() {
 	switch (toast) {
 		case 'add-success':
 		case 'edit-success':
-			showSuccess('Successfully saved VC Type Metadata.');
+			showSuccess('Successfully saved type metadata.');
 			break;
 		case 'delete-success':
-			showSuccess('Successfully deleted VC Type Metadata.');
+			showSuccess('Successfully deleted type metadata.');
 			break;
 		default:
 			break;
 	}
 }
 
-async function deleteSelectedVct() {
-	const vct = editValue?.value;
-	if (!vct) {
+async function deleteSelectedMetadata() {
+	const identifier = editValue?.value;
+	if (!identifier) {
 		return;
 	}
 
 	if (
 		!confirm(
-			'Are you sure you want to delete this VC Type Metadata entry? This action is irreversible.',
+			'Are you sure you want to delete this type metadata entry? This action is irreversible.',
 		)
 	) {
 		return;
 	}
 
-	const res = await fetch('vct/delete', {
+	const res = await fetch('api/type-metadata/delete', {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify({ vct }),
+		body: JSON.stringify({ identifier }),
 	});
 
 	const result = await res.json();
 	if (!res.ok) {
-		throw new Error(result?.message || 'Failed to delete VC Type Metadata.');
+		throw new Error(result?.message || 'Failed to delete type metadata.');
 	}
 
 	window.location.href = './metadata?toast=delete-success';
@@ -71,15 +71,13 @@ window.addEventListener('DOMContentLoaded', () => {
 	if (deleteBtn) {
 		deleteBtn.addEventListener('click', async () => {
 			try {
-				await deleteSelectedVct();
+				await deleteSelectedMetadata();
 			} catch (error) {
-				const errorBox = document.getElementById('vct-error');
+				const errorBox = document.getElementById('registry-error');
 				if (errorBox) {
 					errorBox.hidden = false;
 					errorBox.textContent =
-						error instanceof Error
-							? error.message
-							: 'Failed to delete VC Type Metadata.';
+						error instanceof Error ? error.message : 'Failed to delete type metadata.';
 				}
 			}
 		});

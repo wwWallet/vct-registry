@@ -12,7 +12,7 @@
 {% block content %}
 <section class="page-shell">
   <div class="page-header">
-    <h2 id="edit-vct-title">Edit VCT</h2>
+    <h2 id="edit-metadata-title">Edit Type Metadata</h2>
     <p class="page-subtitle">
       Review and update the selected registry entry, then save the latest metadata to the registry.
     </p>
@@ -24,14 +24,18 @@
         <p class="metadata-panel-copy">Review the selected credential metadata and its current preview while editing.</p>
       </div>
 
-      <dl class="vct-meta editor-meta">
+      <dl class="registry-meta editor-meta">
         <div class="metadata-stat">
-          <dt class="metadata-stat-label">VCT</dt>
-          <dd id="edit-vct-id-value" class="metadata-stat-value metadata-stat-code"><code></code></dd>
+          <dt class="metadata-stat-label">Format</dt>
+          <dd class="metadata-stat-value"><code id="edit-metadata-format-value" aria-live="polite">Loading…</code></dd>
+        </div>
+        <div class="metadata-stat">
+          <dt class="metadata-stat-label">Identifier</dt>
+          <dd id="edit-metadata-identifier-value" class="metadata-stat-value metadata-stat-code"><code></code></dd>
         </div>
         <div class="metadata-stat">
           <dt class="metadata-stat-label">Name</dt>
-          <dd id="edit-vct-name-value" class="metadata-stat-value">-</dd>
+          <dd id="edit-metadata-name-value" class="metadata-stat-value">-</dd>
         </div>
         <div class="metadata-stat metadata-preview-stat">
           <dt class="metadata-stat-label">Preview</dt>
@@ -42,7 +46,7 @@
         </div>
         <div class="metadata-stat metadata-stat-description">
           <dt class="metadata-stat-label">Description</dt>
-          <dd id="edit-vct-description" class="metadata-stat-value">No description provided.</dd>
+          <dd id="edit-metadata-description" class="metadata-stat-value">No description provided.</dd>
         </div>
       </dl>
     </section>
@@ -52,16 +56,16 @@
         <h3>Metadata JSON</h3>
         <p class="metadata-panel-copy">Update the full type metadata document directly.</p>
       </div>
-      <div id="vct-info" class="info">URI integrity values will be calculated on submission using SHA-256.
+      <div id="registry-info" class="info">URI integrity values will be calculated on submission using SHA-256.
         Existing integrity values will be tested and replaced if they do not match the metadata content.</div>
       <div id="jsoneditor" class="jsoneditor-host"></div>
-      <div class="vct-edit-button-container">
-        <a id="vct-cancel-btn" class="vct-btn vct-btn-cancel" href="./metadata">Cancel</a>
-        <button id="vct-submit-btn" type="button" class="vct-btn vct-edit-btn submit">Submit Changes</button>
+      <div class="registry-edit-button-container">
+        <a id="registry-cancel-btn" class="registry-btn registry-btn-cancel" href="./metadata">Cancel</a>
+        <button id="registry-submit-btn" type="button" class="registry-btn registry-edit-btn submit" disabled>Submit Changes</button>
       </div>
 
-      <div id="vct-error" class="error" hidden></div>
-      <div id="vct-success" class="success" hidden></div>
+      <div id="registry-error" class="error" hidden></div>
+      <div id="registry-success" class="success" hidden></div>
     </section>
   </div>
 </section>

@@ -1,23 +1,23 @@
-/* Shared VCT UI components */
-.vct-select {
+/* Shared UI components */
+.registry-select {
 	padding: 8px 10px;
 	border-radius: 8px;
-	border: 1px solid var(--vct-border);
-	background: var(--vct-surface);
-	color: var(--vct-text);
+	border: 1px solid var(--registry-border);
+	background: var(--registry-surface);
+	color: var(--registry-text);
 	font-size: 0.9rem;
 	transition: border-color 0.15s ease;
 }
 
-.vct-select:focus {
+.registry-select:focus {
 	outline: none;
-	border-color: var(--vct-accent);
-	box-shadow: 0 0 0 3px var(--vct-accent-ring);
+	border-color: var(--registry-accent);
+	box-shadow: 0 0 0 3px var(--registry-accent-ring);
 }
 
-.vct-btn,
-.vct-edit-btn,
-.vct-auth-btn {
+.registry-btn,
+.registry-edit-btn,
+.registry-auth-btn {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
@@ -25,9 +25,9 @@
 	width: 100%;
 	padding: 8px 16px;
 	border-radius: 10px;
-	border: 1px solid var(--vct-border);
-	background: var(--vct-surface-alt);
-	color: var(--vct-text);
+	border: 1px solid var(--registry-border);
+	background: var(--registry-surface-alt);
+	color: var(--registry-text);
 	font-size: 0.85rem;
 	font-weight: 600;
 	line-height: 1.2;
@@ -41,71 +41,71 @@
 		transform 0.15s ease;
 }
 
-.vct-btn:enabled:hover,
-.vct-edit-btn:enabled:hover,
-.vct-auth-btn:enabled:hover,
-a.vct-btn:hover,
-a.vct-edit-btn:hover,
-a.vct-auth-btn:hover {
+.registry-btn:enabled:hover,
+.registry-edit-btn:enabled:hover,
+.registry-auth-btn:enabled:hover,
+a.registry-btn:hover,
+a.registry-edit-btn:hover,
+a.registry-auth-btn:hover {
 	background: #eef5f7;
-	border-color: var(--vct-border-strong);
+	border-color: var(--registry-border-strong);
 }
 
-.vct-btn:focus-visible,
-.vct-edit-btn:focus-visible,
-.vct-auth-btn:focus-visible {
+.registry-btn:focus-visible,
+.registry-edit-btn:focus-visible,
+.registry-auth-btn:focus-visible {
 	outline: none;
-	box-shadow: 0 0 0 3px var(--vct-accent-ring);
+	box-shadow: 0 0 0 3px var(--registry-accent-ring);
 }
 
-.vct-btn-primary,
-.vct-edit-btn.submit,
-.vct-auth-btn.login {
-	background: var(--vct-accent);
-	border-color: var(--vct-accent);
+.registry-btn-primary,
+.registry-edit-btn.submit,
+.registry-auth-btn.login {
+	background: var(--registry-accent);
+	border-color: var(--registry-accent);
 	color: #ffffff;
 }
 
-.vct-btn-primary:enabled:hover,
-.vct-edit-btn.submit:enabled:hover,
-.vct-auth-btn.login:enabled:hover,
-a.vct-btn-primary:hover {
-	background: var(--vct-accent-strong);
-	border-color: var(--vct-accent-strong);
+.registry-btn-primary:enabled:hover,
+.registry-edit-btn.submit:enabled:hover,
+.registry-auth-btn.login:enabled:hover,
+a.registry-btn-primary:hover {
+	background: var(--registry-accent-strong);
+	border-color: var(--registry-accent-strong);
 	color: #ffffff;
 }
 
-.vct-btn-outline {
+.registry-btn-outline {
 	border-width: 1px;
-	border-color: var(--vct-accent);
-	background: color-mix(in srgb, var(--vct-accent) 4%, white);
+	border-color: var(--registry-accent);
+	background: color-mix(in srgb, var(--registry-accent) 4%, white);
 }
 
-.vct-btn-outline:enabled:hover,
-a.vct-btn-outline:hover {
-	background: color-mix(in srgb, var(--vct-accent) 10%, white);
-	border-color: var(--vct-accent-strong);
-	color: var(--vct-accent-strong);
+.registry-btn-outline:enabled:hover,
+a.registry-btn-outline:hover {
+	background: color-mix(in srgb, var(--registry-accent) 10%, white);
+	border-color: var(--registry-accent-strong);
+	color: var(--registry-accent-strong);
 }
 
-.vct-btn-action {
+.registry-btn-action {
 	padding: 10px 18px;
 	letter-spacing: 0.01em;
 }
 
-.vct-btn-danger,
-.vct-edit-btn.delete {
-	color: var(--vct-danger);
+.registry-btn-danger,
+.registry-edit-btn.delete {
+	color: var(--registry-danger);
 }
 
-.vct-btn-danger:enabled:hover,
-.vct-edit-btn.delete:enabled:hover {
-	background: var(--vct-danger-soft);
+.registry-btn-danger:enabled:hover,
+.registry-edit-btn.delete:enabled:hover {
+	background: var(--registry-danger-soft);
 	border-color: #f1bdbd;
-	color: var(--vct-danger);
+	color: var(--registry-danger);
 }
 
-.vct-edit-button-container {
+.registry-edit-button-container {
 	display: flex;
 	flex-direction: row;
 	gap: 8px;
@@ -113,24 +113,24 @@ a.vct-btn-outline:hover {
 	align-items: stretch;
 }
 
-.vct-edit-btn {
+.registry-edit-btn {
 	width: 100%;
 }
 
-.vct-btn-cancel {
+.registry-btn-cancel {
 	flex: 1;
 	width: auto;
 }
 
-.vct-edit-btn.submit {
+.registry-edit-btn.submit {
 	flex: 3;
 }
 
-.vct-edit-btn.delete {
+.registry-edit-btn.delete {
 	flex: 1;
 }
 
-.vct-btn:disabled {
+.registry-btn:disabled {
 	opacity: 0.6;
 	cursor: not-allowed;
 }
@@ -147,10 +147,10 @@ a.vct-btn-outline:hover {
 .metadata-panel-copy {
 	margin: 0;
 	font-size: 0.88rem;
-	color: var(--vct-text-muted);
+	color: var(--registry-text-muted);
 }
 
-.vct-meta {
+.registry-meta {
 	display: grid;
 	gap: 10px;
 	margin: 0;
@@ -161,7 +161,7 @@ a.vct-btn-outline:hover {
 	flex-direction: column;
 	gap: 4px;
 	padding-bottom: 10px;
-	border-bottom: 1px solid var(--vct-border);
+	border-bottom: 1px solid var(--registry-border);
 }
 
 .metadata-stat:last-child {
@@ -179,14 +179,14 @@ a.vct-btn-outline:hover {
 	font-weight: 700;
 	letter-spacing: 0.05em;
 	text-transform: uppercase;
-	color: var(--vct-text-muted);
+	color: var(--registry-text-muted);
 }
 
 .metadata-stat-value {
 	margin: 0;
 	font-size: 0.95rem;
 	font-weight: 600;
-	color: var(--vct-text);
+	color: var(--registry-text);
 }
 
 .metadata-stat-description .metadata-stat-value {
@@ -205,7 +205,7 @@ a.vct-btn-outline:hover {
 	max-width: 240px;
 	height: auto;
 	border-radius: 10px;
-	border: 1px solid var(--vct-border);
+	border: 1px solid var(--registry-border);
 	background: #f3f8fa;
 }
 
@@ -239,10 +239,10 @@ a.vct-btn-outline:hover {
 	height: 30px;
 	flex: 0 0 auto;
 	padding: 0;
-	border: 1px solid var(--vct-border);
+	border: 1px solid var(--registry-border);
 	border-radius: 8px;
-	background: var(--vct-surface);
-	color: var(--vct-text-muted);
+	background: var(--registry-surface);
+	color: var(--registry-text-muted);
 	cursor: pointer;
 	transition:
 		color 0.15s ease,
@@ -252,19 +252,19 @@ a.vct-btn-outline:hover {
 }
 
 .copy-btn:hover {
-	color: var(--vct-text);
-	border-color: var(--vct-border-strong);
-	background: var(--vct-surface-alt);
+	color: var(--registry-text);
+	border-color: var(--registry-border-strong);
+	background: var(--registry-surface-alt);
 }
 
 .copy-btn:focus-visible {
 	outline: none;
-	box-shadow: 0 0 0 3px var(--vct-accent-ring);
+	box-shadow: 0 0 0 3px var(--registry-accent-ring);
 }
 
 .copy-btn.is-copied {
-	color: var(--vct-accent);
-	border-color: var(--vct-accent);
+	color: var(--registry-accent);
+	border-color: var(--registry-accent);
 }
 
 .copy-btn svg {

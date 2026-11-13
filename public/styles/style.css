@@ -6,27 +6,27 @@
 }
 
 :root {
-	--vct-accent: #048ba8;
-	--vct-accent-strong: color-mix(in srgb, var(--vct-accent) 68%, black);
-	--vct-accent-soft: color-mix(in srgb, var(--vct-accent) 10%, white);
-	--vct-accent-faint: color-mix(in srgb, var(--vct-accent) 5%, white);
-	--vct-accent-ring: color-mix(in srgb, var(--vct-accent) 22%, transparent);
-	--vct-accent-ring-soft: color-mix(in srgb, var(--vct-accent) 16%, transparent);
-	--vct-accent-border: color-mix(in srgb, var(--vct-accent) 24%, white);
-	--vct-bg: color-mix(in srgb, var(--vct-accent) 6%, white);
-	--vct-surface: #ffffff;
-	--vct-surface-alt: color-mix(in srgb, var(--vct-accent) 4%, white);
-	--vct-border: color-mix(in srgb, var(--vct-accent) 14%, white);
-	--vct-border-strong: color-mix(in srgb, var(--vct-accent) 24%, white);
-	--vct-text: color-mix(in srgb, var(--vct-accent) 22%, black);
-	--vct-text-muted: color-mix(in srgb, var(--vct-text) 58%, white);
-	--vct-danger: #9f2f2f;
-	--vct-danger-soft: #fff1f1;
-	--vct-danger-border: #f1bdbd;
-	--vct-success: #17603f;
-	--vct-success-soft: #eef9f1;
-	--vct-success-border: #b7dec4;
-	--vct-shadow: 0 10px 30px rgba(29, 42, 34, 0.06);
+	--registry-accent: #048ba8;
+	--registry-accent-strong: color-mix(in srgb, var(--registry-accent) 68%, black);
+	--registry-accent-soft: color-mix(in srgb, var(--registry-accent) 10%, white);
+	--registry-accent-faint: color-mix(in srgb, var(--registry-accent) 5%, white);
+	--registry-accent-ring: color-mix(in srgb, var(--registry-accent) 22%, transparent);
+	--registry-accent-ring-soft: color-mix(in srgb, var(--registry-accent) 16%, transparent);
+	--registry-accent-border: color-mix(in srgb, var(--registry-accent) 24%, white);
+	--registry-bg: color-mix(in srgb, var(--registry-accent) 6%, white);
+	--registry-surface: #ffffff;
+	--registry-surface-alt: color-mix(in srgb, var(--registry-accent) 4%, white);
+	--registry-border: color-mix(in srgb, var(--registry-accent) 14%, white);
+	--registry-border-strong: color-mix(in srgb, var(--registry-accent) 24%, white);
+	--registry-text: color-mix(in srgb, var(--registry-accent) 22%, black);
+	--registry-text-muted: color-mix(in srgb, var(--registry-text) 58%, white);
+	--registry-danger: #9f2f2f;
+	--registry-danger-soft: #fff1f1;
+	--registry-danger-border: #f1bdbd;
+	--registry-success: #17603f;
+	--registry-success-soft: #eef9f1;
+	--registry-success-border: #b7dec4;
+	--registry-shadow: 0 10px 30px rgba(29, 42, 34, 0.06);
 }
 
 html,
@@ -44,9 +44,9 @@ body {
 		Arial,
 		sans-serif;
 	background:
-		radial-gradient(circle at top left, var(--vct-accent-ring), transparent 26%),
-		linear-gradient(180deg, var(--vct-accent-faint) 0%, var(--vct-bg) 100%);
-	color: var(--vct-text);
+		radial-gradient(circle at top left, var(--registry-accent-ring), transparent 26%),
+		linear-gradient(180deg, var(--registry-accent-faint) 0%, var(--registry-bg) 100%);
+	color: var(--registry-text);
 }
 
 [hidden] {
@@ -69,7 +69,7 @@ body {
 	position: absolute;
 	left: 12px;
 	top: -44px;
-	background: var(--vct-text);
+	background: var(--registry-text);
 	color: #ffffff;
 	padding: 8px 10px;
 	border-radius: 8px;
@@ -88,7 +88,7 @@ code {
 	font-family:
 		ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
 		monospace;
-	background: color-mix(in srgb, var(--vct-accent) 8%, white);
+	background: color-mix(in srgb, var(--registry-accent) 8%, white);
 	padding: 2px 4px;
 	border-radius: 4px;
 	font-size: 0.85em;
