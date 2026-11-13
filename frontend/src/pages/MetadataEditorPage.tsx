@@ -40,7 +40,7 @@ export function MetadataEditorPage({ mode, onSaved }: MetadataEditorPageProps) {
 	const [searchParams] = useSearchParams();
 	const originalIdentifier = mode === 'edit' ? metadataSelector(searchParams) : '';
 	const [format, setFormat] = useState<MetadataFormat>('dc+sd-jwt');
-	const hasUnsavedChanges = useRef(false);
+	const editorTouched = useRef(false);
 	const [document, setDocument] = useState<TypeMetadata | undefined>(undefined);
 	const [editorInitialValue, setEditorInitialValue] = useState<TypeMetadata>(
 		emptyMetadata['dc+sd-jwt'],
@@ -54,7 +54,7 @@ export function MetadataEditorPage({ mode, onSaved }: MetadataEditorPageProps) {
 	const [error, setError] = useState('');
 
 	useEffect(() => {
-		hasUnsavedChanges.current = false;
+		editorTouched.current = false;
 		if (mode !== 'edit') return;
 		if (!originalIdentifier) {
 			setLoadingEntry(false);
@@ -96,18 +96,14 @@ export function MetadataEditorPage({ mode, onSaved }: MetadataEditorPageProps) {
 	const handleValidationChange = useCallback((errors: string[]) => {
 		setValidationErrors(errors);
 	}, []);
-	const handleDirtyChange = useCallback((dirty: boolean) => {
-		hasUnsavedChanges.current = dirty;
+	const handleEditorTouched = useCallback(() => {
+		editorTouched.current = true;
 	}, []);
 
 	function handleCancel(event: React.MouseEvent<HTMLAnchorElement>) {
-		// Opening the destination in another tab leaves this editor and its input intact.
 		if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey || event.button !== 0)
 			return;
-		if (
-			hasUnsavedChanges.current &&
-			!window.confirm('Discard your unsaved changes and leave this page?')
-		)
+		if (editorTouched.current && !window.confirm('Discard your changes and leave this page?'))
 			event.preventDefault();
 	}
 
@@ -311,9 +307,17 @@ export function MetadataEditorPage({ mode, onSaved }: MetadataEditorPageProps) {
 									aria-label="Metadata format"
 									className={`${formatControlClass} cursor-pointer outline-none transition-[border-color,box-shadow] hover:border-[var(--vct-border-strong)] focus:border-vct-accent focus:ring-3 focus:ring-[var(--vct-accent-ring)]`}
 									value={format}
-									onChange={(event) =>
-										setFormat(event.target.value as MetadataFormat)
-									}
+									onChange={(event) => {
+										if (
+											editorTouched.current &&
+											!window.confirm(
+												'Changing the metadata format will erase all current content. Continue?',
+											)
+										)
+											return;
+										editorTouched.current = false;
+										setFormat(event.target.value as MetadataFormat);
+									}}
 								>
 									<option value="dc+sd-jwt">dc+sd-jwt</option>
 									<option value="mso_mdoc">mso_mdoc</option>
@@ -333,7 +337,7 @@ export function MetadataEditorPage({ mode, onSaved }: MetadataEditorPageProps) {
 							originalIdentifier={mode === 'edit' ? originalIdentifier : undefined}
 							onChange={handleEditorChange}
 							onValidationChange={handleValidationChange}
-							onDirtyChange={handleDirtyChange}
+							onTouched={handleEditorTouched}
 						/>
 						{validationErrors.length > 0 && (
 							<div className={`${feedbackClass.error} mt-2`} role="status">

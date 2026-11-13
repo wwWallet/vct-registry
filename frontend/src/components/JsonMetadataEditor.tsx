@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 import JSONEditor, { type ValidationError } from 'jsoneditor';
 import 'jsoneditor/dist/jsoneditor.css';
 import { getMetadataSchema } from '../api/client';
-import { hasMetadataChanges } from '../metadataChanges';
 import { metadataId, type MetadataFormat, type TypeMetadata } from '../types';
 
 interface JsonMetadataEditorProps {
@@ -11,7 +10,7 @@ interface JsonMetadataEditorProps {
 	originalIdentifier?: string;
 	onChange: (metadata?: TypeMetadata) => void;
 	onValidationChange: (errors: string[]) => void;
-	onDirtyChange: (dirty: boolean) => void;
+	onTouched: () => void;
 }
 
 function validationMessage(entry: unknown): string {
@@ -50,11 +49,10 @@ export function JsonMetadataEditor({
 	originalIdentifier,
 	onChange,
 	onValidationChange,
-	onDirtyChange,
+	onTouched,
 }: JsonMetadataEditorProps) {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const [setupError, setSetupError] = useState('');
-	const editedText = useRef<string | undefined>(undefined);
 
 	useEffect(() => {
 		const container = containerRef.current;
@@ -66,11 +64,9 @@ export function JsonMetadataEditor({
 		onChange(undefined);
 		onValidationChange(['Validating metadata…']);
 
-		// Programmatic restoration does not emit JSONEditor onChange events.
-		// Publish the parsed value and validation result through the same path as typing.
+		// Publish the initial value and validation result through the same path as typing.
 		function reportContent() {
 			if (disposed || !editor) return;
-			onDirtyChange(hasMetadataChanges(editor.getText(), initialValue));
 			const revision = ++validationRevision;
 			onValidationChange(['Validating metadata…']);
 			try {
@@ -115,13 +111,13 @@ export function JsonMetadataEditor({
 							}
 							return errors;
 						},
-						onChange: reportContent,
+						onChange: () => {
+							onTouched();
+							reportContent();
+						},
 					},
 					initialValue,
 				);
-				if (!originalIdentifier && editedText.current !== undefined) {
-					editor.setText(editedText.current);
-				}
 				reportContent();
 			})
 			.catch((reason: unknown) => {
@@ -137,14 +133,9 @@ export function JsonMetadataEditor({
 
 		return () => {
 			disposed = true;
-			if (editor && !originalIdentifier) {
-				// Keep edited text across schema changes; pristine content uses the next template.
-				const text = editor.getText();
-				editedText.current = hasMetadataChanges(text, initialValue) ? text : undefined;
-			}
 			editor?.destroy();
 		};
-	}, [initialValue, format, onChange, onValidationChange, onDirtyChange, originalIdentifier]);
+	}, [initialValue, format, onChange, onValidationChange, onTouched, originalIdentifier]);
 
 	return (
 		<>
