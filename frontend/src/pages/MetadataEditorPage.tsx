@@ -229,7 +229,7 @@ export function MetadataEditorPage({ mode, onSaved }: MetadataEditorPageProps) {
 								<p className="m-0 text-[.74rem] font-bold tracking-[.05em] text-[var(--vct-text-muted)] uppercase">
 									Identifier
 								</p>
-								<code className="mt-1 inline-block max-w-full self-start break-all rounded bg-[color-mix(in_srgb,var(--vct-accent)_8%,white)] px-1 py-0.5 text-[.8rem]">
+								<code className="mt-1 block w-fit max-w-full break-all rounded-sm bg-[var(--vct-accent-soft)] px-1 py-0.5 text-[.8rem]">
 									{documentVct}
 								</code>
 							</div>
@@ -276,7 +276,7 @@ export function MetadataEditorPage({ mode, onSaved }: MetadataEditorPageProps) {
 								<p className="m-0 text-[.74rem] font-bold tracking-[.05em] text-[var(--vct-text-muted)] uppercase">
 									Description
 								</p>
-								<p className="mt-1 mb-0 text-sm leading-[1.45] text-[var(--vct-text-muted)]">
+								<p className="mt-1 mb-0 text-sm leading-[1.45] font-medium text-[var(--vct-text)]">
 									{documentDescription}
 								</p>
 							</div>

@@ -1,13 +1,13 @@
-import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
+import { lazy, Suspense } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { getAllMetadata } from './api/client';
 import { AuthProvider } from './auth';
 import { Layout } from './components/Layout';
+import { LoadingFallback } from './components/LoadingFallback';
 import { RequireAuth } from './components/RequireAuth';
 import { HomePage } from './pages/HomePage';
 import { MetadataPage } from './pages/MetadataPage';
 import { UsagePage } from './pages/UsagePage';
-import type { TypeMetadata } from './types';
+import { useRegistryMetadata } from './useRegistryMetadata';
 
 const MetadataEditorPage = lazy(() =>
 	import('./pages/MetadataEditorPage').then((module) => ({
@@ -15,37 +15,8 @@ const MetadataEditorPage = lazy(() =>
 	})),
 );
 
-function EditorFallback() {
-	return <div className="text-center text-sm text-gray-500">Loading editor…</div>;
-}
-
 export default function App() {
-	const [metadata, setMetadata] = useState<TypeMetadata[]>([]);
-	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState('');
-	const latestLoad = useRef(0);
-
-	const loadMetadata = useCallback(async () => {
-		latestLoad.current += 1;
-		const load = latestLoad.current;
-		// Ignore responses from older loads that finish after a newer one.
-		const isLatest = () => load === latestLoad.current;
-		setLoading(true);
-		setError('');
-		try {
-			const entries = await getAllMetadata();
-			if (isLatest()) setMetadata([...entries].reverse());
-		} catch (reason) {
-			if (isLatest()) {
-				setError(reason instanceof Error ? reason.message : 'Failed to load metadata.');
-			}
-		} finally {
-			if (isLatest()) setLoading(false);
-		}
-	}, []);
-	useEffect(() => {
-		void loadMetadata();
-	}, [loadMetadata]);
+	const { metadata, loading, error, handleMetadataChanged } = useRegistryMetadata();
 
 	return (
 		<BrowserRouter>
@@ -65,7 +36,7 @@ export default function App() {
 									metadata={metadata}
 									loading={loading}
 									error={error}
-									onMetadataChanged={loadMetadata}
+									onMetadataChanged={handleMetadataChanged}
 								/>
 							}
 						/>
@@ -73,16 +44,30 @@ export default function App() {
 							<Route
 								path="add"
 								element={
-									<Suspense fallback={<EditorFallback />}>
-										<MetadataEditorPage mode="add" onSaved={loadMetadata} />
+									<Suspense
+										fallback={
+											<LoadingFallback label="Loading metadata editor…" />
+										}
+									>
+										<MetadataEditorPage
+											mode="add"
+											onSaved={handleMetadataChanged}
+										/>
 									</Suspense>
 								}
 							/>
 							<Route
 								path="edit"
 								element={
-									<Suspense fallback={<EditorFallback />}>
-										<MetadataEditorPage mode="edit" onSaved={loadMetadata} />
+									<Suspense
+										fallback={
+											<LoadingFallback label="Loading metadata editor…" />
+										}
+									>
+										<MetadataEditorPage
+											mode="edit"
+											onSaved={handleMetadataChanged}
+										/>
 									</Suspense>
 								}
 							/>

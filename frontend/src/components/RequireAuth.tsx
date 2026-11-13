@@ -1,11 +1,12 @@
 import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../auth';
+import { LoadingFallback } from './LoadingFallback';
 
 export function RequireAuth() {
 	const { auth, checking, sessionExpired } = useAuth();
 
 	if (checking) {
-		return <div className="text-center text-sm text-gray-500">Checking session…</div>;
+		return <LoadingFallback label="Checking session…" />;
 	}
 
 	// When the session expires on this page, stay so the user can log in again without losing their work.
