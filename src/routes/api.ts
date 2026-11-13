@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import type { Request, Response } from 'express';
 import { getAllTypeMetadata, getTypeMetadataByIdentifier } from '../db/typeMetadata';
 import { db } from '../server';
 import { decodeIdentifier, reverseList } from '../util';
@@ -35,7 +34,7 @@ apiRouter.get('/time', (_req, res) => {
  * Returns a simple list of all VCTs + names.
  * @deprecated Use GET /type-metadata/list for all formats.
  */
-async function getVctList(_req: Request, res: Response) {
+apiRouter.get('/vct-list', async (_req, res) => {
 	// RFC 9745 Structured Field Date: deprecated since 2026-11-01T00:00:00Z.
 	res.setHeader('Deprecation', '@1793491200');
 	res.append('Link', '<../usage#type-metadata-list>; rel="deprecation"; type="text/html"');
@@ -51,9 +50,7 @@ async function getVctList(_req: Request, res: Response) {
 		}));
 
 	res.json(list);
-}
-
-apiRouter.get('/vct-list', getVctList);
+});
 
 apiRouter.get('/type-metadata-preview', async (req, res) => {
 	const identifier = req.query.identifier;
@@ -75,7 +72,13 @@ apiRouter.get('/type-metadata-preview', async (req, res) => {
 	res.json({ dataUri });
 });
 
+/** @deprecated Use GET /api/type-metadata-preview?identifier=... for all formats. */
 apiRouter.get('/vct-preview', async (req, res) => {
+	// RFC 9745 Structured Field Date: deprecated since 2026-11-13T00:00:00Z.
+	res.setHeader('Deprecation', '@1794528000');
+	res.append('Link', '<../usage#type-metadata-preview>; rel="deprecation"; type="text/html"');
+	res.append('Link', '<./type-metadata-preview>; rel="successor-version"');
+	res.append('Access-Control-Expose-Headers', 'Deprecation, Link');
 	const vct = decodeIdentifier(req.query.vct);
 	if (!vct) {
 		return res.status(400).json({

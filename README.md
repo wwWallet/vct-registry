@@ -66,7 +66,7 @@ Editing Type Metadata is protected using Basic authentication. The username and 
 | `GET`  | `/api/vct-list`                 | Deprecated: list SD-JWT VC types as `{vct, name}`.                                                          |
 
 | `GET` | `/api/type-metadata-preview?identifier=...` | Render a stored metadata preview for either format. |
-| `GET` | `/api/vct-preview?vct=...` | Render a stored SD-JWT VC preview (legacy). |
+| `GET` | `/api/vct-preview?vct=...` | Deprecated: render a stored SD-JWT VC preview. Use `/api/type-metadata-preview?identifier=...` instead. |
 
 ### Management API
 

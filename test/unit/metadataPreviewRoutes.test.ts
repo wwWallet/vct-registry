@@ -54,4 +54,29 @@ describe('Stored metadata previews', () => {
 			'dc+sd-jwt',
 		);
 	});
+	it.each(['get', 'head'] as const)(
+		'advertises the legacy preview deprecation on %s',
+		async (method) => {
+			vi.mocked(getTypeMetadataByIdentifier).mockResolvedValue({ vct: 'urn:example:pid' });
+			const response = await request(app)
+				[method]('/api/vct-preview?vct=urn%3Aexample%3Apid')
+				.expect(200);
+			expect(response.headers.deprecation).toBe('@1794528000');
+			expect(response.headers.link).toContain(
+				'<../usage#type-metadata-preview>; rel="deprecation"; type="text/html"',
+			);
+			expect(response.headers.link).toContain(
+				'<./type-metadata-preview>; rel="successor-version"',
+			);
+			expect(response.headers['access-control-expose-headers']).toBe('Deprecation, Link');
+			expect(response.headers.sunset).toBeUndefined();
+		},
+	);
+	it('advertises deprecation on invalid legacy requests but not the replacement', async () => {
+		const legacy = await request(app).get('/api/vct-preview').expect(400);
+		expect(legacy.headers.deprecation).toBe('@1794528000');
+		const replacement = await request(app).get('/api/type-metadata-preview').expect(400);
+		expect(replacement.headers.deprecation).toBeUndefined();
+		expect(replacement.headers.link).toBeUndefined();
+	});
 });
