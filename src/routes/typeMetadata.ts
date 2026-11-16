@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { decodeIdentifier, reverseList } from '../util';
+import { parseIdentifier, reverseList } from '../util';
 import type { MetadataFormat } from '../schemas/metadata';
 import {
 	getAllTypeMetadata,
@@ -19,8 +19,9 @@ typeMetadataRouter.use('/schema', schemaRouter);
 typeMetadataRouter.get('/', async (req, res) => {
 	const selectors = ['identifier', 'id', 'vct', 'doctype'] as const;
 	const supplied = selectors.filter((key) => req.query[key] !== undefined);
-	const legacy = supplied.length === 0 || (supplied.length === 1 && supplied[0] === 'vct');
-	if (supplied.length === 0 || (legacy && decodeIdentifier(req.query.vct) === undefined)) {
+	const identifiers = supplied.map((key) => parseIdentifier(req.query[key]));
+	const legacy = supplied.length === 1 && supplied[0] === 'vct';
+	if (supplied.length === 0 || (legacy && identifiers[0] === undefined)) {
 		return res.status(400).json({
 			error: 'missing_identifier',
 			message:
@@ -28,12 +29,7 @@ typeMetadataRouter.get('/', async (req, res) => {
 		});
 	}
 
-	const identifiers = supplied.map((key) => {
-		const value = req.query[key];
-		// Express already decodes query parameters; retain the legacy VCT decoding behavior.
-		return key === 'vct' ? decodeIdentifier(value) : typeof value === 'string' ? value : null;
-	});
-	if (identifiers.some((value) => typeof value !== 'string' || value.trim().length === 0)) {
+	if (identifiers.some((value) => typeof value !== 'string')) {
 		return res.status(400).json({
 			error: legacy ? 'invalid_vct' : 'invalid_identifier',
 			message: legacy

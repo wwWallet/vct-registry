@@ -54,6 +54,20 @@ describe('Stored metadata previews', () => {
 			'dc+sd-jwt',
 		);
 	});
+	it.each(['https://example.org/types/a%2Fb', 'org.example.100%', ' org.example.document '])(
+		'preserves the exact legacy preview identifier %s',
+		async (identifier) => {
+			vi.mocked(getTypeMetadataByIdentifier).mockImplementation(async (_db, value) =>
+				value === identifier ? { vct: identifier } : undefined,
+			);
+			await request(app).get('/api/vct-preview').query({ vct: identifier }).expect(200);
+			expect(getTypeMetadataByIdentifier).toHaveBeenCalledWith(
+				expect.anything(),
+				identifier,
+				'dc+sd-jwt',
+			);
+		},
+	);
 	it.each(['get', 'head'] as const)(
 		'advertises the legacy preview deprecation on %s',
 		async (method) => {

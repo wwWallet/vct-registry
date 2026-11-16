@@ -32,11 +32,6 @@ export function UsagePage() {
 			),
 		},
 		{
-			title: 'Fetch mdoc Metadata',
-			endpoint: `GET ${registryUrl}/type-metadata?doctype=org.iso.18013.5.1.mDL`,
-			code: `curl -s "${registryUrl}/type-metadata?doctype=org.iso.18013.5.1.mDL"`,
-		},
-		{
 			title: '3. Browser Fetch Example',
 			code: `const vct = encodeURIComponent("urn:eudi:pid:1");\nconst res = await fetch(\`${registryUrl}/type-metadata?identifier=\${vct}\`);\nconst metadata = await res.json();\nconsole.log(metadata);`,
 		},
@@ -45,19 +40,6 @@ export function UsagePage() {
 			title: '4. List Available Types (Identifier, Format, and Name)',
 			endpoint: `GET ${registryUrl}/type-metadata/list`,
 			code: `curl -s "${registryUrl}/type-metadata/list"`,
-		},
-		{
-			id: 'type-metadata-preview',
-			title: '5. Preview Metadata',
-			endpoint: `GET ${registryUrl}/api/type-metadata-preview?identifier=<identifier>`,
-			code: `curl -s "${registryUrl}/api/type-metadata-preview?identifier=urn:eudi:pid:1"`,
-			guidance: (
-				<>
-					This replaces the deprecated <code>/api/vct-preview</code> endpoint. Pass its{' '}
-					<code>vct</code> value as <code>identifier</code> instead. The response contains
-					a <code>dataUri</code> with the rendered preview.
-				</>
-			),
 		},
 	];
 

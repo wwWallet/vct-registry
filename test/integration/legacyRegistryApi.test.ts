@@ -106,6 +106,53 @@ const mdoc = { doctype: 'org.example.document', name: 'Mdoc' };
 
 describe('format-neutral registry lookups', () => {
 	it.each([
+		[{}, 'missing_identifier'],
+		[{ vct: '' }, 'missing_identifier'],
+		[{ vct: ' ' }, 'invalid_vct'],
+		[{ vct: ['a', 'b'] }, 'invalid_vct'],
+		[{ identifier: '' }, 'invalid_identifier'],
+		[{ identifier: ' ' }, 'invalid_identifier'],
+		[{ identifier: 'a', vct: '' }, 'invalid_identifier'],
+	] as const)('preserves validation errors for %j', async (query, error) => {
+		const response = await request(app).get('/type-metadata').query(query).expect(400);
+		expect(response.body.error).toBe(error);
+		expect(getTypeMetadataByIdentifier).not.toHaveBeenCalled();
+	});
+
+	it.each([
+		'https://example.org/types/a%2Fb',
+		'org.example.%25.document',
+		'org.example.100%',
+		'https://example.org/types/a+b?lang=en&version=1',
+		' org.example.document ',
+	])('preserves the exact identifier %s across all selectors', async (identifier) => {
+		for (const selector of ['identifier', 'id', 'vct', 'doctype']) {
+			const metadata = selector === 'doctype' ? { doctype: identifier } : { vct: identifier };
+			vi.mocked(getTypeMetadataByIdentifier).mockImplementation(async (_db, value) =>
+				value === identifier ? metadata : undefined,
+			);
+			const response = await request(app)
+				.get('/type-metadata')
+				.query({ [selector]: identifier })
+				.expect(200);
+			expect(response.body).toEqual(metadata);
+		}
+	});
+
+	it('accepts agreeing generic and VCT selectors containing literal escapes', async () => {
+		const identifier = 'https://example.org/types/a%2Fb';
+		await request(app)
+			.get('/type-metadata')
+			.query({ identifier, id: identifier, vct: identifier })
+			.expect(200);
+		expect(getTypeMetadataByIdentifier).toHaveBeenCalledWith(
+			expect.anything(),
+			identifier,
+			'dc+sd-jwt',
+		);
+	});
+
+	it.each([
 		[{ vct: pid.vct }, pid.vct, 'dc+sd-jwt'],
 		[{ doctype: mdoc.doctype }, mdoc.doctype, 'mso_mdoc'],
 		[{ identifier: mdoc.doctype }, mdoc.doctype, undefined],
