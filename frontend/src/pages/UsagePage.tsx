@@ -10,7 +10,7 @@ export function UsagePage() {
 			code: `curl -s "${registryApiUrl}/type-metadata/all"`,
 			guidance: (
 				<>
-					Optionally filter by format:
+					Optionally filter by format: <code>/type-metadata/all?format=mso_mdoc</code> or{' '}
 					<code>/type-metadata/all?format=dc%2Bsd-jwt</code>. No matches returns an empty
 					array; unsupported formats return HTTP 400.
 				</>
@@ -23,10 +23,11 @@ export function UsagePage() {
 			guidance: (
 				<>
 					For any format, use <code>/type-metadata?identifier=&lt;identifier&gt;</code>{' '}
-					(or <code>id</code>). Add
+					(or <code>id</code>). Add <code>&amp;format=mso_mdoc</code> or{' '}
 					<code>&amp;format=dc%2Bsd-jwt</code> to constrain the format. The{' '}
-					<code>vct</code> parameter selects SD-JWT VC metadata. Conflicting selectors
-					return HTTP 400. No match returns HTTP 404.
+					<code>vct</code> parameter selects SD-JWT VC metadata; <code>doctype</code>{' '}
+					selects mdoc metadata. Conflicting selectors return HTTP 400. No match returns
+					HTTP 404.
 				</>
 			),
 		},

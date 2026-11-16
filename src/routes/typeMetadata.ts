@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { decodeIdentifier, reverseList } from '../util';
+import { parseIdentifier, reverseList } from '../util';
 import type { MetadataFormat } from '../schemas/metadata';
 import {
 	getAllTypeMetadata,
@@ -17,22 +17,19 @@ typeMetadataRouter.use('/schema', schemaRouter);
 
 /** Retrieve one raw metadata document using a generic or format-specific identifier. */
 typeMetadataRouter.get('/', async (req, res) => {
-	const selectors = ['identifier', 'id', 'vct'] as const;
+	const selectors = ['identifier', 'id', 'vct', 'doctype'] as const;
 	const supplied = selectors.filter((key) => req.query[key] !== undefined);
-	const legacy = supplied.length === 0 || (supplied.length === 1 && supplied[0] === 'vct');
-	if (supplied.length === 0 || (legacy && decodeIdentifier(req.query.vct) === undefined)) {
+	const identifiers = supplied.map((key) => parseIdentifier(req.query[key]));
+	const legacy = supplied.length === 1 && supplied[0] === 'vct';
+	if (supplied.length === 0 || (legacy && identifiers[0] === undefined)) {
 		return res.status(400).json({
 			error: 'missing_identifier',
-			message: 'One of the query parameters "identifier", "id", or "vct" is required',
+			message:
+				'One of the query parameters "identifier", "id", "vct", or "doctype" is required',
 		});
 	}
 
-	const identifiers = supplied.map((key) => {
-		const value = req.query[key];
-		// Express already decodes query parameters; retain the legacy VCT decoding behavior.
-		return key === 'vct' ? decodeIdentifier(value) : typeof value === 'string' ? value : null;
-	});
-	if (identifiers.some((value) => typeof value !== 'string' || value.trim().length === 0)) {
+	if (identifiers.some((value) => typeof value !== 'string')) {
 		return res.status(400).json({
 			error: legacy ? 'invalid_vct' : 'invalid_identifier',
 			message: legacy
@@ -40,20 +37,31 @@ typeMetadataRouter.get('/', async (req, res) => {
 				: 'Identifiers must be nonempty strings.',
 		});
 	}
-	if (new Set(identifiers).size !== 1) {
+	if (
+		new Set(identifiers).size !== 1 ||
+		(supplied.includes('vct') && supplied.includes('doctype'))
+	) {
 		return res.status(400).json({
 			error: 'conflicting_query',
-			message: 'Identifier selectors must agree.',
+			message: 'Identifier selectors must agree and cannot combine vct and doctype.',
 		});
 	}
 	const identifier = identifiers[0] as string;
 	const requestedFormat = req.query.format;
-	if (requestedFormat !== undefined && requestedFormat !== 'dc+sd-jwt') {
+	if (
+		requestedFormat !== undefined &&
+		requestedFormat !== 'dc+sd-jwt' &&
+		requestedFormat !== 'mso_mdoc'
+	) {
 		return res
 			.status(400)
-			.json({ error: 'invalid_format', message: 'Format must be dc+sd-jwt.' });
+			.json({ error: 'invalid_format', message: 'Format must be dc+sd-jwt or mso_mdoc.' });
 	}
-	const impliedFormat = supplied.includes('vct') ? 'dc+sd-jwt' : undefined;
+	const impliedFormat = supplied.includes('vct')
+		? 'dc+sd-jwt'
+		: supplied.includes('doctype')
+			? 'mso_mdoc'
+			: undefined;
 	if (impliedFormat && requestedFormat !== undefined && requestedFormat !== impliedFormat) {
 		return res.status(400).json({
 			error: 'conflicting_query',
@@ -84,10 +92,10 @@ typeMetadataRouter.get('/list', async (_req, res) => {
  */
 typeMetadataRouter.get('/all', async (req, res) => {
 	const format = req.query.format;
-	if (format !== undefined && format !== 'dc+sd-jwt') {
+	if (format !== undefined && format !== 'dc+sd-jwt' && format !== 'mso_mdoc') {
 		return res
 			.status(400)
-			.json({ error: 'invalid_format', message: 'Format must be dc+sd-jwt.' });
+			.json({ error: 'invalid_format', message: 'Format must be dc+sd-jwt or mso_mdoc.' });
 	}
 	res.json(
 		format === undefined ? await getAllTypeMetadata(db) : await getAllTypeMetadata(db, format),

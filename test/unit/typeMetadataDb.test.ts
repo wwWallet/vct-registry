@@ -26,7 +26,7 @@ async function captureQuery(result: unknown, action: (db: Knex) => Promise<unkno
 }
 
 describe('type metadata database queries', () => {
-	it.each(['dc+sd-jwt'] as const)('filters by identifier and %s', async (format) => {
+	it.each(['dc+sd-jwt', 'mso_mdoc'] as const)('filters by identifier and %s', async (format) => {
 		const metadata = { name: 'Example' };
 		const { value, queries } = await captureQuery(
 			{ metadata: JSON.stringify(metadata) },
@@ -46,16 +46,19 @@ describe('type metadata database queries', () => {
 		expect(queries[0].bindings).toEqual(['example', 1]);
 	});
 
-	it.each(['dc+sd-jwt'] as const)('filters metadata collections by %s', async (format) => {
-		const metadata = { name: 'Example' };
-		const { value, queries } = await captureQuery(
-			[{ metadata: JSON.stringify(metadata) }],
-			(db) => getAllTypeMetadata(db, format),
-		);
-		expect(value).toEqual([metadata]);
-		expect(queries[0].sql).toContain('where `format` = ?');
-		expect(queries[0].bindings).toEqual([format]);
-	});
+	it.each(['dc+sd-jwt', 'mso_mdoc'] as const)(
+		'filters metadata collections by %s',
+		async (format) => {
+			const metadata = { name: 'Example' };
+			const { value, queries } = await captureQuery(
+				[{ metadata: JSON.stringify(metadata) }],
+				(db) => getAllTypeMetadata(db, format),
+			);
+			expect(value).toEqual([metadata]);
+			expect(queries[0].sql).toContain('where `format` = ?');
+			expect(queries[0].bindings).toEqual([format]);
+		},
+	);
 
 	it('leaves collections unfiltered when format is omitted', async () => {
 		const { queries } = await captureQuery([], getAllTypeMetadata);
@@ -65,12 +68,12 @@ describe('type metadata database queries', () => {
 	it('builds summaries using stored identifiers and formats for both JSON representations', async () => {
 		const rows = [
 			{ identifier: 'a', format: 'dc+sd-jwt', metadata: JSON.stringify({ name: 'A' }) },
-			{ identifier: 'b', format: 'dc+sd-jwt', metadata: { name: 'B' } },
+			{ identifier: 'b', format: 'mso_mdoc', metadata: { name: 'B' } },
 		];
 		const { value } = await captureQuery(rows, getTypeMetadataList);
 		expect(value).toEqual([
 			{ identifier: 'a', format: 'dc+sd-jwt', name: 'A' },
-			{ identifier: 'b', format: 'dc+sd-jwt', name: 'B' },
+			{ identifier: 'b', format: 'mso_mdoc', name: 'B' },
 		]);
 	});
 });

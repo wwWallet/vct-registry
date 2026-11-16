@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { TypeMetadata } from 'wallet-common';
-import { getMetadataId } from '../schemas/metadata';
+import { MsoMdocTypeMetadata, getMetadataId } from '../schemas/metadata';
 import { db } from '../server';
 import {
 	createTypeMetadata,
@@ -36,10 +36,10 @@ typeMetadataManagementRouter.get('/entry', async (req, res) => {
 
 typeMetadataManagementRouter.post('/create', async (req, res) => {
 	const format = req.body.format;
-	if (format !== 'dc+sd-jwt') {
+	if (format !== 'dc+sd-jwt' && format !== 'mso_mdoc') {
 		return res
 			.status(400)
-			.json({ error: 'invalid_format', message: 'Format must be dc+sd-jwt.' });
+			.json({ error: 'invalid_format', message: 'Format must be dc+sd-jwt or mso_mdoc.' });
 	}
 
 	const identifier = parseIdentifier(req.body.identifier);
@@ -74,7 +74,9 @@ typeMetadataManagementRouter.post('/create', async (req, res) => {
 		});
 	}
 
-	const validationResult = TypeMetadata.safeParse(metadata);
+	const validationResult = (format === 'mso_mdoc' ? MsoMdocTypeMetadata : TypeMetadata).safeParse(
+		metadata,
+	);
 	if (!validationResult.success) {
 		return res.status(400).json({
 			error: 'invalid_metadata',
@@ -155,7 +157,9 @@ typeMetadataManagementRouter.post('/edit', async (req, res) => {
 		});
 	}
 
-	const validationResult = TypeMetadata.safeParse(metadata);
+	const validationResult = (format === 'mso_mdoc' ? MsoMdocTypeMetadata : TypeMetadata).safeParse(
+		metadata,
+	);
 	if (!validationResult.success) {
 		return res.status(400).json({
 			error: 'invalid_metadata',
