@@ -2,13 +2,15 @@ import { useEffect, useRef, useState } from 'react';
 import JSONEditor, { type ValidationError } from 'jsoneditor';
 import 'jsoneditor/dist/jsoneditor.css';
 import { getMetadataSchema } from '../api/client';
-import type { TypeMetadata } from '../types';
+import { metadataId, type MetadataFormat, type TypeMetadata } from '../types';
 
 interface JsonMetadataEditorProps {
 	initialValue: TypeMetadata;
-	originalVct?: string;
+	format: MetadataFormat;
+	originalIdentifier?: string;
 	onChange: (metadata?: TypeMetadata) => void;
 	onValidationChange: (errors: string[]) => void;
+	onTouched: () => void;
 }
 
 function validationMessage(entry: unknown): string {
@@ -43,9 +45,11 @@ function validationMessage(entry: unknown): string {
 
 export function JsonMetadataEditor({
 	initialValue,
-	originalVct,
+	format,
+	originalIdentifier,
 	onChange,
 	onValidationChange,
+	onTouched,
 }: JsonMetadataEditorProps) {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const [setupError, setSetupError] = useState('');
@@ -55,8 +59,36 @@ export function JsonMetadataEditor({
 		if (!container) return;
 		let disposed = false;
 		let editor: JSONEditor | undefined;
+		let validationRevision = 0;
+		setSetupError('');
+		onChange(undefined);
+		onValidationChange(['Validating metadata…']);
 
-		void getMetadataSchema()
+		// Publish the initial value and validation result through the same path as typing.
+		function reportContent() {
+			if (disposed || !editor) return;
+			const revision = ++validationRevision;
+			onValidationChange(['Validating metadata…']);
+			try {
+				onChange(editor.get() as TypeMetadata);
+			} catch {
+				onChange(undefined);
+			}
+			void editor
+				.validate()
+				.then((errors) => {
+					if (!disposed && revision === validationRevision) {
+						onValidationChange(errors.map(validationMessage));
+					}
+				})
+				.catch(() => {
+					if (!disposed && revision === validationRevision) {
+						onValidationChange(['The metadata could not be validated.']);
+					}
+				});
+		}
+
+		void getMetadataSchema(format)
 			.then((schema) => {
 				if (disposed) return;
 				editor = new JSONEditor(
@@ -68,28 +100,25 @@ export function JsonMetadataEditor({
 						schema,
 						onValidate: (value: TypeMetadata) => {
 							const errors: ValidationError[] = [];
-							if (originalVct && value?.vct !== originalVct) {
+							if (
+								originalIdentifier &&
+								(!value || metadataId(value) !== originalIdentifier)
+							) {
 								errors.push({
 									path: ['vct'],
-									message: 'The VCT identifier cannot be changed.',
+									message: 'The type metadata identifier cannot be changed.',
 								});
 							}
 							return errors;
 						},
-						onValidationError: (errors) => {
-							onValidationChange(errors.map(validationMessage));
-						},
 						onChange: () => {
-							try {
-								onChange(editor?.get() as TypeMetadata);
-							} catch {
-								onChange(undefined);
-							}
+							onTouched();
+							reportContent();
 						},
 					},
 					initialValue,
 				);
-				void editor.validate();
+				reportContent();
 			})
 			.catch((reason: unknown) => {
 				if (!disposed) {
@@ -106,7 +135,7 @@ export function JsonMetadataEditor({
 			disposed = true;
 			editor?.destroy();
 		};
-	}, [initialValue, onChange, onValidationChange, originalVct]);
+	}, [initialValue, format, onChange, onValidationChange, onTouched, originalIdentifier]);
 
 	return (
 		<>

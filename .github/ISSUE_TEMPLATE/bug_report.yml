@@ -16,7 +16,7 @@ body:
       description: 'Steps to reproduce the behavior'
       value: |
         1. Open the registry UI or call the API endpoint '...'
-        2. Provide the relevant VCT identifier or Type Metadata JSON '...'
+        2. Provide the relevant Type Metadata identifier or JSON '...'
         3. Describe the action or request '...'
         4. See error
     validations:
@@ -47,7 +47,7 @@ body:
         - Node version (if running from source):
         - Server OS:
         - Database engine and version (if applicable):
-        - Affected VCT identifier (if applicable):
+        - Affected type metadata identifier (if applicable):
         - Device and OS (if applicable):
         - Browser and version (if applicable):
 

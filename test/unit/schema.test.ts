@@ -5,7 +5,7 @@ import { app } from '../../src/server';
 describe('Type Metadata JSON Schema', () => {
 	it('should have correct top-level type and properties', async () => {
 		const { body: schema } = await request(app)
-			.get('/type-metadata/schema')
+			.get('/type-metadata/schema/dc+sd-jwt')
 			.expect(200)
 			.expect('Content-Type', /json/);
 
