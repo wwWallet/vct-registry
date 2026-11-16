@@ -6,6 +6,7 @@ import { LoadingFallback } from './components/LoadingFallback';
 import { RequireAuth } from './components/RequireAuth';
 import { HomePage } from './pages/HomePage';
 import { MetadataPage } from './pages/MetadataPage';
+import { NotFoundPage } from './pages/NotFoundPage';
 import { UsagePage } from './pages/UsagePage';
 import { useRegistryMetadata } from './useRegistryMetadata';
 
@@ -73,12 +74,7 @@ export default function App() {
 							/>
 						</Route>
 						<Route path="usage" element={<UsagePage />} />
-						<Route
-							path="*"
-							element={
-								<HomePage metadata={metadata} loading={loading} error={error} />
-							}
-						/>
+						<Route path="*" element={<NotFoundPage />} />
 					</Route>
 				</Routes>
 			</AuthProvider>
