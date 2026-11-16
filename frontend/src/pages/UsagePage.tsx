@@ -1,27 +1,27 @@
 import { Breadcrumbs } from '../components/Breadcrumbs';
 import { CopyButton } from '../components/CopyButton';
+import { registryApiUrl } from '../registryUrl';
 
 export function UsagePage() {
-	const registryUrl = window.location.origin;
 	const examples = [
 		{
 			title: '1. Fetch All Metadata',
-			endpoint: `GET ${registryUrl}/type-metadata/all`,
-			code: `curl -s "${registryUrl}/type-metadata/all"`,
+			endpoint: `GET ${registryApiUrl}/type-metadata/all`,
+			code: `curl -s "${registryApiUrl}/type-metadata/all"`,
 		},
 		{
 			title: '2. Fetch One Metadata Entry By VCT',
-			endpoint: `GET ${registryUrl}/type-metadata?vct=<vct-value>`,
-			code: `curl -s "${registryUrl}/type-metadata?vct=urn:eudi:pid:1"`,
+			endpoint: `GET ${registryApiUrl}/type-metadata?vct=<vct-value>`,
+			code: `curl -s "${registryApiUrl}/type-metadata?vct=urn:eudi:pid:1"`,
 		},
 		{
 			title: '3. Browser Fetch Example',
-			code: `const vct = encodeURIComponent("urn:eudi:pid:1");\nconst res = await fetch(\`${registryUrl}/type-metadata?vct=\${vct}\`);\nconst metadata = await res.json();\nconsole.log(metadata);`,
+			code: `const vct = encodeURIComponent("urn:eudi:pid:1");\nconst res = await fetch(\`${registryApiUrl}/type-metadata?vct=\${vct}\`);\nconst metadata = await res.json();\nconsole.log(metadata);`,
 		},
 		{
 			title: '4. Optional: List Available VCTs (Name + VCT)',
-			endpoint: `GET ${registryUrl}/api/vct-list`,
-			code: `curl -s "${registryUrl}/api/vct-list"`,
+			endpoint: `GET ${registryApiUrl}/api/vct-list`,
+			code: `curl -s "${registryApiUrl}/api/vct-list"`,
 		},
 	];
 
@@ -42,7 +42,7 @@ export function UsagePage() {
 					<p className="mb-2 text-[.92rem] text-gray-600">
 						Registry base URL:{' '}
 						<code className="rounded bg-[color-mix(in_srgb,var(--vct-accent)_8%,white)] px-1 py-0.5 text-[.85em]">
-							{registryUrl}
+							{registryApiUrl}
 						</code>
 					</p>
 					{examples.map((example) => (
