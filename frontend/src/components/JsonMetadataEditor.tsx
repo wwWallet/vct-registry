@@ -105,7 +105,7 @@ export function JsonMetadataEditor({
 								(!value || metadataId(value) !== originalIdentifier)
 							) {
 								errors.push({
-									path: ['vct'],
+									path: [format === 'mso_mdoc' ? 'doctype' : 'vct'],
 									message: 'The type metadata identifier cannot be changed.',
 								});
 							}

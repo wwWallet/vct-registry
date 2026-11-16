@@ -16,6 +16,7 @@ const emptyMetadata: Record<MetadataFormat, TypeMetadata> = {
 		display: [{}],
 		claims: [{ path: ['vct'], mandatory: true, sd: 'never' }],
 	},
+	mso_mdoc: { doctype: '', name: '', display: [{}], claims: [] },
 };
 
 const formatControlClass =
@@ -319,6 +320,7 @@ export function MetadataEditorPage({ mode, onSaved }: MetadataEditorPageProps) {
 									}}
 								>
 									<option value="dc+sd-jwt">dc+sd-jwt</option>
+									<option value="mso_mdoc">mso_mdoc</option>
 								</select>
 							) : (
 								<span className={`${formatControlClass} inline-flex items-center`}>
