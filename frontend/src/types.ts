@@ -7,8 +7,7 @@ export interface SvgTemplate {
 	};
 }
 
-export interface TypeMetadata {
-	vct: string;
+interface MetadataFields {
 	name?: string;
 	description?: string;
 	display?: Array<{
@@ -19,6 +18,26 @@ export interface TypeMetadata {
 	}>;
 	claims?: unknown[];
 	[key: string]: unknown;
+}
+
+export type MetadataFormat = 'dc+sd-jwt';
+export type TypeMetadata = MetadataFields & { vct: string };
+export interface MetadataEntry {
+	format: MetadataFormat;
+	metadata: TypeMetadata;
+}
+
+export function metadataId(metadata: TypeMetadata): string {
+	return metadata.vct;
+}
+
+export function metadataFormat(_metadata: TypeMetadata): MetadataFormat {
+	void _metadata;
+	return 'dc+sd-jwt';
+}
+
+export function metadataSelector(params: URLSearchParams): string {
+	return params.get('identifier') ?? params.get('id') ?? params.get('vct') ?? '';
 }
 
 export interface AuthState {

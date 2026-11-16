@@ -8,7 +8,7 @@ import { auth } from './middleware/auth';
 import { knex } from 'knex';
 import apiRouter from './routes/api';
 import typeMetadataRouter from './routes/typeMetadata';
-import dbVctRouter from './routes/db';
+import typeMetadataManagementRouter from './routes/typeMetadataManagement';
 import authRouter from './routes/auth';
 import { registerReactFrontend } from './reactFrontend';
 
@@ -20,7 +20,7 @@ app.use(cors());
 app.use(cookieParser());
 app.use(
 	express.json({
-		limit: config.max_vct_size,
+		limit: config.max_metadata_size,
 	}),
 );
 
@@ -40,7 +40,7 @@ app.use(
 app.use('/api', apiRouter);
 app.use('/auth', authRouter);
 app.use('/type-metadata', typeMetadataRouter);
-app.use('/vct', auth, dbVctRouter);
+app.use('/api/type-metadata', auth, typeMetadataManagementRouter);
 
 registerReactFrontend(app, publicPath);
 
