@@ -1,13 +1,13 @@
 import { Breadcrumbs } from '../components/Breadcrumbs';
 import { CopyButton } from '../components/CopyButton';
+import { registryApiUrl } from '../registryUrl';
 
 export function UsagePage() {
-	const registryUrl = window.location.origin;
 	const examples = [
 		{
 			title: '1. Fetch All Metadata',
-			endpoint: `GET ${registryUrl}/type-metadata/all`,
-			code: `curl -s "${registryUrl}/type-metadata/all"`,
+			endpoint: `GET ${registryApiUrl}/type-metadata/all`,
+			code: `curl -s "${registryApiUrl}/type-metadata/all"`,
 			guidance: (
 				<>
 					Optionally filter by format: <code>/type-metadata/all?format=mso_mdoc</code> or{' '}
@@ -18,8 +18,8 @@ export function UsagePage() {
 		},
 		{
 			title: '2. Fetch One Metadata Entry By Identifier',
-			endpoint: `GET ${registryUrl}/type-metadata?identifier=<identifier>`,
-			code: `curl -s "${registryUrl}/type-metadata?identifier=urn:eudi:pid:1"`,
+			endpoint: `GET ${registryApiUrl}/type-metadata?identifier=<identifier>`,
+			code: `curl -s "${registryApiUrl}/type-metadata?identifier=urn:eudi:pid:1"`,
 			guidance: (
 				<>
 					For any format, use <code>/type-metadata?identifier=&lt;identifier&gt;</code>{' '}
@@ -33,13 +33,13 @@ export function UsagePage() {
 		},
 		{
 			title: '3. Browser Fetch Example',
-			code: `const vct = encodeURIComponent("urn:eudi:pid:1");\nconst res = await fetch(\`${registryUrl}/type-metadata?identifier=\${vct}\`);\nconst metadata = await res.json();\nconsole.log(metadata);`,
+			code: `const vct = encodeURIComponent("urn:eudi:pid:1");\nconst res = await fetch(\`${registryApiUrl}/type-metadata?identifier=\${vct}\`);\nconst metadata = await res.json();\nconsole.log(metadata);`,
 		},
 		{
 			id: 'type-metadata-list',
 			title: '4. List Available Types (Identifier, Format, and Name)',
-			endpoint: `GET ${registryUrl}/type-metadata/list`,
-			code: `curl -s "${registryUrl}/type-metadata/list"`,
+			endpoint: `GET ${registryApiUrl}/type-metadata/list`,
+			code: `curl -s "${registryApiUrl}/type-metadata/list"`,
 		},
 	];
 
@@ -60,7 +60,7 @@ export function UsagePage() {
 					<p className="mb-2 text-[.92rem] text-gray-600">
 						Registry base URL:{' '}
 						<code className="rounded bg-[color-mix(in_srgb,var(--vct-accent)_8%,white)] px-1 py-0.5 text-[.85em]">
-							{registryUrl}
+							{registryApiUrl}
 						</code>
 					</p>
 					{examples.map((example) => (
