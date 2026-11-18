@@ -5,7 +5,6 @@ import { useAuth } from '../auth';
 import { Breadcrumbs } from '../components/Breadcrumbs';
 import { CopyButton } from '../components/CopyButton';
 import { previewCaption, previews } from '../metadataPreview';
-import { registryApiUrl } from '../registryUrl';
 import type { TypeMetadata } from '../types';
 import { buttonClass, cardClass, feedbackClass } from '../ui';
 
@@ -15,6 +14,7 @@ const label = 'm-0 text-[.74rem] font-bold tracking-[.05em] text-[var(--vct-text
 const value = 'm-0 text-[.95rem] font-semibold text-[var(--vct-text)]';
 
 export function MetadataPage({ metadata, loading, error, onMetadataChanged }: PageProps) {
+	const registryUrl = window.location.origin;
 	const { auth, handleAuthError } = useAuth();
 	const [searchParams, setSearchParams] = useSearchParams();
 	const [mutationError, setMutationError] = useState('');
@@ -29,8 +29,8 @@ export function MetadataPage({ metadata, loading, error, onMetadataChanged }: Pa
 	const payload = selectedVct === '__all__' ? metadata : selected;
 	const metadataJson = JSON.stringify(payload ?? null, null, 2);
 	const sourceUrl = selected
-		? `${registryApiUrl}/type-metadata?vct=${encodeURIComponent(selected.vct)}`
-		: `${registryApiUrl}/type-metadata/all`;
+		? `${registryUrl}/type-metadata?vct=${encodeURIComponent(selected.vct)}`
+		: `${registryUrl}/type-metadata/all`;
 
 	useEffect(() => {
 		if (!status) return;
