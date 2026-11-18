@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { getAllTypeMetadata, getTypeMetadataByIdentifier } from '../db/typeMetadata';
 import { db } from '../server';
-import { parseIdentifier, reverseList } from '../util';
+import { reverseList } from '../util';
 import { getMetadataPreviewDataUri } from '../util/metadataPreview';
 
 /** /api */
@@ -79,8 +79,8 @@ apiRouter.get('/vct-preview', async (req, res) => {
 	res.append('Link', '<../usage#type-metadata-preview>; rel="deprecation"; type="text/html"');
 	res.append('Link', '<./type-metadata-preview>; rel="successor-version"');
 	res.append('Access-Control-Expose-Headers', 'Deprecation, Link');
-	const vct = parseIdentifier(req.query.vct);
-	if (!vct) {
+	const vct = req.query.vct;
+	if (typeof vct !== 'string' || !vct.trim()) {
 		return res.status(400).json({
 			error: 'invalid_vct',
 			message: 'Query parameter "vct" must be a valid URI string',
