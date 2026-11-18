@@ -1,10 +1,14 @@
 .env
+**/.env
 .git
 .gitattributes
 .gitignore
 .npmrc
 .npmrc.template
 .vscode
+.DS_Store
+**/.DS_Store
 README.md
 dist
 node_modules
+**/node_modules

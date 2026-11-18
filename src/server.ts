@@ -9,9 +9,8 @@ import { knex } from 'knex';
 import apiRouter from './routes/api';
 import typeMetadataRouter from './routes/typeMetadata';
 import dbVctRouter from './routes/db';
-import nunjucks from 'nunjucks';
 import authRouter from './routes/auth';
-import viewsRouter from './routes/views';
+import { registerReactFrontend } from './reactFrontend';
 
 const { url, port } = config;
 
@@ -28,13 +27,6 @@ app.use(
 export const db = knex(knexConfig);
 
 const publicPath = path.join(__dirname, '../public');
-export const viewsPath = path.join(__dirname, 'views');
-
-nunjucks.configure(viewsPath, {
-	autoescape: true,
-	express: app,
-});
-app.set('view engine', 'njk');
 
 // 1-day immutable cache for images
 app.use(
@@ -45,18 +37,12 @@ app.use(
 	}),
 );
 
-// No caching for the rest of the UI (HTML, JS, CSS)
-app.use(
-	express.static(publicPath, {
-		maxAge: 0,
-	}),
-);
-
-app.use('/', viewsRouter);
 app.use('/api', apiRouter);
 app.use('/auth', authRouter);
 app.use('/type-metadata', typeMetadataRouter);
 app.use('/vct', auth, dbVctRouter);
+
+registerReactFrontend(app, publicPath);
 
 app.listen(port, () => {
 	console.log(`✅ vct-registry server listening at ${url}`);
