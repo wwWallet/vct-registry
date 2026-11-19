@@ -41,9 +41,9 @@ This starts the frontend and backend development servers:
 During development, Vite proxies React API requests to Express. The production build is served by
 Express at `/`, with API routes retaining their existing paths.
 
-The React development proxy targets `http://localhost:8097` by default. To use a different
-backend, copy `frontend/.env.template` to `frontend/.env`, change
-`VITE_REGISTRY_API_URL`, and restart the React development server.
+The React development proxy uses `URL` from the registry's root `.env` and targets
+`http://localhost:8097` by default. To use a different backend, change `URL` and restart
+the development servers.
 
 ## Storage
 
