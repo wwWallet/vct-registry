@@ -57,13 +57,14 @@ Editing Type Metadata is protected using Basic authentication. The username and 
 
 ## API
 
-| Method | Endpoint                        | Description                                                                                                 |
-| ------ | ------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| `GET`  | `/type-metadata/all`            | Retrieve all registered metadata. Use query parameters to filter credential format results.                 |
-| `GET`  | `/type-metadata?identifier=...` | Retrieve metadata for a specific type metadata identifier, vct, or doctype, specified as a query parameter. |
-| `GET`  | `/type-metadata?vct=...`        | Retrieve metadata for a specific VCT                                                                        |
-| `GET`  | `/type-metadata/list`           | List all formats as `{identifier, format, name}`                                                            |
-| `GET`  | `/api/vct-list`                 | Deprecated: list SD-JWT VC types as `{vct, name}`.                                                          |
+| Method | Endpoint                         | Description                                                                                                                                        |
+| ------ | -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `GET`  | `/type-metadata/all`             | Retrieve all registered metadata. Use query parameters to filter credential format results.                                                        |
+| `GET`  | `/type-metadata?identifier=...`  | Retrieve metadata for a specific type metadata identifier, vct, or doctype, specified as a query parameter.                                        |
+| `GET`  | `/type-metadata?vct=...`         | Retrieve metadata for a specific VCT                                                                                                               |
+| `GET`  | `/type-metadata/schema/{format}` | Retrieve the type metadata schema. Use `dc+sd-jwt` or its URL slug `dc_sd_jwt` for SD-JWT VC type metadata, and `mso_mdoc` for MDOC type metadata. |
+| `GET`  | `/type-metadata/list`            | List all formats as `{identifier, format, name}`                                                                                                   |
+| `GET`  | `/api/vct-list`                  | Deprecated: list SD-JWT VC types as `{vct, name}`.                                                                                                 |
 
 | `GET` | `/api/type-metadata-preview?identifier=...` | Render a stored metadata preview for either format. |
 | `GET` | `/api/vct-preview?vct=...` | Deprecated: render a stored SD-JWT VC preview. Use `/api/type-metadata-preview?identifier=...` instead. |

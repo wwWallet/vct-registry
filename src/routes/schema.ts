@@ -1,13 +1,13 @@
 import { Router } from 'express';
 import { TypeMetadata } from 'wallet-common';
 import { z } from 'zod';
-import { MsoMdocTypeMetadata } from '../schemas/metadata';
+import { MsoMdocTypeMetadata, parseMetadataFormat } from '../schemas/metadata';
 
 const schemaRouter = Router();
 
 schemaRouter.get('/:format', (req, res) => {
-	const format = req.params.format;
-	if (format !== 'dc+sd-jwt' && format !== 'mso_mdoc') {
+	const format = parseMetadataFormat(req.params.format);
+	if (format === undefined) {
 		return res.status(400).json({
 			error: 'invalid_format',
 			message: 'Format must be dc+sd-jwt or mso_mdoc.',

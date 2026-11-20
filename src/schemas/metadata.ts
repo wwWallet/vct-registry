@@ -41,3 +41,15 @@ export type MetadataFormat = 'dc+sd-jwt' | 'mso_mdoc';
 export function getMetadataId(metadata: RegistryMetadata): string {
 	return 'vct' in metadata ? metadata.vct : metadata.doctype;
 }
+
+export function parseMetadataFormat(value: unknown): MetadataFormat | undefined {
+	switch (value) {
+		case 'dc_sd_jwt':
+		case 'dc+sd-jwt':
+			return 'dc+sd-jwt';
+		case 'mso_mdoc':
+			return 'mso_mdoc';
+		default:
+			return undefined;
+	}
+}

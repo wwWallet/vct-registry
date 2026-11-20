@@ -154,6 +154,7 @@ describe('format-neutral registry lookups', () => {
 
 	it.each([
 		[{ vct: pid.vct }, pid.vct, 'dc+sd-jwt'],
+		[{ vct: pid.vct, format: 'dc_sd_jwt' }, pid.vct, 'dc+sd-jwt'],
 		[{ doctype: mdoc.doctype }, mdoc.doctype, 'mso_mdoc'],
 		[{ identifier: mdoc.doctype }, mdoc.doctype, undefined],
 		[{ id: mdoc.doctype }, mdoc.doctype, undefined],
@@ -187,6 +188,7 @@ describe('format-neutral registry lookups', () => {
 		{ vct: 'a', doctype: 'a' },
 		{ vct: 'a', format: 'mso_mdoc' },
 		{ doctype: 'a', format: 'dc+sd-jwt' },
+		{ doctype: 'a', format: 'dc_sd_jwt' },
 		{ id: 'a', format: ['mso_mdoc', 'dc+sd-jwt'] },
 	])('rejects invalid or conflicting selectors %j', async (query) => {
 		await request(app).get('/type-metadata').query(query).expect(400);
@@ -202,10 +204,17 @@ describe('format-neutral registry lookups', () => {
 		expect(body.error).toBe('unknown_identifier');
 	});
 
-	it.each(['dc+sd-jwt', 'mso_mdoc'] as const)('filters /all by %s', async (format) => {
+	it.each([
+		['dc+sd-jwt', 'dc+sd-jwt'],
+		['dc_sd_jwt', 'dc+sd-jwt'],
+		['mso_mdoc', 'mso_mdoc'],
+	] as const)('filters /all by %s', async (requestedFormat, format) => {
 		const metadata = format === 'mso_mdoc' ? mdoc : pid;
 		vi.mocked(getAllTypeMetadata).mockResolvedValue([metadata]);
-		const { body } = await request(app).get('/type-metadata/all').query({ format }).expect(200);
+		const { body } = await request(app)
+			.get('/type-metadata/all')
+			.query({ format: requestedFormat })
+			.expect(200);
 		expect(body).toEqual([metadata]);
 		expect(getAllTypeMetadata).toHaveBeenCalledWith(expect.anything(), format);
 	});

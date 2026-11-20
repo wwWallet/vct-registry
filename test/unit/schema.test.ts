@@ -12,20 +12,23 @@ describe('Type Metadata JSON Schema', () => {
 		await request(app).get('/mdoc/schema').expect(404);
 	});
 
-	it('should have correct top-level type and properties', async () => {
-		const { body: schema } = await request(app)
-			.get('/type-metadata/schema/dc+sd-jwt')
-			.expect(200)
-			.expect('Content-Type', /json/);
+	it.each(['dc+sd-jwt', 'dc%2Bsd-jwt', 'dc_sd_jwt'])(
+		'serves the SD-JWT VC schema for %s',
+		async (format) => {
+			const { body: schema } = await request(app)
+				.get(`/type-metadata/schema/${format}`)
+				.expect(200)
+				.expect('Content-Type', /json/);
 
-		expect(schema.type).toBe('object');
+			expect(schema.type).toBe('object');
 
-		['vct', 'name', 'description', 'display', 'claims'].forEach((key) => {
-			expect(schema.properties).toHaveProperty(key);
-		});
+			['vct', 'name', 'description', 'display', 'claims'].forEach((key) => {
+				expect(schema.properties).toHaveProperty(key);
+			});
 
-		expect(schema.additionalProperties).toBe(false);
-		expect(schema.properties.display.items.additionalProperties).toBe(false);
-		expect(schema.properties.claims.items.additionalProperties).toBe(false);
-	});
+			expect(schema.additionalProperties).toBe(false);
+			expect(schema.properties.display.items.additionalProperties).toBe(false);
+			expect(schema.properties.claims.items.additionalProperties).toBe(false);
+		},
+	);
 });

@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { parseIdentifier, reverseList } from '../util';
-import type { MetadataFormat } from '../schemas/metadata';
+import { parseMetadataFormat } from '../schemas/metadata';
 import {
 	getAllTypeMetadata,
 	getTypeMetadataByIdentifier,
@@ -47,12 +47,8 @@ typeMetadataRouter.get('/', async (req, res) => {
 		});
 	}
 	const identifier = identifiers[0] as string;
-	const requestedFormat = req.query.format;
-	if (
-		requestedFormat !== undefined &&
-		requestedFormat !== 'dc+sd-jwt' &&
-		requestedFormat !== 'mso_mdoc'
-	) {
+	const requestedFormat = parseMetadataFormat(req.query.format);
+	if (req.query.format !== undefined && requestedFormat === undefined) {
 		return res
 			.status(400)
 			.json({ error: 'invalid_format', message: 'Format must be dc+sd-jwt or mso_mdoc.' });
@@ -68,7 +64,7 @@ typeMetadataRouter.get('/', async (req, res) => {
 			message: 'The format conflicts with the identifier selector.',
 		});
 	}
-	const format: MetadataFormat | undefined = impliedFormat ?? requestedFormat;
+	const format = impliedFormat ?? requestedFormat;
 	const metadata = await getTypeMetadataByIdentifier(db, identifier, format);
 	if (!metadata) {
 		return res.status(404).json({
@@ -91,8 +87,8 @@ typeMetadataRouter.get('/list', async (_req, res) => {
  * Returns an array of all metadata objects.
  */
 typeMetadataRouter.get('/all', async (req, res) => {
-	const format = req.query.format;
-	if (format !== undefined && format !== 'dc+sd-jwt' && format !== 'mso_mdoc') {
+	const format = parseMetadataFormat(req.query.format);
+	if (req.query.format !== undefined && format === undefined) {
 		return res
 			.status(400)
 			.json({ error: 'invalid_format', message: 'Format must be dc+sd-jwt or mso_mdoc.' });
