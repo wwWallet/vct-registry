@@ -17,5 +17,6 @@ export const config = {
 			database: process.env.DB_NAME || 'vct_registry',
 		},
 	},
-	max_vct_size: Number(process.env.MAX_VCT_SIZE) || 1 * 1024 * 100,
+	max_metadata_size:
+		Number(process.env.MAX_METADATA_SIZE ?? process.env.MAX_VCT_SIZE) || 1 * 1024 * 100,
 };
