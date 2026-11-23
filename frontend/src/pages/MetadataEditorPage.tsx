@@ -1,20 +1,26 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { createMetadata, getMetadata, updateMetadata } from '../api/client';
+import { createMetadata, getMetadataEntry, updateMetadata } from '../api/client';
 import { useAuth } from '../auth';
 import { Breadcrumbs } from '../components/Breadcrumbs';
 import { JsonMetadataEditor } from '../components/JsonMetadataEditor';
 import { previewCaption, previews } from '../metadataPreview';
-import type { TypeMetadata } from '../types';
+import { metadataId, metadataSelector, type MetadataFormat, type TypeMetadata } from '../types';
 import { buttonClass, cardClass, feedbackClass } from '../ui';
 import { addMetadataUriIntegrity } from '../uriIntegrity';
 
-const emptyMetadata: TypeMetadata = {
-	vct: '',
-	name: '',
-	display: [{}],
-	claims: [{ path: ['vct'], mandatory: true, sd: 'never' }],
+const emptyMetadata: Record<MetadataFormat, TypeMetadata> = {
+	'dc+sd-jwt': {
+		vct: '',
+		name: '',
+		display: [{}],
+		claims: [{ path: ['vct'], mandatory: true, sd: 'never' }],
+	},
+	mso_mdoc: { doctype: '', name: '', display: [{}], claims: [] },
 };
+
+const formatControlClass =
+	'h-11 w-full max-w-72 rounded-lg border border-[var(--vct-border)] bg-white px-3 text-[.9rem] font-normal text-[var(--vct-text)]';
 
 const editorStat =
 	'flex flex-col gap-1 border-b border-[var(--vct-border)] pb-2.5 last:border-0 last:pb-0';
@@ -32,11 +38,13 @@ export function MetadataEditorPage({ mode, onSaved }: MetadataEditorPageProps) {
 	const { handleAuthError } = useAuth();
 	const navigate = useNavigate();
 	const [searchParams] = useSearchParams();
-	const originalVct = mode === 'edit' ? (searchParams.get('vct') ?? '') : '';
-	const [document, setDocument] = useState<TypeMetadata | undefined>(
-		mode === 'add' ? emptyMetadata : undefined,
+	const originalIdentifier = mode === 'edit' ? metadataSelector(searchParams) : '';
+	const [format, setFormat] = useState<MetadataFormat>('dc+sd-jwt');
+	const editorTouched = useRef(false);
+	const [document, setDocument] = useState<TypeMetadata | undefined>(undefined);
+	const [editorInitialValue, setEditorInitialValue] = useState<TypeMetadata>(
+		emptyMetadata['dc+sd-jwt'],
 	);
-	const [editorInitialValue, setEditorInitialValue] = useState<TypeMetadata>(emptyMetadata);
 	const [validationErrors, setValidationErrors] = useState<string[]>([]);
 	const [editorRevision, setEditorRevision] = useState(0);
 	const [loadingEntry, setLoadingEntry] = useState(mode === 'edit');
@@ -46,8 +54,9 @@ export function MetadataEditorPage({ mode, onSaved }: MetadataEditorPageProps) {
 	const [error, setError] = useState('');
 
 	useEffect(() => {
+		editorTouched.current = false;
 		if (mode !== 'edit') return;
-		if (!originalVct) {
+		if (!originalIdentifier) {
 			setLoadingEntry(false);
 			return;
 		}
@@ -58,11 +67,12 @@ export function MetadataEditorPage({ mode, onSaved }: MetadataEditorPageProps) {
 		setLoadingEntry(true);
 		setLoadError('');
 
-		void getMetadata(originalVct, controller.signal)
+		void getMetadataEntry(originalIdentifier, controller.signal)
 			.then((entry) => {
 				if (controller.signal.aborted) return;
-				setDocument(entry);
-				setEditorInitialValue(entry);
+				setFormat(entry.format);
+				setDocument(entry.metadata);
+				setEditorInitialValue(entry.metadata);
 				setEditorRevision((revision) => revision + 1);
 				setEntryLoaded(true);
 			})
@@ -78,7 +88,7 @@ export function MetadataEditorPage({ mode, onSaved }: MetadataEditorPageProps) {
 			});
 
 		return () => controller.abort();
-	}, [mode, originalVct]);
+	}, [mode, originalIdentifier]);
 
 	const handleEditorChange = useCallback((metadata?: TypeMetadata) => {
 		setDocument(metadata);
@@ -86,12 +96,23 @@ export function MetadataEditorPage({ mode, onSaved }: MetadataEditorPageProps) {
 	const handleValidationChange = useCallback((errors: string[]) => {
 		setValidationErrors(errors);
 	}, []);
+	const handleEditorTouched = useCallback(() => {
+		editorTouched.current = true;
+	}, []);
+
+	function handleCancel(event: React.MouseEvent<HTMLAnchorElement>) {
+		if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey || event.button !== 0)
+			return;
+		if (editorTouched.current && !window.confirm('Discard your changes and leave this page?'))
+			event.preventDefault();
+	}
+
 	const title = mode === 'add' ? 'Create Metadata' : 'Edit Metadata';
 	const previewList = previews(document);
-	const documentVct = text(document?.vct, 'Not defined');
+	const documentVct = text(document && metadataId(document), 'Not defined');
 	const documentName = text(document?.name, 'Not defined');
 	const documentDescription = text(document?.description, 'No description provided.');
-	const previewAlt = text(document?.name, text(document?.vct, 'Metadata'));
+	const previewAlt = text(document?.name, text(document && metadataId(document), 'Metadata'));
 
 	async function handleSubmit(event: React.FormEvent) {
 		event.preventDefault();
@@ -101,30 +122,32 @@ export function MetadataEditorPage({ mode, onSaved }: MetadataEditorPageProps) {
 			setError('Fix the JSON validation errors before submitting.');
 			return;
 		}
-		if (typeof document.vct !== 'string' || !document.vct.trim()) {
-			setError('The metadata document must include a non-empty "vct" value.');
+		if (typeof metadataId(document) !== 'string' || !metadataId(document).trim()) {
+			setError('The metadata document must include a non-empty identifier value.');
 			return;
 		}
-		if (mode === 'edit' && document.vct !== originalVct) {
-			setError('The VCT identifier cannot be changed while editing an existing entry.');
+		if (mode === 'edit' && metadataId(document) !== originalIdentifier) {
+			setError(
+				'The type metadata identifier cannot be changed while editing an existing entry.',
+			);
 			return;
 		}
 
 		const action = mode === 'add' ? 'create' : 'update';
 		const confirmation =
 			mode === 'add'
-				? 'Are you sure you want to create this VC Type Metadata entry? SHA-256 URI Integrity hashes will be added for all image links in the metadata, overwriting any existing integrity values.'
-				: 'Are you sure you want to edit this VC Type Metadata entry? This action is irreversible. SHA-256 URI Integrity hashes will be added for all image links in the metadata, overwriting any existing integrity values.';
+				? 'Are you sure you want to create this Type Metadata entry? SHA-256 URI Integrity hashes will be added for all image links in the metadata, overwriting any existing integrity values.'
+				: 'Are you sure you want to edit this Type Metadata entry? This action is irreversible. SHA-256 URI Integrity hashes will be added for all image links in the metadata, overwriting any existing integrity values.';
 		if (!window.confirm(confirmation)) return;
 
 		setSaving(true);
 		try {
 			const prepared = await addMetadataUriIntegrity(document);
 			if (mode === 'add') await createMetadata(prepared);
-			else await updateMetadata(originalVct, prepared);
+			else await updateMetadata(originalIdentifier, prepared);
 			await onSaved();
 			navigate(
-				`/metadata?vct=${encodeURIComponent(prepared.vct)}&status=${mode === 'add' ? 'created' : 'updated'}`,
+				`/metadata?identifier=${encodeURIComponent(metadataId(prepared))}&status=${mode === 'add' ? 'created' : 'updated'}`,
 			);
 		} catch (reason) {
 			if (!handleAuthError(reason)) {
@@ -157,7 +180,8 @@ export function MetadataEditorPage({ mode, onSaved }: MetadataEditorPageProps) {
 						{loadError ? 'Unable to load metadata' : 'Metadata entry not found'}
 					</h2>
 					<p className="mt-2 mb-4 text-sm text-[var(--vct-text-muted)]">
-						{loadError || 'Select an existing VCT before opening the editor.'}
+						{loadError ||
+							'Select an existing type metadata entry before opening the editor.'}
 					</p>
 					<Link className={buttonClass('secondary')} to="/metadata">
 						Return to metadata
@@ -175,11 +199,11 @@ export function MetadataEditorPage({ mode, onSaved }: MetadataEditorPageProps) {
 					<h2 className="m-0 text-[1.6rem] leading-[1.1] font-bold">
 						{mode === 'add'
 							? 'Create Verifiable Credential Type Metadata'
-							: `Edit VCT ${originalVct}`}
+							: `Edit ${text(editorInitialValue.name, `${originalIdentifier} Type Metadata`)}`}
 					</h2>
 					<p className="mx-auto mt-2.5 max-w-[60ch] text-[.95rem] leading-[1.5] text-[var(--vct-text-muted)]">
 						{mode === 'add'
-							? 'Create a new registry entry by defining the VCT identity and supplying its full metadata document.'
+							? 'Create a new registry entry by defining the type identifier and supplying its full metadata document.'
 							: 'Review and update the selected registry entry, then save the latest metadata to the registry.'}
 					</p>
 				</div>
@@ -199,7 +223,7 @@ export function MetadataEditorPage({ mode, onSaved }: MetadataEditorPageProps) {
 						<div className="grid gap-2.5">
 							<div className={editorStat}>
 								<p className="m-0 text-[.74rem] font-bold tracking-[.05em] text-[var(--vct-text-muted)] uppercase">
-									VCT
+									Identifier
 								</p>
 								<code className="mt-1 block w-fit max-w-full break-all rounded-sm bg-[var(--vct-accent-soft)] px-1 py-0.5 text-[.8rem]">
 									{documentVct}
@@ -276,12 +300,44 @@ export function MetadataEditorPage({ mode, onSaved }: MetadataEditorPageProps) {
 							Existing integrity algorithms are preserved and their values are
 							refreshed.
 						</div>
+						<label className="my-4 flex flex-col items-start gap-2 text-[.85rem] font-semibold">
+							Metadata format
+							{mode === 'add' ? (
+								<select
+									aria-label="Metadata format"
+									className={`${formatControlClass} cursor-pointer outline-none transition-[border-color,box-shadow] hover:border-[var(--vct-border-strong)] focus:border-vct-accent focus:ring-3 focus:ring-[var(--vct-accent-ring)]`}
+									value={format}
+									onChange={(event) => {
+										if (
+											editorTouched.current &&
+											!window.confirm(
+												'Changing the metadata format will erase all current content. Continue?',
+											)
+										)
+											return;
+										editorTouched.current = false;
+										setFormat(event.target.value as MetadataFormat);
+									}}
+								>
+									<option value="dc+sd-jwt">dc+sd-jwt</option>
+									<option value="mso_mdoc">mso_mdoc</option>
+								</select>
+							) : (
+								<span className={`${formatControlClass} inline-flex items-center`}>
+									{format}
+								</span>
+							)}
+						</label>
 						<JsonMetadataEditor
-							key={`${mode}-${originalVct}-${editorRevision}`}
-							initialValue={editorInitialValue}
-							originalVct={mode === 'edit' ? originalVct : undefined}
+							key={`${mode}-${originalIdentifier}-${editorRevision}`}
+							format={format}
+							initialValue={
+								mode === 'add' ? emptyMetadata[format] : editorInitialValue
+							}
+							originalIdentifier={mode === 'edit' ? originalIdentifier : undefined}
 							onChange={handleEditorChange}
 							onValidationChange={handleValidationChange}
+							onTouched={handleEditorTouched}
 						/>
 						{validationErrors.length > 0 && (
 							<div className={`${feedbackClass.error} mt-2`} role="status">
@@ -312,9 +368,10 @@ export function MetadataEditorPage({ mode, onSaved }: MetadataEditorPageProps) {
 						<div className="mt-3 flex items-stretch gap-2 max-[520px]:flex-col">
 							<Link
 								className={buttonClass('secondary', 'flex-1')}
+								onClick={handleCancel}
 								to={
-									originalVct
-										? `/metadata?vct=${encodeURIComponent(originalVct)}`
+									originalIdentifier
+										? `/metadata?identifier=${encodeURIComponent(originalIdentifier)}`
 										: '/metadata'
 								}
 							>
@@ -328,7 +385,7 @@ export function MetadataEditorPage({ mode, onSaved }: MetadataEditorPageProps) {
 								{saving
 									? 'Saving…'
 									: mode === 'add'
-										? 'Create VCT'
+										? 'Create Metadata'
 										: 'Submit Changes'}
 							</button>
 						</div>

@@ -62,11 +62,17 @@ jobs:
         with:
           node-version: 24
           cache: yarn
+          cache-dependency-path: |
+            yarn.lock
+            frontend/yarn.lock
 
-      - name: Install dependencies
+      - name: Install backend dependencies
         env:
           YARN_NETWORK_CONCURRENCY: '1'
         run: yarn install --frozen-lockfile
+
+      - name: Install frontend dependencies
+        run: yarn --cwd frontend install --frozen-lockfile
 
       - name: Run tests
         run: yarn test:run

@@ -1,0 +1,96 @@
+import express from 'express';
+import request from 'supertest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import apiRouter from '../../src/routes/api';
+import { getTypeMetadataByIdentifier } from '../../src/db/typeMetadata';
+import { getMetadataPreviewDataUri } from '../../src/util/metadataPreview';
+
+vi.mock('../../src/server', () => ({ db: {} }));
+vi.mock('../../src/db/typeMetadata', () => ({
+	getAllTypeMetadata: vi.fn(),
+	getTypeMetadataByIdentifier: vi.fn(),
+}));
+vi.mock('../../src/util/metadataPreview', () => ({ getMetadataPreviewDataUri: vi.fn() }));
+const app = express();
+app.use('/api', apiRouter);
+beforeEach(() => {
+	vi.resetAllMocks();
+	vi.mocked(getMetadataPreviewDataUri).mockResolvedValue('data:image/svg+xml;base64,AA==');
+});
+
+describe('Stored metadata previews', () => {
+	it.each([{ vct: 'urn:example:pid' }, { doctype: 'org.example.a%2Fb&c' }])(
+		'renders either format using its exact identifier',
+		async (metadata) => {
+			const identifier = 'vct' in metadata ? metadata.vct : metadata.doctype;
+			vi.mocked(getTypeMetadataByIdentifier).mockResolvedValue(metadata);
+			const response = await request(app)
+				.get('/api/type-metadata-preview')
+				.query({ identifier })
+				.expect(200);
+			expect(getTypeMetadataByIdentifier).toHaveBeenCalledWith(expect.anything(), identifier);
+			expect(getMetadataPreviewDataUri).toHaveBeenCalledWith(metadata, {
+				preferredProperties: { orientation: 'landscape' },
+			});
+			expect(response.body.dataUri).toBe('data:image/svg+xml;base64,AA==');
+		},
+	);
+	it.each([{}, { identifier: '' }, { identifier: ['a', 'b'] }])(
+		'rejects invalid selectors %j',
+		async (query) => {
+			await request(app).get('/api/type-metadata-preview').query(query).expect(400);
+			expect(getTypeMetadataByIdentifier).not.toHaveBeenCalled();
+		},
+	);
+	it('returns 404 for unknown metadata', async () => {
+		await request(app).get('/api/type-metadata-preview?identifier=unknown').expect(404);
+	});
+	it('preserves the legacy SD-JWT VC preview', async () => {
+		vi.mocked(getTypeMetadataByIdentifier).mockResolvedValue({ vct: 'urn:example:pid' });
+		await request(app).get('/api/vct-preview?vct=urn%3Aexample%3Apid').expect(200);
+		expect(getTypeMetadataByIdentifier).toHaveBeenCalledWith(
+			expect.anything(),
+			'urn:example:pid',
+			'dc+sd-jwt',
+		);
+	});
+	it.each(['https://example.org/types/a%2Fb', 'org.example.100%', ' org.example.document '])(
+		'preserves the exact legacy preview identifier %s',
+		async (identifier) => {
+			vi.mocked(getTypeMetadataByIdentifier).mockImplementation(async (_db, value) =>
+				value === identifier ? { vct: identifier } : undefined,
+			);
+			await request(app).get('/api/vct-preview').query({ vct: identifier }).expect(200);
+			expect(getTypeMetadataByIdentifier).toHaveBeenCalledWith(
+				expect.anything(),
+				identifier,
+				'dc+sd-jwt',
+			);
+		},
+	);
+	it.each(['get', 'head'] as const)(
+		'advertises the legacy preview deprecation on %s',
+		async (method) => {
+			vi.mocked(getTypeMetadataByIdentifier).mockResolvedValue({ vct: 'urn:example:pid' });
+			const response = await request(app)
+				[method]('/api/vct-preview?vct=urn%3Aexample%3Apid')
+				.expect(200);
+			expect(response.headers.deprecation).toBe('@1794528000');
+			expect(response.headers.link).toContain(
+				'<../usage#type-metadata-preview>; rel="deprecation"; type="text/html"',
+			);
+			expect(response.headers.link).toContain(
+				'<./type-metadata-preview>; rel="successor-version"',
+			);
+			expect(response.headers['access-control-expose-headers']).toBe('Deprecation, Link');
+			expect(response.headers.sunset).toBeUndefined();
+		},
+	);
+	it('advertises deprecation on invalid legacy requests but not the replacement', async () => {
+		const legacy = await request(app).get('/api/vct-preview').expect(400);
+		expect(legacy.headers.deprecation).toBe('@1794528000');
+		const replacement = await request(app).get('/api/type-metadata-preview').expect(400);
+		expect(replacement.headers.deprecation).toBeUndefined();
+		expect(replacement.headers.link).toBeUndefined();
+	});
+});

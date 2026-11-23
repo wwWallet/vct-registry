@@ -1,53 +1,101 @@
 import { Router } from 'express';
-import { decodeVct } from '../util';
-import { getAllVctMetadata, getVctByUrn } from '../db/vct';
+import { parseIdentifier, reverseList } from '../util';
+import { parseMetadataFormat } from '../schemas/metadata';
+import {
+	getAllTypeMetadata,
+	getTypeMetadataByIdentifier,
+	getTypeMetadataList,
+} from '../db/typeMetadata';
 import { db } from '../server';
 import { TypeMetadata } from 'wallet-common';
 import { z } from 'zod';
+import schemaRouter from './schema';
 
 /** /type-metadata */
 const typeMetadataRouter = Router();
+typeMetadataRouter.use('/schema', schemaRouter);
 
-/**
- * GET /type-metadata?vct=urn:...
- * Returns the metadata object whose .vct matches the query.
- * Also acts as database getter for vct records.
- */
+/** Retrieve one raw metadata document using a generic or format-specific identifier. */
 typeMetadataRouter.get('/', async (req, res) => {
-	const vct = decodeVct(req.query.vct);
-
-	if (vct == undefined) {
+	const selectors = ['identifier', 'id', 'vct', 'doctype'] as const;
+	const supplied = selectors.filter((key) => req.query[key] !== undefined);
+	const identifiers = supplied.map((key) => parseIdentifier(req.query[key]));
+	const legacy = supplied.length === 1 && supplied[0] === 'vct';
+	if (supplied.length === 0 || (legacy && identifiers[0] === undefined)) {
 		return res.status(400).json({
-			error: 'missing_vct',
-			message: 'Query parameter "vct" is required',
+			error: 'missing_identifier',
+			message:
+				'One of the query parameters "identifier", "id", "vct", or "doctype" is required',
 		});
 	}
 
-	if (vct == null) {
+	if (identifiers.some((value) => typeof value !== 'string')) {
 		return res.status(400).json({
-			error: 'invalid_vct',
-			message: 'Query parameter "vct" must be a valid URI string',
+			error: legacy ? 'invalid_vct' : 'invalid_identifier',
+			message: legacy
+				? 'Query parameter "vct" must be a valid URI string'
+				: 'Identifiers must be nonempty strings.',
 		});
 	}
-
-	const metadata = await getVctByUrn(db, vct);
-
+	if (
+		new Set(identifiers).size !== 1 ||
+		(supplied.includes('vct') && supplied.includes('doctype'))
+	) {
+		return res.status(400).json({
+			error: 'conflicting_query',
+			message: 'Identifier selectors must agree and cannot combine vct and doctype.',
+		});
+	}
+	const identifier = identifiers[0] as string;
+	const requestedFormat = parseMetadataFormat(req.query.format);
+	if (req.query.format !== undefined && requestedFormat === undefined) {
+		return res
+			.status(400)
+			.json({ error: 'invalid_format', message: 'Format must be dc+sd-jwt or mso_mdoc.' });
+	}
+	const impliedFormat = supplied.includes('vct')
+		? 'dc+sd-jwt'
+		: supplied.includes('doctype')
+			? 'mso_mdoc'
+			: undefined;
+	if (impliedFormat && requestedFormat !== undefined && requestedFormat !== impliedFormat) {
+		return res.status(400).json({
+			error: 'conflicting_query',
+			message: 'The format conflicts with the identifier selector.',
+		});
+	}
+	const format = impliedFormat ?? requestedFormat;
+	const metadata = await getTypeMetadataByIdentifier(db, identifier, format);
 	if (!metadata) {
 		return res.status(404).json({
-			error: 'unknown_vct',
-			message: `No metadata found for vct "${vct}"`,
+			error: legacy ? 'unknown_vct' : 'unknown_identifier',
+			message: legacy
+				? `No metadata found for vct "${identifier}"`
+				: `No metadata found for identifier "${identifier}"`,
 		});
 	}
-
 	res.json(metadata);
+});
+
+/** List identifiers, formats, and names for all registered metadata. */
+typeMetadataRouter.get('/list', async (_req, res) => {
+	res.json(reverseList(await getTypeMetadataList(db)));
 });
 
 /**
  * GET /type-metadata/all
  * Returns an array of all metadata objects.
  */
-typeMetadataRouter.get('/all', async (_req, res) => {
-	res.json(await getAllVctMetadata(db));
+typeMetadataRouter.get('/all', async (req, res) => {
+	const format = parseMetadataFormat(req.query.format);
+	if (req.query.format !== undefined && format === undefined) {
+		return res
+			.status(400)
+			.json({ error: 'invalid_format', message: 'Format must be dc+sd-jwt or mso_mdoc.' });
+	}
+	res.json(
+		format === undefined ? await getAllTypeMetadata(db) : await getAllTypeMetadata(db, format),
+	);
 });
 
 /**
