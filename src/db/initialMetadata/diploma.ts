@@ -32,6 +32,7 @@ export const diplomaMetadata = {
 	claims: [
 		{
 			path: ['given_name'],
+			sd: 'always',
 			display: [
 				{
 					locale: 'en-US',
@@ -43,6 +44,7 @@ export const diplomaMetadata = {
 		},
 		{
 			path: ['family_name'],
+			sd: 'always',
 			display: [
 				{
 					locale: 'en-US',
@@ -54,6 +56,7 @@ export const diplomaMetadata = {
 		},
 		{
 			path: ['title'],
+			sd: 'always',
 			display: [
 				{
 					locale: 'en-US',
@@ -65,6 +68,7 @@ export const diplomaMetadata = {
 		},
 		{
 			path: ['grade'],
+			sd: 'always',
 			display: [
 				{
 					locale: 'en-US',
@@ -75,6 +79,7 @@ export const diplomaMetadata = {
 		},
 		{
 			path: ['eqf_level'],
+			sd: 'never',
 			display: [
 				{
 					locale: 'en-US',
@@ -86,6 +91,7 @@ export const diplomaMetadata = {
 		},
 		{
 			path: ['graduation_date'],
+			sd: 'always',
 			display: [
 				{
 					locale: 'en-US',
@@ -97,6 +103,7 @@ export const diplomaMetadata = {
 		},
 		{
 			path: ['expiry_date'],
+			sd: 'never',
 			display: [
 				{
 					locale: 'en-US',
