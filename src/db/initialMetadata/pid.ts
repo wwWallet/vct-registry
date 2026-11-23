@@ -97,7 +97,7 @@ export const pidMetadata = {
 		{
 			path: ['place_of_birth'],
 			mandatory: true,
-			sd: 'always',
+			sd: 'never',
 			display: [
 				{
 					locale: 'en-US',
@@ -142,7 +142,7 @@ export const pidMetadata = {
 		},
 		{
 			path: ['nationalities', null],
-			sd: 'always',
+			sd: 'never',
 			display: [
 				{
 					locale: 'en-US',
@@ -242,7 +242,7 @@ export const pidMetadata = {
 		},
 		{
 			path: ['address'],
-			sd: 'always',
+			sd: 'never',
 			display: [
 				{
 					locale: 'en-US',
@@ -330,7 +330,7 @@ export const pidMetadata = {
 		},
 		{
 			path: ['age_equal_or_over'],
-			sd: 'always',
+			sd: 'never',
 			display: [
 				{
 					locale: 'en-US',
@@ -419,7 +419,7 @@ export const pidMetadata = {
 		{
 			path: ['issuing_authority'],
 			mandatory: true,
-			sd: 'always',
+			sd: 'never',
 			display: [
 				{
 					locale: 'en-US',
@@ -431,7 +431,7 @@ export const pidMetadata = {
 		{
 			path: ['issuing_country'],
 			mandatory: true,
-			sd: 'always',
+			sd: 'never',
 			display: [
 				{
 					locale: 'en-US',

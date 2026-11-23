@@ -54,7 +54,7 @@ export const porMetadata = {
 		{
 			path: ['legal_person_identifier'],
 			mandatory: true,
-			sd: 'never',
+			sd: 'always',
 			svg_id: 'legal_person_identifier',
 			display: [
 				{
@@ -67,7 +67,7 @@ export const porMetadata = {
 		{
 			path: ['legal_name'],
 			mandatory: true,
-			sd: 'never',
+			sd: 'always',
 			svg_id: 'legal_name',
 			display: [
 				{
@@ -80,7 +80,7 @@ export const porMetadata = {
 		{
 			path: ['full_powers'],
 			mandatory: true,
-			sd: 'never',
+			sd: 'always',
 			svg_id: 'full_powers',
 			display: [
 				{
@@ -93,7 +93,7 @@ export const porMetadata = {
 		},
 		{
 			path: ['eService'],
-			sd: 'never',
+			sd: 'always',
 			svg_id: 'eService',
 			display: [
 				{
@@ -107,7 +107,7 @@ export const porMetadata = {
 		{
 			path: ['issuing_authority'],
 			mandatory: true,
-			sd: 'never',
+			sd: 'always',
 			display: [
 				{
 					locale: 'en-US',
@@ -119,7 +119,7 @@ export const porMetadata = {
 		{
 			path: ['issuing_country'],
 			mandatory: true,
-			sd: 'never',
+			sd: 'always',
 			svg_id: 'issuing_country',
 			display: [
 				{
@@ -131,7 +131,7 @@ export const porMetadata = {
 		},
 		{
 			path: ['effective_until_date'],
-			sd: 'never',
+			sd: 'always',
 			svg_id: 'effective_until_date',
 			display: [
 				{
@@ -144,7 +144,7 @@ export const porMetadata = {
 		{
 			path: ['effective_from_date'],
 			mandatory: true,
-			sd: 'never',
+			sd: 'always',
 			svg_id: 'effective_from_date',
 			display: [
 				{
