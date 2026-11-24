@@ -9,10 +9,10 @@ export function HomePage({ metadata, loading, error }: PageProps) {
 		<section className="page-shell flex flex-col gap-4.5">
 			<div className="page-header m-0 text-center">
 				<h1 className="m-0 text-[1.6rem] leading-[1.1] font-bold text-[var(--vct-text)]">
-					Verifiable Credential TypeMetadata Registry
+					Credential Metadata Registry
 				</h1>
 				<p className="mx-auto mt-2.5 max-w-[60ch] text-[.95rem] leading-[1.5] text-[var(--vct-text-muted)]">
-					Browse and inspect SD-JWT VC and mdoc type metadata from one local registry.
+					Browse and manage credential type metadata.
 				</p>
 			</div>
 			<div className="mb-5 flex flex-wrap justify-center gap-2.5 text-center">

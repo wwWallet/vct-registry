@@ -198,7 +198,7 @@ export function MetadataEditorPage({ mode, onSaved }: MetadataEditorPageProps) {
 				<div className="page-header text-center">
 					<h2 className="m-0 text-[1.6rem] leading-[1.1] font-bold">
 						{mode === 'add'
-							? 'Create Verifiable Credential Type Metadata'
+							? 'Create Credential Metadata'
 							: `Edit ${text(editorInitialValue.name, `${originalIdentifier} Type Metadata`)}`}
 					</h2>
 					<p className="mx-auto mt-2.5 max-w-[60ch] text-[.95rem] leading-[1.5] text-[var(--vct-text-muted)]">

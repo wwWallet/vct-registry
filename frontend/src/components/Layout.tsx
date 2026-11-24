@@ -37,7 +37,7 @@ export function Layout() {
 									wwWallet
 								</p>
 								<h1 className="m-0 text-[1.45rem] leading-[1.15] font-bold text-[var(--vct-text)]">
-									VCT Registry
+									Registry
 								</h1>
 							</div>
 						</NavLink>
