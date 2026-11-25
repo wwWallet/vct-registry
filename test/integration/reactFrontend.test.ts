@@ -7,7 +7,8 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { registerReactFrontend } from '../../src/reactFrontend';
 
 describe('Production React frontend', () => {
-	const indexHtml = '<!doctype html><html><body><div id="root">VCT Registry</div></body></html>';
+	const indexHtml =
+		'<!doctype html><html><body><div id="root">wwWallet Registry</div></body></html>';
 	let publicPath: string;
 	let testApp: Express;
 

@@ -45,5 +45,5 @@ app.use('/api/type-metadata', auth, typeMetadataManagementRouter);
 registerReactFrontend(app, publicPath);
 
 app.listen(port, () => {
-	console.log(`✅ vct-registry server listening at ${url}`);
+	console.log(`✅ registry server listening at ${url}`);
 });
