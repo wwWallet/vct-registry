@@ -1,13 +1,12 @@
-# VCT Registry
+# Credential Metadata Registry
 
-The VCT Registry is a standalone, lightweight registry that serves Type Metadata for Verifiable Credentials, according to the [SD-JWT-based Verifiable Digital Credentials (SD-JWT VC)
-](https://datatracker.ietf.org/doc/draft-ietf-oauth-sd-jwt-vc/) Proposed Standard. While the Registry has been built upon SD-JWT VCs, it is credential-format-agnostic. It currently supports `dc+sd-jwt` and `mso_mdoc` credential formats, and other verifiable credential formats can be added by introducing a schema and adding the format identifier to existing endpoints.
+The wwWallet Registry is a standalone, lightweight service for publishing and managing credential type metadata across multiple formats. It currently supports [SD-JWT-based Verifiable Digital Credentials (SD-JWT VC)](https://datatracker.ietf.org/doc/draft-ietf-oauth-sd-jwt-vc/) (`dc+sd-jwt`) and ISO mdoc (`mso_mdoc`). Additional formats can be added by introducing a schema and registering the format with the existing endpoints.
 
 Users can browse registered Type Metadata, while administrators can create, edit, and delete entries with live validation and visual previews.
 
 ## Features
 
-- Browse registered Verifiable Credential Type Metadata
+- Browse registered credential type metadata
 - View metadata in a human-friendly interface
 - Create, edit and delete Type Metadata entries
 - Live JSON validation and preview
@@ -49,7 +48,7 @@ the development servers.
 
 VC Type Metadata entries are stored in a database, in table `type_metadata`, containing columns `identifier` (the type identifier, the primary key), `format` (`dc+sd-jwt` or `mso_mdoc`), and `metadata` (a JSON object containing the type metadata).
 
-Setting up VCT Registry as part of the wwWallet ecosystem provides a MariaDB database, but any database can be used.
+Setting up the Registry as part of the wwWallet ecosystem provides a MariaDB database, but any database can be used.
 
 ## Security
 

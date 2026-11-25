@@ -81,7 +81,7 @@ export function MetadataPage({ metadata, loading, error, onMetadataChanged }: Pa
 			<section className="page-shell metadata-shell flex flex-col gap-4.5">
 				<div className="page-header m-0 text-center">
 					<h2 className="m-0 text-[1.6rem] leading-[1.1] font-bold text-[var(--vct-text)]">
-						Verifiable Credential Type Metadata
+						Credential Metadata
 					</h2>
 					<p className="mx-auto mt-2.5 max-w-[60ch] text-[.95rem] leading-[1.5] text-[var(--vct-text-muted)]">
 						Explore one credential definition at a time or inspect the full registry
